@@ -1,3 +1,4 @@
+<%@page import="etc.OrderInformation"%>
 <%@page import="model.AuthorDTO"%>
 <%@page import="model.ItemsDTO"%>
 <%@page import="java.util.ArrayList"%>
@@ -9,6 +10,13 @@
 
 	ItemsDTO item = (ItemsDTO) request.getAttribute("ITEM");
 	AuthorDTO author = (AuthorDTO) request.getAttribute("AUTHOR");
+	OrderInformation information = new OrderInformation();
+
+	information.setItem_code(item.getItem_code());
+	information.setItem_category(item.getItem_category_code());
+	information.setItem_price(item.getItem_selling_price());
+
+	request.setAttribute("orderInformation", information);
 %>
 <!DOCTYPE html>
 <html>
@@ -36,9 +44,7 @@
 		}
 
 		function buyNow(ccode, icode) {
-			var quantity = document.getElementById('quantity').value;
-			location.href = '/AspireStore/payment.aspire?ccode=' + String(ccode)
-					+ '&icode=' + String(icode)+ '&quantity=' + String(quantity);
+			location.href = '/AspireStore/payment.aspire';
 		}
 	</script>
 
@@ -286,8 +292,7 @@
 				<ul class="navbar-nav ml-auto">
 
 					<%
-						if (sessionKey != null)
-						{
+						if (sessionKey != null) {
 					%>
 					<li class="nav-item"><a class="nav-link disabled"><i><%=sessionKey.toString()%></i></a>
 					</li>
@@ -297,8 +302,7 @@
 							Aspire</a></li>
 
 					<%
-						} else
-						{
+						} else {
 					%>
 					<li class="nav-item"><a class="nav-link" href="../signin.jsp">로그인</a>
 					</li>
@@ -363,11 +367,12 @@
 				value="1" min="1" />
 			</span> <span> <a class="btn btn-primary" href="#" role="button">장바구니에
 					추가</a>
-			</span> <span> <a class="btn btn-primary"
-				href="javascript:buyNow('<%=item.getItem_code()%>','<%=item.getItem_category_code()%>')"
+			</span> <span> <a class="btn btn-primary" href="javascript:buyNow()"
 				role="button">바로 구매</a>
 			</span>
 		</div>
+
+
 
 		<div>
 			<div>
@@ -489,8 +494,11 @@
 	</footer>
 
 	<!-- Bootstrap core JavaScript -->
-	<script src="jquery/jquery.min.js"></script>
+	<script src="jquery/jquery.min.js">
+		
+	</script>
 	<script src="js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

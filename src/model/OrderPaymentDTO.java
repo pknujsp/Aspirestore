@@ -124,6 +124,10 @@ public class OrderPaymentDTO
 		this.salehistory_status = salehistory_status;
 	}
 
+	public OrderPaymentDTO()
+	{
+	}
+
 	public OrderPaymentDTO(int salehistory_sale_code, int salehistory_item_code, String salehistory_item_category,
 			String salehistory_user_id, String salehistory_sale_date, int salehistory_sale_quantity,
 			int salehistory_total_price, String salehistory_address, String salehistory_payment_method,

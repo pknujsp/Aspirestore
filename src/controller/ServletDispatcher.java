@@ -1,7 +1,9 @@
 package controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -10,6 +12,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import etc.OrderInformation;
+import model.ItemsDTO;
+import model.OrderPaymentDTO;
 import model.SignupDTO;
 
 public class ServletDispatcher extends HttpServlet
@@ -78,6 +83,24 @@ public class ServletDispatcher extends HttpServlet
 				{
 					pageControllerPath = "/payment";
 
+					OrderPaymentDTO orderPaymentDTO = new OrderPaymentDTO();
+					ArrayList<OrderInformation> orderInformations = new ArrayList<OrderInformation>();
+
+					if (request.getAttribute("orderinformation") != null)
+					{
+						orderInformations.add((OrderInformation) request.getAttribute("orderInformation"));
+						orderInformations.get(0).setOrder_quantity(Integer.parseInt(request.getParameter("quantity")));
+					} else
+					{
+						orderInformations = (ArrayList<OrderInformation>) request.getAttribute("orderInformations");
+					}
+
+					orderPaymentDTO.setSalehistory_address(request.getParameter("address"));
+					orderPaymentDTO.setSalehistory_payment_method(request.getParameter("payment_method"));
+					orderPaymentDTO.setSalehistory_requested_term(request.getParameter("requested_term"));
+
+					request.setAttribute("ORDERPAYMENTDTO", orderPaymentDTO);
+					request.setAttribute("ORDERINFORMATIONS", orderInformations);
 				}
 				break;
 			}
