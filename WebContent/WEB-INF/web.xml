@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	id="WebApp_ID" version="3.0">
+	<display-name>AspireStore</display-name>
+
+	<resource-ref>
+		<res-ref-name>jdbc/mariadb</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+	</resource-ref>
+	
+	<welcome-file-list>
+		<welcome-file>signup.jsp</welcome-file>
+		<welcome-file>signin.jsp</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>itemlist.jsp</welcome-file>
+		<welcome-file>item.jsp</welcome-file>
+		<welcome-file>payment.jsp</welcome-file>
+	
+	</welcome-file-list>
+
+	<listener>
+		<listener-class>etc.ServletContextLoaderListener</listener-class>
+	</listener>
+
+	<servlet>
+		<servlet-name>signupservlet</servlet-name>
+		<servlet-class>controller.ServletSignup</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>signupservlet</servlet-name>
+		<url-pattern>/signup</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>signinservlet</servlet-name>
+		<servlet-class>controller.ServletSignin</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>signinservlet</servlet-name>
+		<url-pattern>/signin</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>logoutservlet</servlet-name>
+		<servlet-class>controller.ServletLogout</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>logoutservlet</servlet-name>
+		<url-pattern>/logout</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>showitemsservlet</servlet-name>
+		<servlet-class>controller.ServletShowItems</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>showitemsservlet</servlet-name>
+		<url-pattern>/items/itemlist</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>getitemservlet</servlet-name>
+		<servlet-class>controller.ServletGetItem</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>getitemservlet</servlet-name>
+		<url-pattern>/items/item</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>orderpaymentservlet</servlet-name>
+		<servlet-class>controller.ServletOrderPayment</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>orderpaymentservlet</servlet-name>
+		<url-pattern>/payment</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>frontcontroller</servlet-name>
+		<servlet-class>controller.ServletDispatcher</servlet-class>
+	</servlet>
+
+
+	<servlet-mapping>
+		<servlet-name>frontcontroller</servlet-name>
+		<url-pattern>*.aspire</url-pattern>
+	</servlet-mapping>
+</web-app>
