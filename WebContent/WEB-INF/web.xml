@@ -18,6 +18,7 @@
 		<welcome-file>itemlist.jsp</welcome-file>
 		<welcome-file>item.jsp</welcome-file>
 		<welcome-file>payment.jsp</welcome-file>
+		<welcome-file>orderform.jsp</welcome-file>
 	
 	</welcome-file-list>
 
@@ -83,6 +84,16 @@
 	<servlet-mapping>
 		<servlet-name>orderpaymentservlet</servlet-name>
 		<url-pattern>/payment</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>createorderformservlet</servlet-name>
+		<servlet-class>controller.ServletCreateOrderForm</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>createorderformservlet</servlet-name>
+		<url-pattern>/orderform</url-pattern>
 	</servlet-mapping>
 
 	<servlet>

@@ -33,7 +33,6 @@
 						<td><b><a
 								href="/AspireStore/items/item.aspire?ccode=701&icode=<%=item.getItem_code()%>"
 								id="itemName"><%=item.getItem_name()%></a></b></td>
-					
 				</tbody>
 			</table>
 		</div>

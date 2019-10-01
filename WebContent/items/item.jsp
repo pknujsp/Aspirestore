@@ -3,7 +3,8 @@
 <%@page import="model.ItemsDTO"%>
 <%@page import="java.util.ArrayList"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8" session="true"%>
+
 <%
 	request.setCharacterEncoding("UTF-8");
 	String sessionKey = (String) session.getAttribute("SESSIONKEY");
@@ -43,8 +44,24 @@
 			location.href = '../index.jsp';
 		}
 
-		function buyNow(ccode, icode) {
-			location.href = '/AspireStore/payment.aspire';
+		function clickButton(uri) {
+			var paymentForm = document.createElement('form');
+
+			paymentForm.setAttribute('method', 'Post');
+			paymentForm.setAttribute('action', uri);
+
+			var quantity = document.getElementById('quantity').value;
+
+			var quantityField = document.createElement('input');
+			quantityField.setAttribute('type', 'hidden');
+			quantityField.setAttribute('name', 'quantity');
+			quantityField.setAttribute('value', quantity);
+
+
+			paymentForm.appendChild(quantityField);
+			document.body.appendChild(paymentForm);
+			paymentForm.submit();
+
 		}
 	</script>
 
@@ -363,13 +380,17 @@
 		</div>
 
 		<div>
+
 			<span> <input type="number" name="quantity" id="quantity"
 				value="1" min="1" />
-			</span> <span> <a class="btn btn-primary" href="#" role="button">장바구니에
-					추가</a>
-			</span> <span> <a class="btn btn-primary" href="javascript:buyNow()"
+			</span> <span> <a class="btn btn-primary"
+				href="javascript:clickButton('/AspireStore/cart.aspire')"
+				role="button">장바구니에 추가</a>
+			</span> <span> <a class="btn btn-primary"
+				href="javascript:clickButton('/AspireStore/orderform.aspire')"
 				role="button">바로 구매</a>
 			</span>
+
 		</div>
 
 

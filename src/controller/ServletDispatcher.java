@@ -21,6 +21,7 @@ public class ServletDispatcher extends HttpServlet
 {
 	private HttpServletRequest request = null;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
@@ -78,15 +79,29 @@ public class ServletDispatcher extends HttpServlet
 				}
 				break;
 
-			case "/payment/payment.aspire":
+			case "/payment.aspire":
 				if (checkNullParameters())
 				{
 					pageControllerPath = "/payment";
 
 					OrderPaymentDTO orderPaymentDTO = new OrderPaymentDTO();
+
+					orderPaymentDTO.setSalehistory_address(request.getParameter("address"));
+					orderPaymentDTO.setSalehistory_payment_method(request.getParameter("payment_method"));
+					orderPaymentDTO.setSalehistory_requested_term(request.getParameter("requested_term"));
+
+					request.setAttribute("ORDERPAYMENTDTO", orderPaymentDTO);
+				}
+				break;
+
+			case "/orderform.aspire":
+				if (checkNullParameters())
+				{
+					pageControllerPath = "/orderform";
+
 					ArrayList<OrderInformation> orderInformations = new ArrayList<OrderInformation>();
 
-					if (request.getAttribute("orderinformation") != null)
+					if (request.getAttribute("orderInformation") != null)
 					{
 						orderInformations.add((OrderInformation) request.getAttribute("orderInformation"));
 						orderInformations.get(0).setOrder_quantity(Integer.parseInt(request.getParameter("quantity")));
@@ -95,16 +110,10 @@ public class ServletDispatcher extends HttpServlet
 						orderInformations = (ArrayList<OrderInformation>) request.getAttribute("orderInformations");
 					}
 
-					orderPaymentDTO.setSalehistory_address(request.getParameter("address"));
-					orderPaymentDTO.setSalehistory_payment_method(request.getParameter("payment_method"));
-					orderPaymentDTO.setSalehistory_requested_term(request.getParameter("requested_term"));
-
-					request.setAttribute("ORDERPAYMENTDTO", orderPaymentDTO);
-					request.setAttribute("ORDERINFORMATIONS", orderInformations);
+					request.setAttribute("ORDER_INFORMATIONS", orderInformations);
 				}
 				break;
 			}
-
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher(pageControllerPath);
 			requestDispatcher.include(request, response);
 			String viewUrl = (String) request.getAttribute("VIEWURL");
