@@ -50,13 +50,13 @@
 				<ul class="dropdown-menu multi-level" aria-labelledby="dropdownMenu">
 
 					<li class="dropdown-submenu"><a
-						href="/AspireStore/items/itemlist.jsp?ccode=100" tabindex="0"
+						href="/AspireStore/items/itemlist.aspire?ccode=100" tabindex="0"
 						class="dropdown-header dropdown-submenu">게임</a>
 						<ul class="dropdown-menu">
-							<li><a class="dropdown-item" href="itemlist.jsp">게임 기획</a></li>
-							<li><a class="dropdown-item" href="itemlist.jsp">게임 개발</a></li>
-							<li><a class="dropdown-item" href="itemlist.jsp">게임 가이드북</a></li>
-							<li><a class="dropdown-item" href="itemlist.jsp">모바일 게임</a>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=101&cpcode=100">게임 기획</a></li>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=102&cpcode=100">게임 개발</a></li>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=103&cpcode=100">게임 가이드북</a></li>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=104&cpcode=100">모바일 게임</a>
 						</ul></li>
 
 					<li class="dropdown-divider"></li>
@@ -66,24 +66,24 @@
 						class="dropdown-header dropdown-submenu">그래픽/디자인/멀티미디어</a>
 
 						<ul class="dropdown-menu">
-							<li><a class="dropdown-item" href="itemlist.jsp">3DS/MAX</a></li>
-							<li><a class="dropdown-item" href="itemlist.jsp">건축CG</a></li>
-							<li><a class="dropdown-item" href="itemlist.jsp">그래픽일반/자료집</a></li>
-							<li><a class="dropdown-item" href="itemlist.jsp">그래픽툴/저작툴</a></li>
-							<li><a class="dropdown-item" href="itemlist.jsp">디렉터</a></li>
-							<li><a class="dropdown-item" href="itemlist.jsp">라이트룸</a></li>
-							<li><a class="dropdown-item" href="itemlist.jsp">베가스</a></li>
-							<li><a class="dropdown-item" href="itemlist.jsp">인디자인</a></li>
-							<li><a class="dropdown-item" href="itemlist.jsp">일러스트레이터</a>
-							<li><a class="dropdown-item" href="itemlist.jsp">캐릭터/애니메이션</a></li>
-							<li><a class="dropdown-item" href="itemlist.jsp">페인터</a></li>
-							<li><a class="dropdown-item" href="itemlist.jsp">포토샵</a></li>
-							<li><a class="dropdown-item" href="itemlist.jsp">프리미어</a></li>
-							<li><a class="dropdown-item" href="itemlist.jsp">플래시</a></li>
-							<li><a class="dropdown-item" href="itemlist.jsp">애프터 이펙트</a></li>
-							<li><a class="dropdown-item" href="itemlist.jsp">오토캐드</a></li>
-							<li><a class="dropdown-item" href="itemlist.jsp">멀티미디어/컴퓨터</a></li>
-							<li><a class="dropdown-item" href="itemlist.jsp">디지털 카메라</a></li>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=201&cpcode=200">3DS/MAX</a></li>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=202&cpcode=200">건축CG</a></li>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=203&cpcode=200">그래픽일반/자료집</a></li>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=204&cpcode=200">그래픽툴/저작툴</a></li>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=205&cpcode=200">디렉터</a></li>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=206&cpcode=200">라이트룸</a></li>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=207&cpcode=200">베가스</a></li>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=208&cpcode=200">인디자인</a></li>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=209&cpcode=200">일러스트레이터</a>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=210&cpcode=200">캐릭터/애니메이션</a></li>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=211&cpcode=200">페인터</a></li>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=212&cpcode=200">포토샵</a></li>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=213&cpcode=200">프리미어</a></li>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=214&cpcode=200">플래시</a></li>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=215&cpcode=200">애프터 이펙트</a></li>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=216&cpcode=200">오토캐드</a></li>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=217&cpcode=200">멀티미디어/컴퓨터</a></li>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=218&cpcode=200">디지털 카메라</a></li>
 						</ul></li>
 					<li class="dropdown-divider"></li>
 
@@ -91,25 +91,25 @@
 						href="/AspireStore/items/itemlist.jsp?ccode=300" tabindex="2"
 						class="dropdown-header dropdown-submenu">네트워크/해킹/보안</a>
 						<ul class="dropdown-menu">
-							<li><a class="dropdown-item" href="itemlist.jsp">네트워크 일반</a></li>
-							<li><a class="dropdown-item" href="itemlist.jsp">TCP/IP</a></li>
-							<li><a class="dropdown-item" href="itemlist.jsp">보안/해킹</a></li>
-						</ul></li>
-					<li class="dropdown-divider"></li>
-
-					<li class="dropdown-submenu"><a
-						href="/AspireStore/items/itemlist.jsp?ccode=200" tabindex="3"
-						class="dropdown-header dropdown-submenu"> 모바일 프로그래밍</a>
-						<ul class="dropdown-menu">
-							<li><a class="dropdown-item" href="itemlist.jsp">아이폰</a></li>
-							<li><a class="dropdown-item" href="itemlist.jsp">안드로이드폰</a></li>
-							<li><a class="dropdown-item" href="itemlist.jsp">윈도우폰</a></li>
-							<li><a class="dropdown-item" href="itemlist.jsp">모바일 게임</a></li>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=301&cpcode=300">네트워크 일반</a></li>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=302&cpcode=300">TCP/IP</a></li>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=303&cpcode=300">보안/해킹</a></li>
 						</ul></li>
 					<li class="dropdown-divider"></li>
 
 					<li class="dropdown-submenu"><a
 						href="/AspireStore/items/itemlist.jsp?ccode=400" tabindex="3"
+						class="dropdown-header dropdown-submenu"> 모바일 프로그래밍</a>
+						<ul class="dropdown-menu">
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=401&cpcode=400">아이폰</a></li>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=402&cpcode=400">안드로이드폰</a></li>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=403&cpcode=400">윈도우폰</a></li>
+							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=404&cpcode=400">모바일 게임</a></li>
+						</ul></li>
+					<li class="dropdown-divider"></li>
+
+					<li class="dropdown-submenu"><a
+						href="/AspireStore/items/itemlist.jsp?ccode=500" tabindex="3"
 						class="dropdown-header dropdown-submenu">모바일/태블릿/SNS</a>
 						<ul class="dropdown-menu">
 							<li><a class="dropdown-item" href="itemlist.jsp">아이패드</a></li>
@@ -124,7 +124,7 @@
 					<li class="dropdown-divider"></li>
 
 					<li class="dropdown-submenu"><a
-						href="/AspireStore/items/itemlist.jsp?ccode=500" tabindex="4"
+						href="/AspireStore/items/itemlist.jsp?ccode=600" tabindex="4"
 						class="dropdown-header dropdown-submenu">오피스 활용</a>
 						<ul class="dropdown-menu">
 
@@ -140,7 +140,7 @@
 					<li class="dropdown-divider"></li>
 
 					<li class="dropdown-submenu"><a
-						href="/AspireStore/items/itemlist.jsp?ccode=600" tabindex="5"
+						href="/AspireStore/items/itemlist.jsp?ccode=700" tabindex="5"
 						class="dropdown-header dropdown-submenu">웹사이트</a>
 						<ul class="dropdown-menu">
 							<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=701&cpcode=700">HTML/JAVASCRIPT/CSS</a></li>
@@ -152,7 +152,7 @@
 					<li class="dropdown-divider"></li>
 
 					<li class="dropdown-submenu"><a
-						href="/AspireStore/items/itemlist.jsp?ccode=700" tabindex="6"
+						href="/AspireStore/items/itemlist.jsp?ccode=800" tabindex="6"
 						class="dropdown-header dropdown-submenu">인터넷 비즈니스</a>
 						<ul class="dropdown-menu">
 							<li><a class="dropdown-item" href="itemlist.jsp">쇼핑몰/창업</a></li>
@@ -162,7 +162,7 @@
 					<li class="dropdown-divider"></li>
 
 					<li class="dropdown-submenu"><a
-						href="/AspireStore/items/itemlist.jsp?ccode=800" tabindex="7"
+						href="/AspireStore/items/itemlist.jsp?ccode=900" tabindex="7"
 						class="dropdown-header dropdown-submenu">컴퓨터 공학</a>
 						<ul class="dropdown-menu">
 							<li><a class="dropdown-item" href="itemlist.jsp">컴퓨터 교육</a></li>
@@ -186,7 +186,7 @@
 					<li class="dropdown-divider"></li>
 
 					<li class="dropdown-submenu"><a
-						href="/AspireStore/items/itemlist.jsp?ccode=900" tabindex="8"
+						href="/AspireStore/items/itemlist.jsp?ccode=1000" tabindex="8"
 						class="dropdown-header dropdown-submenu">컴퓨터 수험서</a>
 						<ul class="dropdown-menu">
 
@@ -207,7 +207,7 @@
 					<li class="dropdown-divider"></li>
 
 					<li class="dropdown-submenu"><a
-						href="/AspireStore/items/itemlist.jsp?ccode=1000" tabindex="9"
+						href="/AspireStore/items/itemlist.jsp?ccode=1100" tabindex="9"
 						class="dropdown-header dropdown-submenu"> 컴퓨터 입문/활용</a>
 						<ul class="dropdown-menu">
 
@@ -223,7 +223,7 @@
 					<li class="dropdown-divider"></li>
 
 					<li class="dropdown-submenu"><a
-						href="/AspireStore/items/itemlist.jsp?ccode=1100" tabindex="10"
+						href="/AspireStore/items/itemlist.jsp?ccode=1200" tabindex="10"
 						class="dropdown-header dropdown-submenu">프로그래밍 언어</a>
 
 						<ul class="dropdown-menu">
@@ -245,7 +245,7 @@
 					<li class="dropdown-divider"></li>
 
 					<li class="dropdown-submenu"><a
-						href="/AspireStore/items/itemlist.jsp?ccode=1200" tabindex="11"
+						href="/AspireStore/items/itemlist.jsp?ccode=1300" tabindex="11"
 						class="dropdown-header dropdown-submenu">OS/DB</a>
 						<ul class="dropdown-menu">
 							<li><a class="dropdown-item" href="itemlist.jsp">윈도우</a></li>

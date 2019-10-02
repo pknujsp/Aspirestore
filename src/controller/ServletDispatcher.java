@@ -101,15 +101,22 @@ public class ServletDispatcher extends HttpServlet
 
 					ArrayList<OrderInformation> orderInformations = new ArrayList<OrderInformation>();
 
-					if (request.getAttribute("orderInformation") != null)
+					if (request.getParameter("itemCode") != null)
 					{
-						orderInformations.add((OrderInformation) request.getAttribute("orderInformation"));
-						orderInformations.get(0).setOrder_quantity(Integer.parseInt(request.getParameter("quantity")));
+						int itemCode = Integer.parseInt(request.getParameter("itemCode"));
+						String itemCategory = request.getParameter("itemCategory");
+						int itemPrice = Integer.parseInt(request.getParameter("itemPrice"));
+						int quantity = Integer.parseInt(request.getParameter("quantity"));
+
+						orderInformations.add(new OrderInformation().setItem_code(itemCode)
+								.setItem_category(itemCategory).setItem_price(itemPrice).setOrder_quantity(quantity));
+
+						orderInformations.trimToSize();
+
 					} else
 					{
 						orderInformations = (ArrayList<OrderInformation>) request.getAttribute("orderInformations");
 					}
-
 					request.setAttribute("ORDER_INFORMATIONS", orderInformations);
 				}
 				break;

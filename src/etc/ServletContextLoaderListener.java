@@ -40,7 +40,7 @@ public class ServletContextLoaderListener implements ServletContextListener
 			servletContext.setAttribute("signupDAO", signupDAO);
 			servletContext.setAttribute("itemsDAO", itemsDAO);
 			servletContext.setAttribute("authorDAO", authorDAO);
-			servletContext.setAttribute("orderpaymentDAO", orderpaymentDAO);
+			servletContext.setAttribute("ORDER_PAYMENT_DAO", orderpaymentDAO);
 		} catch (Exception e)
 		{
 			e.printStackTrace();

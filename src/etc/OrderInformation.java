@@ -23,19 +23,22 @@ public class OrderInformation
 		return order_quantity;
 	}
 
-	public void setItem_code(int item_code)
+	public OrderInformation setItem_code(int item_code)
 	{
 		this.item_code = item_code;
+		return this;
 	}
 
-	public void setItem_category(String item_category)
+	public OrderInformation setItem_category(String item_category)
 	{
 		this.item_category = item_category;
+		return this;
 	}
 
-	public void setOrder_quantity(int order_quantity)
+	public OrderInformation setOrder_quantity(int order_quantity)
 	{
 		this.order_quantity = order_quantity;
+		return this;
 	}
 
 	public int getItem_price()
@@ -43,9 +46,10 @@ public class OrderInformation
 		return item_price;
 	}
 
-	public void setItem_price(int item_price)
+	public OrderInformation setItem_price(int item_price)
 	{
 		this.item_price = item_price;
+		return this;
 	}
 
 	public int getTotal_price()
@@ -53,9 +57,10 @@ public class OrderInformation
 		return total_price;
 	}
 
-	public void setTotal_price(int total_price)
+	public OrderInformation setTotal_price(int total_price)
 	{
 		this.total_price = total_price;
+		return this;
 	}
 
 	public OrderInformation()

@@ -11,13 +11,6 @@
 
 	ItemsDTO item = (ItemsDTO) request.getAttribute("ITEM");
 	AuthorDTO author = (AuthorDTO) request.getAttribute("AUTHOR");
-	OrderInformation information = new OrderInformation();
-
-	information.setItem_code(item.getItem_code());
-	information.setItem_category(item.getItem_category_code());
-	information.setItem_price(item.getItem_selling_price());
-
-	request.setAttribute("orderInformation", information);
 %>
 <!DOCTYPE html>
 <html>
@@ -51,17 +44,37 @@
 			paymentForm.setAttribute('action', uri);
 
 			var quantity = document.getElementById('quantity').value;
+			var itemCode = document.getElementById('itemCode').value;
+			var itemCategory = document.getElementById('itemCategory').value;
+			var itemPrice = document.getElementById('itemPrice').value;
 
 			var quantityField = document.createElement('input');
 			quantityField.setAttribute('type', 'hidden');
 			quantityField.setAttribute('name', 'quantity');
 			quantityField.setAttribute('value', quantity);
 
+			var itemCodeField = document.createElement('input');
+			itemCodeField.setAttribute('type', 'hidden');
+			itemCodeField.setAttribute('name', 'itemCode');
+			itemCodeField.setAttribute('value', itemCode);
+
+			var itemCategoryField = document.createElement('input');
+			itemCategoryField.setAttribute('type', 'hidden');
+			itemCategoryField.setAttribute('name', 'itemCategory');
+			itemCategoryField.setAttribute('value', itemCategory);
+
+			var itemPriceField = document.createElement('input');
+			itemPriceField.setAttribute('type', 'hidden');
+			itemPriceField.setAttribute('name', 'itemPrice');
+			itemPriceField.setAttribute('value', itemPrice);
 
 			paymentForm.appendChild(quantityField);
+			paymentForm.appendChild(itemCodeField);
+			paymentForm.appendChild(itemCategoryField);
+			paymentForm.appendChild(itemPriceField);
+
 			document.body.appendChild(paymentForm);
 			paymentForm.submit();
-
 		}
 	</script>
 
@@ -358,6 +371,15 @@
 		</span>
 
 		<div>
+			<div>
+				<span> <input type="hidden" id="itemCategory"
+					value="<%=item.getItem_category_code()%>" />
+				</span><span><input type="hidden" id="itemCode"
+					value="<%=item.getItem_code()%>" /></span>
+			</div>
+		</div>
+
+		<div>
 			<table>
 				<colgroup>
 					<col width="110" />
@@ -371,16 +393,14 @@
 
 					<tr>
 						<th scope="row">판매가</th>
-						<td><span><%=item.getItem_selling_price()%></span></td>
+						<td><span><input type="text" id="itemPrice" value="<%=item.getItem_selling_price()%>"></span></td>
 					</tr>
 				</tbody>
 			</table>
 
-
 		</div>
 
 		<div>
-
 			<span> <input type="number" name="quantity" id="quantity"
 				value="1" min="1" />
 			</span> <span> <a class="btn btn-primary"
@@ -392,8 +412,6 @@
 			</span>
 
 		</div>
-
-
 
 		<div>
 			<div>
