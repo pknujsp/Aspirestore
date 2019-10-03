@@ -13,6 +13,7 @@ import model.AuthorDAO;
 import model.AuthorDTO;
 import model.ItemsDAO;
 import model.ItemsDTO;
+import model.PublisherDAO;
 
 public class ServletGetItem extends HttpServlet
 {
@@ -33,6 +34,10 @@ public class ServletGetItem extends HttpServlet
 
 			AuthorDTO author = authordao.getAuthorInformation(acode);
 
+			PublisherDAO publisherDAO = (PublisherDAO) servletContext.getAttribute("PUBLISHER_DAO");
+			String publisherName = publisherDAO.getPublisherName(item.getItem_publisher_code());
+
+			request.setAttribute("PUBLISHER_NAME", publisherName);
 			request.setAttribute("AUTHOR", author);
 			request.setAttribute("ITEM", item);
 			request.setAttribute("VIEWURL", "forward:/items/item.jsp");

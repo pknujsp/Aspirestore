@@ -9,6 +9,7 @@ import javax.sql.DataSource;
 import model.AuthorDAO;
 import model.ItemsDAO;
 import model.OrderPaymentDAO;
+import model.PublisherDAO;
 import model.SigninDAO;
 import model.SignupDAO;
 
@@ -29,18 +30,21 @@ public class ServletContextLoaderListener implements ServletContextListener
 			ItemsDAO itemsDAO = new ItemsDAO();
 			AuthorDAO authorDAO = new AuthorDAO();
 			OrderPaymentDAO orderpaymentDAO = new OrderPaymentDAO();
+			PublisherDAO publisherDAO=new PublisherDAO();
 
 			signinDAO.setDataSource(ds);
 			signupDAO.setDataSource(ds);
 			itemsDAO.setDataSource(ds);
 			authorDAO.setDataSource(ds);
 			orderpaymentDAO.setDataSource(ds);
+			publisherDAO.setDataSource(ds);
 
 			servletContext.setAttribute("signinDAO", signinDAO);
 			servletContext.setAttribute("signupDAO", signupDAO);
 			servletContext.setAttribute("itemsDAO", itemsDAO);
 			servletContext.setAttribute("authorDAO", authorDAO);
 			servletContext.setAttribute("ORDER_PAYMENT_DAO", orderpaymentDAO);
+			servletContext.setAttribute("PUBLISHER_DAO", publisherDAO);
 		} catch (Exception e)
 		{
 			e.printStackTrace();

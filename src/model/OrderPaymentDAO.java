@@ -62,7 +62,7 @@ public class OrderPaymentDAO
 
 	public ArrayList<ItemsDTO> getItemsInfo(ArrayList<OrderInformation> informations)
 	{
-		String query = "SELECT item_code, item_name, item_author_code, item_publisher_code, item_selling_price FROM items WHERE item_code = ? AND item_category_code = ?";
+		String query = "SELECT item_code, item_name, item_author_code, item_publisher_code, item_selling_price, item_category_code FROM items WHERE item_code = ? AND item_category_code = ?";
 		ArrayList<ItemsDTO> items = new ArrayList<ItemsDTO>();
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
@@ -79,7 +79,7 @@ public class OrderPaymentDAO
 				{
 					items.add(new ItemsDTO().setItem_code(set.getInt(1)).setItem_name(set.getString(2))
 							.setItem_author_code(set.getInt(3)).setItem_publisher_code(set.getInt(4))
-							.setItem_selling_price(set.getInt(5)));
+							.setItem_selling_price(set.getInt(5)).setItem_category_code(set.getString(6)));
 				}
 			}
 			

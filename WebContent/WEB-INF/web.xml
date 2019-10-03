@@ -19,6 +19,8 @@
 		<welcome-file>item.jsp</welcome-file>
 		<welcome-file>payment.jsp</welcome-file>
 		<welcome-file>orderform.jsp</welcome-file>
+		<welcome-file>navbar.jsp</welcome-file>
+		<welcome-file>footer.html</welcome-file>
 	
 	</welcome-file-list>
 

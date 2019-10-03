@@ -6,16 +6,28 @@
 	String sessionKey = (String) session.getAttribute("SESSIONKEY");
 
 	ItemsDTO item = (ItemsDTO) request.getAttribute("ITEM");
-
 %>
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
+
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+
 <title>주문/결제</title>
+
+<!-- Bootstrap core CSS -->
+<link href="/AspireStore/css/bootstrap.css" rel="stylesheet">
+
+<!-- Custom styles for this template -->
+<link href="/AspireStore/css/shop-homepage.css" rel="stylesheet">
+
 </head>
 <body>
-
+	<jsp:include page="/navbar.jsp"></jsp:include>
 	<div>
 		<h4>주문 도서 확인</h4>
 		<div>
@@ -37,5 +49,10 @@
 			</table>
 		</div>
 	</div>
+
+	<%@ include file="/footer.html"%>
+	<!-- Bootstrap core JavaScript -->
+	<script src="jquery/jquery.min.js"></script>
+	<script src="js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

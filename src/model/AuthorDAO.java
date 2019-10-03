@@ -31,7 +31,7 @@ public class AuthorDAO
 
 			prstmt.setInt(1, acode);
 			set = prstmt.executeQuery();
-
+			
 			while (set.next())
 			{
 				authorData = new AuthorDTO().setAuthor_code(acode).setAuthor_name(set.getString(2))
