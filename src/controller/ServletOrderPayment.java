@@ -15,7 +15,7 @@ import etc.OrderInformation;
 import model.ItemsDAO;
 import model.ItemsDTO;
 import model.OrderPaymentDAO;
-import model.OrderPaymentDTO;
+import model.SalehistoryDTO;
 
 public class ServletOrderPayment extends HttpServlet
 {
@@ -26,7 +26,7 @@ public class ServletOrderPayment extends HttpServlet
 		{
 			ServletContext servletContext = this.getServletContext();
 
-			OrderPaymentDTO dto = (OrderPaymentDTO) request.getAttribute("ORDERPAYMENTDTO");
+			SalehistoryDTO dto = (SalehistoryDTO) request.getAttribute("ORDERPAYMENTDTO");
 			ArrayList<OrderInformation> orderInformations = (ArrayList<OrderInformation>) request
 					.getAttribute("ORDERINFORMATIONS");
 

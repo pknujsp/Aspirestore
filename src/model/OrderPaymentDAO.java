@@ -21,7 +21,7 @@ public class OrderPaymentDAO
 		this.ds = ds;
 	}
 
-	public boolean orderPayment(OrderPaymentDTO orderData, ArrayList<OrderInformation> orderInformations, String userId)
+	public boolean orderPayment(SalehistoryDTO orderData, ArrayList<OrderInformation> orderInformations, String userId)
 	{
 		boolean flag = false;
 		String query = "INSERT INTO salehistory VALUES (null,?,?,?,?,?,?,?,?,?,null)";

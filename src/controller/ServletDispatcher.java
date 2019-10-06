@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import etc.OrderInformation;
 import model.ItemsDTO;
-import model.OrderPaymentDTO;
+import model.SalehistoryDTO;
 import model.SignupDTO;
 
 public class ServletDispatcher extends HttpServlet
@@ -79,18 +79,24 @@ public class ServletDispatcher extends HttpServlet
 				}
 				break;
 
-			case "/payment.aspire":
+			case "/orderpayment.aspire":
 				if (checkNullParameters())
 				{
-					pageControllerPath = "/payment";
+					pageControllerPath = "/orderpayment";
 
-					OrderPaymentDTO orderPaymentDTO = new OrderPaymentDTO();
+					request.getParameter("orderer_name");
+					request.getParameter("orderer_mobilephone_number");
+					request.getParameter("orderer_generalphone_number");
+					request.getParameter("orderer_email");
 
-					orderPaymentDTO.setSalehistory_address(request.getParameter("address"));
-					orderPaymentDTO.setSalehistory_payment_method(request.getParameter("payment_method"));
-					orderPaymentDTO.setSalehistory_requested_term(request.getParameter("requested_term"));
-
-					request.setAttribute("ORDERPAYMENTDTO", orderPaymentDTO);
+					request.getParameter("recepient_name");
+					request.getParameter("recepient_mobilephone_number");
+					request.getParameter("recepient_generalphone_number");
+					request.getParameter("postal_code");
+					request.getParameter("road_name_address");
+					request.getParameter("number_address");
+					request.getParameter("payment_method");
+					request.getParameter("requested_term");
 				}
 				break;
 

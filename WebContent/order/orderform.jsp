@@ -11,7 +11,6 @@
 		for (int i = 0; i < list.size(); ++i) {
 			totalPrice += list.get(i).getItem_price() * list.get(i).getOrder_quantity();
 		}
-
 		return totalPrice;
 	}%>
 
@@ -82,7 +81,8 @@
 
 		<hr>
 
-		<form method="post" id="orderForm" name="orderForm" action="/AspireStore/payment.aspire">
+		<form method="post" id="orderForm" name="orderForm"
+			action="/AspireStore/payment.aspire">
 			<div>
 				<h5>주문서 작성</h5>
 
@@ -128,9 +128,10 @@
 							<th>배송방법</th>
 							<td>
 								<div>
-									<span><label><input type="radio" class="radio" id="delivery_method"
-											name="delivery_method" value="method_general_delivery" />일반택배</label></span>
-									<span><label><input type="radio" class="radio" id="delivery_method"
+									<span><label><input type="radio" class="radio"
+											id="delivery_method" name="delivery_method"
+											value="method_general_delivery" />일반택배</label></span> <span><label><input
+											type="radio" class="radio" id="delivery_method"
 											name="delivery_method" value="method_pickup_in_store" />편의점
 											픽업</label></span>
 								</div>
@@ -179,19 +180,21 @@
 						<tr>
 							<th>휴대전화</th>
 							<td><input type="text" class="text"
-								id="recepient_mobilephone_number_1" name="recepient_mobilephone_number_1" value="" />
-								- <input type="text" class="text" id="recepient_mobilephone_number_2"
-								name="recepient_mobilephone_number_2" value="" /> - <input type="text"
-								class="text" id="recepient_mobilephone_number_3"
+								id="recepient_mobilephone_number_1"
+								name="recepient_mobilephone_number_1" value="" /> - <input
+								type="text" class="text" id="recepient_mobilephone_number_2"
+								name="recepient_mobilephone_number_2" value="" /> - <input
+								type="text" class="text" id="recepient_mobilephone_number_3"
 								name="recepient_mobilephone_number_3" value="" /></td>
 						</tr>
 						<tr>
 							<th>일반전화</th>
 							<td><input type="text" class="text"
-								id="recepient_generalphone_number_1" name="recepient_generalphone_number_1" value="" />
-								- <input type="text" class="text" id="recepient_generalphone_number_2"
-								name="recepient_generalphone_number_2" value="" /> - <input type="text"
-								class="text" id="recepient_generalphone_number_3"
+								id="recepient_generalphone_number_1"
+								name="recepient_generalphone_number_1" value="" /> - <input
+								type="text" class="text" id="recepient_generalphone_number_2"
+								name="recepient_generalphone_number_2" value="" /> - <input
+								type="text" class="text" id="recepient_generalphone_number_3"
 								name="recepient_generalphone_number_3" value="" /></td>
 						</tr>
 					</table>
@@ -252,14 +255,18 @@
 				</div>
 			</div>
 			<hr>
+			
+			<div>
+				<textarea id="requested_term" name="reqeusted_term"></textarea>
+			</div>
 
 			<div>
 				<h5>최종 결제 금액</h5>
 				<div>
-					<span><strong><%=totalPrice%>원</strong></span>
-					<input type="hidden" id="total_price" name="total_price" value="<%=totalPrice %>"/>
-					 <span><button
-							id="payment_button" name="payment_button" onclick="javascript:payment()">결제 하기</button></span>
+					<span><strong><%=totalPrice%>원</strong></span> <input type="hidden"
+						id="total_price" name="total_price" value="<%=totalPrice%>" /> <span><button
+							id="payment_button" name="payment_button"
+							onclick="javascript:payment()">결제 하기</button></span>
 				</div>
 			</div>
 		</form>
@@ -275,7 +282,6 @@
 		function payment() {
 			document.getElementById('orderForm').submit();
 		}
-		
 	</script>
 </body>
 </html>
