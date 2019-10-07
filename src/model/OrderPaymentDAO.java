@@ -6,7 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
@@ -169,4 +171,101 @@ public class OrderPaymentDAO
 		return code;
 	}
 
+	public OrderhistoryDTO getOrderHistory(int orderCode)
+	{
+		ResultSet set = null;
+		String query = "SELECT * FROM orerhistory WHERE orderhistory_order_code = ? AND orderhistory_user_id = ?";
+		OrderhistoryDTO dto = new OrderhistoryDTO();
+
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			prstmt.setInt(1, orderCode);
+
+			set = prstmt.executeQuery();
+
+			while (set.next())
+			{
+				dto.setOrder_code(orderCode).setUser_id(set.getString(2)).setOrderer_name(set.getString(3))
+						.setOrderer_mobile(set.getString(4)).setOrderer_general(set.getString(5))
+						.setOrderer_email(set.getString(6)).setRecipient_name(set.getString(7))
+						.setRecipient_mobile(set.getString(8)).setRecipient_general(set.getString(9))
+						.setPostal_code(set.getString(10)).setRoad(set.getString(11)).setNumber(set.getString(12))
+						.setDetail(set.getString(13)).setRequested_term(set.getString(14))
+						.setTotal_price(set.getInt(15)).setPayment_method(set.getString(16))
+						.setDelivery_method(set.getString(17)).setOrder_date(set.getString(18));
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return dto;
+	}
+
+	public SalehistoryDTO[] getSaleHistory(int[] codes) // index 1부터 판매 코드
+	{
+		String query = "SELECT * FROM salehistory WHERE salehistory_sale_code = ?";
+		SalehistoryDTO[] data = new SalehistoryDTO[codes.length - 1];
+		ResultSet set = null;
+
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			for (int i = 1; i < codes.length; ++i)
+			{
+				prstmt.setInt(1, codes[i]);
+				set = prstmt.executeQuery();
+
+				while (set.next())
+				{
+					data[i] = new SalehistoryDTO().setSale_code(set.getInt(1)).setOrder_code(set.getInt(2))
+							.setUser_id(set.getString(3)).setItem_code(set.getInt(4)).setItem_category(set.getString(5))
+							.setSale_date(set.getString(6)).setSale_quantity(set.getInt(7))
+							.setTotal_price(set.getInt(8)).setStatus(set.getString(9));
+				}
+				prstmt.clearParameters();
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return data;
+	}
+
+	public Object[] getLatestOrderInfo(int[] codes, String userId)
+	{
+		Object[] objects = new Object[3];
+
+		objects[0] = getOrderHistory(codes[0]); // 주문 정보 (이름, 휴대전화, 주소 등)
+		objects[1] = getSaleHistory(codes);
+		
+		Map<Integer, String> codeMap = new HashMap<Integer, String>(codes.length-1);
+		// item code , category code를 Map에 삽입하는 코드 작성 필요
+		
+		objects[2] = new ItemsDAO().getSimpleItemData(codeMap)
+
+		return objects;
+	}
 }

@@ -5,6 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -82,6 +85,52 @@ public class ItemsDAO
 			}
 		}
 		return item;
+	}
+
+	public ItemsDTO[] getSimpleItemData(Map<Integer, String> codeMap)
+	{
+		ItemsDTO[] items = new ItemsDTO[codeMap.size()];
+		String query = "SELECT item_name, item_author_code, item_publisher_code, item_selling_price FROM items WHERE item_code = ? AND item_category_code = ?";
+		ResultSet set = null;
+
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			Iterator<Integer> it = codeMap.keySet().iterator();
+			int i = 0;
+
+			while (it.hasNext())
+			{
+				int itemCode = it.next().intValue();
+				String categoryCode = codeMap.get(itemCode);
+
+				prstmt.setInt(1, itemCode);
+				prstmt.setString(2, categoryCode);
+				set = prstmt.executeQuery();
+
+				while (set.next())
+				{
+					items[i] = new ItemsDTO().setItem_name(set.getString(1)).setItem_author_code(set.getInt(2))
+							.setItem_publisher_code(set.getInt(3)).setItem_selling_price(set.getInt(4));
+				}
+				prstmt.clearParameters();
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return items;
 	}
 
 	public ArrayList<ItemsDTO> getItemList(int ccode)
