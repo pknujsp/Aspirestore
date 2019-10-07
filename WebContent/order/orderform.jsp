@@ -24,6 +24,8 @@
 	@SuppressWarnings("unchecked")
 	ArrayList<OrderInformation> orderInformations = (ArrayList<OrderInformation>) request
 			.getAttribute("ORDER_INFORMATIONS");
+	
+	session.setAttribute("ORDER_LIST", orderInformations);
 
 	final int totalPrice = getTotalPrice(orderInformations);
 %>

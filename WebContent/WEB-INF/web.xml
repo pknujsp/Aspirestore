@@ -20,6 +20,7 @@
 		<welcome-file>orderform.jsp</welcome-file>
 		<welcome-file>navbar.jsp</welcome-file>
 		<welcome-file>footer.html</welcome-file>
+		<welcome-file>confirmorder.jsp</welcome-file>
 	</welcome-file-list>
 
 	<listener>

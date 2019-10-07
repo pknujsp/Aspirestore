@@ -19,6 +19,7 @@ public class OrderhistoryDTO
 	private int total_price;
 	private String payment_method;
 	private String delivery_method;
+	private String order_date;
 
 	public int getOrder_code()
 	{
@@ -103,6 +104,11 @@ public class OrderhistoryDTO
 	public String getDelivery_method()
 	{
 		return delivery_method;
+	}
+
+	public String getOrder_date()
+	{
+		return order_date;
 	}
 
 	public OrderhistoryDTO setOrder_code(int order_code)
@@ -204,6 +210,12 @@ public class OrderhistoryDTO
 	public OrderhistoryDTO setDelivery_method(String delivery_method)
 	{
 		this.delivery_method = delivery_method;
+		return this;
+	}
+
+	public OrderhistoryDTO setOrder_date(String order_date)
+	{
+		this.order_date = order_date;
 		return this;
 	}
 

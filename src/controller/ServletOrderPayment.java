@@ -15,6 +15,7 @@ import etc.OrderInformation;
 import model.ItemsDAO;
 import model.ItemsDTO;
 import model.OrderPaymentDAO;
+import model.OrderhistoryDTO;
 import model.SalehistoryDTO;
 
 public class ServletOrderPayment extends HttpServlet
@@ -26,18 +27,16 @@ public class ServletOrderPayment extends HttpServlet
 		{
 			ServletContext servletContext = this.getServletContext();
 
-			SalehistoryDTO dto = (SalehistoryDTO) request.getAttribute("ORDERPAYMENTDTO");
-			ArrayList<OrderInformation> orderInformations = (ArrayList<OrderInformation>) request
-					.getAttribute("ORDERINFORMATIONS");
+			OrderhistoryDTO orderFromData = (OrderhistoryDTO) request.getAttribute("ORDER_FORM_DATA");
+			ArrayList<OrderInformation> orderedItems = (ArrayList<OrderInformation>) request
+					.getAttribute("ORDERED_ITEMS");
 
-			OrderPaymentDAO dao = (OrderPaymentDAO) servletContext.getAttribute("orderpaymentDAO");
-			String userId = request.getSession().getId();
+			OrderPaymentDAO orderPaymentDAO = (OrderPaymentDAO) servletContext.getAttribute("ORDER_PAYMENT_DAO");
+			int[] codes = orderPaymentDAO.requestOrderProcessing(orderFromData, orderedItems,
+					orderFromData.getUser_id());
 
-			if (dao.orderPayment(dto, orderInformations, userId))
-			{
-				request.setAttribute("VIEWURL", "redirect:/payment/orderresult.jsp");
-			}
-
+			request.getSession().setAttribute("ORDER_SALE_CODES", codes);
+			request.setAttribute("VIEWURL", "redirect:/confirmorder");
 		} catch (Exception e)
 		{
 			throw new ServletException(e);

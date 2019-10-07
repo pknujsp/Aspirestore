@@ -11,9 +11,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import etc.OrderInformation;
 import model.ItemsDTO;
+import model.OrderhistoryDTO;
 import model.SalehistoryDTO;
 import model.SignupDTO;
 
@@ -84,19 +86,24 @@ public class ServletDispatcher extends HttpServlet
 				{
 					pageControllerPath = "/orderpayment";
 
-					request.getParameter("orderer_name");
-					request.getParameter("orderer_mobilephone_number");
-					request.getParameter("orderer_generalphone_number");
-					request.getParameter("orderer_email");
+					request.setAttribute("ORDER_FORM_DATA",
+							new OrderhistoryDTO().setOrderer_name(request.getParameter("orderer_name"))
+									.setOrderer_mobile(request.getParameter("orderer_mobilephone_number"))
+									.setOrderer_general(request.getParameter("orderer_generalphone_number"))
+									.setOrderer_email(request.getParameter("orderer_email"))
+									.setRecipient_name(request.getParameter("recepient_name"))
+									.setRecipient_mobile(request.getParameter("recepient_mobilephone_number"))
+									.setRecipient_general(request.getParameter("recepient_generalphone_number"))
+									.setPostal_code(request.getParameter("postal_code"))
+									.setRoad(request.getParameter("road_name_address"))
+									.setNumber(request.getParameter("number_address"))
+									.setPayment_method(request.getParameter("payment_method"))
+									.setRequested_term(request.getParameter("requested_term")));
 
-					request.getParameter("recepient_name");
-					request.getParameter("recepient_mobilephone_number");
-					request.getParameter("recepient_generalphone_number");
-					request.getParameter("postal_code");
-					request.getParameter("road_name_address");
-					request.getParameter("number_address");
-					request.getParameter("payment_method");
-					request.getParameter("requested_term");
+					request.setAttribute("ORDERED_ITEMS",
+							(ArrayList<OrderInformation>) request.getSession().getAttribute("ORDER_LIST"));
+					request.getSession().removeAttribute("ORDER_LIST");
+
 				}
 				break;
 
