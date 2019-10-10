@@ -87,10 +87,14 @@ public class ItemsDAO
 		return item;
 	}
 
-	public ItemsDTO[] getSimpleItemData(Map<Integer, String> codeMap)
+	public OrderedItemsDTO[] getSimpleOrderedItemData(Map<Integer, String> codeMap)
 	{
-		ItemsDTO[] items = new ItemsDTO[codeMap.size()];
-		String query = "SELECT item_name, item_author_code, item_publisher_code, item_selling_price FROM items WHERE item_code = ? AND item_category_code = ?";
+		OrderedItemsDTO[] items = new OrderedItemsDTO[codeMap.size()];
+		String query = "SELECT a.author_name, p.publisher_name, i.item_name, i.item_code, i.item_category_code, "
+				+ "i.item_selling_price " + "FROM items as i"
+				+ "INNER JOIN publishers p ON i.item_publisher_code = p.publisher_code"
+				+ "INNER JOIN authors a ON i.item_author_code = a.author_code"
+				+ "WHERE i.item_code = ? AND i.item_category_code = ?";
 		ResultSet set = null;
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
@@ -109,8 +113,10 @@ public class ItemsDAO
 
 				while (set.next())
 				{
-					items[i] = new ItemsDTO().setItem_name(set.getString(1)).setItem_author_code(set.getInt(2))
-							.setItem_publisher_code(set.getInt(3)).setItem_selling_price(set.getInt(4));
+					items[i] = new OrderedItemsDTO(set.getString("i.item_name"), set.getString("ia.author_name"),
+							set.getString("p.publisher_name"), set.getInt("i.item_code"),
+							set.getString("i.item_category_code"), set.getInt("i.item_selling_price"));
+					++i;
 				}
 				prstmt.clearParameters();
 			}

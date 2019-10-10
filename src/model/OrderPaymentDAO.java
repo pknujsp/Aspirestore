@@ -130,7 +130,7 @@ public class OrderPaymentDAO
 	{
 		String query = null;
 
-		if (flag) // true 이면 ordercode
+		if (flag) // true 면 ordercode
 		{
 			query = "SELECT orderhistory_order_code FROM orderhistory WHERE orderhistory_order_date = ? AND orderhistory_user_id = ?";
 		} else
@@ -254,18 +254,68 @@ public class OrderPaymentDAO
 		return data;
 	}
 
+	public String[] getOrderMethod(String delivery, String payment)
+	{
+		String query1 = "SELECT paymentmethod FROM paymentmethod WHERE paymentmethod_code = ?";
+		String query2 = "SELECT deliverymethod FROM deliverymethod WHERE deliverymethod_code = ?";
+		String[] methods = new String[2];
+
+		ResultSet set = null;
+
+		try (Connection connection = ds.getConnection();
+				PreparedStatement prstmt1 = connection.prepareStatement(query1);
+				PreparedStatement prstmt2 = connection.prepareStatement(query2);)
+		{
+			prstmt1.setString(1, payment);
+			set = prstmt1.executeQuery();
+
+			prstmt2.setString(1, delivery);
+			set = prstmt2.executeQuery();
+
+			for (int i = 0; set.next(); ++i)
+			{
+				methods[i] = set.getString(1);
+			}
+
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return methods;
+	}
+
 	public Object[] getLatestOrderInfo(int[] codes, String userId)
 	{
 		Object[] objects = new Object[3];
 
 		objects[0] = getOrderHistory(codes[0]); // 주문 정보 (이름, 휴대전화, 주소 등)
 		objects[1] = getSaleHistory(codes);
-		
-		Map<Integer, String> codeMap = new HashMap<Integer, String>(codes.length-1);
-		// item code , category code를 Map에 삽입하는 코드 작성 필요
-		
-		objects[2] = new ItemsDAO().getSimpleItemData(codeMap)
+
+		Map<Integer, String> codeMap = new HashMap<Integer, String>(codes.length - 1);
+		insertCodesToMap((SalehistoryDTO[]) objects[1], codeMap);
+
+		objects[2] = new ItemsDAO().getSimpleOrderedItemData(codeMap);
 
 		return objects;
+	}
+
+	private void insertCodesToMap(SalehistoryDTO[] data, Map<Integer, String> map)
+	{
+		for (int i = 0; i < data.length; ++i)
+		{
+			map.put(data[i].getItem_code(), data[i].getItem_category());
+		}
 	}
 }
