@@ -88,17 +88,21 @@ public class ServletDispatcher extends HttpServlet
 
 					request.setAttribute("ORDER_FORM_DATA",
 							new OrderhistoryDTO().setOrderer_name(request.getParameter("orderer_name"))
-									.setOrderer_mobile(request.getParameter("orderer_mobilephone_number"))
-									.setOrderer_general(request.getParameter("orderer_generalphone_number"))
+									.setOrderer_mobile(request.getParameter("orderer_mobile_number"))
+									.setOrderer_general(request.getParameter("orderer_general_number"))
 									.setOrderer_email(request.getParameter("orderer_email"))
 									.setRecipient_name(request.getParameter("recepient_name"))
-									.setRecipient_mobile(request.getParameter("recepient_mobilephone_number"))
-									.setRecipient_general(request.getParameter("recepient_generalphone_number"))
+									.setRecipient_mobile(request.getParameter("recepient_mobile_number"))
+									.setRecipient_general(request.getParameter("recepient_general_number"))
 									.setPostal_code(request.getParameter("postal_code"))
 									.setRoad(request.getParameter("road_name_address"))
 									.setNumber(request.getParameter("number_address"))
+									.setDetail(request.getParameter("detail_address"))
 									.setPayment_method(request.getParameter("payment_method"))
-									.setRequested_term(request.getParameter("requested_term")));
+									.setDelivery_method(request.getParameter("delivery_method"))
+									.setRequested_term(request.getParameter("requested_term"))
+									.setUser_id((String) request.getSession().getAttribute("SESSIONKEY"))
+									.setTotal_price(Integer.parseInt(request.getParameter("total_price"))));
 
 					request.setAttribute("ORDERED_ITEMS",
 							(ArrayList<OrderInformation>) request.getSession().getAttribute("ORDER_LIST"));
@@ -121,8 +125,9 @@ public class ServletDispatcher extends HttpServlet
 						int itemPrice = Integer.parseInt(request.getParameter("itemPrice"));
 						int quantity = Integer.parseInt(request.getParameter("quantity"));
 
-						orderInformations.add(new OrderInformation().setItem_code(itemCode)
-								.setItem_category(itemCategory).setItem_price(itemPrice).setOrder_quantity(quantity));
+						orderInformations
+								.add(new OrderInformation().setItem_code(itemCode).setItem_category(itemCategory)
+										.setItem_price(itemPrice).setOrder_quantity(quantity).setTotal_price());
 
 						orderInformations.trimToSize();
 

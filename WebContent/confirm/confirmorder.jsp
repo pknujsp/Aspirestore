@@ -9,7 +9,8 @@
 <%
 	String sessionKey = (String) session.getAttribute("SESSIONKEY");
 	int[] codes = (int[]) session.getAttribute("ORDER_SALE_CODES");
-
+	session.removeAttribute("ORDER_SALE_CODES");
+	
 	Object[] data = orderPaymentDAO.getLatestOrderInfo(codes, sessionKey);
 
 	pageContext.setAttribute("orderHistoryData", (OrderhistoryDTO) data[0]);
@@ -17,8 +18,6 @@
 	pageContext.setAttribute("orderedItemsData", (ItemsDTO[]) data[2]);
 	pageContext.setAttribute("paymentMethods", orderPaymentDAO.getOrderMethod(
 			((OrderhistoryDTO) data[0]).getDelivery_method(), ((OrderhistoryDTO) data[0]).getPayment_method()));
-
-	session.removeAttribute("ORDER_SALE_CODES");
 %>
 <!DOCTYPE html>
 <html>
@@ -26,8 +25,6 @@
 <meta charset="UTF-8">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="">
-<meta name="author" content="">
 <title>주문 확인</title>
 
 <link href="/AspireStore/css/bootstrap.css" rel="stylesheet">
@@ -128,7 +125,7 @@
 				<h5>배송 정보</h5>
 				<table>
 					<tr>
-						<td>배송 방법 <c:out value="${pageScope.paymentMethods[1]}" /></td>
+						<td>배송 방법</td>
 					</tr>
 					<tr>
 						<td>우편번호 <c:out
@@ -152,7 +149,7 @@
 
 			<hr>		
 				<div>
-					결제 수단 <c:out value="${pageScope.paymentMethods[0]}" />
+					결제 수단 
 				</div>				
 		</div>
 

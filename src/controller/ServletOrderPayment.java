@@ -36,11 +36,10 @@ public class ServletOrderPayment extends HttpServlet
 					orderFromData.getUser_id());
 
 			request.getSession().setAttribute("ORDER_SALE_CODES", codes);
-			request.setAttribute("VIEWURL", "redirect:/confirmorder");
+			request.setAttribute("VIEWURL", "redirect:/confirm/confirmorder.jsp");
 		} catch (Exception e)
 		{
 			throw new ServletException(e);
 		}
 	}
-
 }

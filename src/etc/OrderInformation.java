@@ -57,9 +57,9 @@ public class OrderInformation
 		return total_price;
 	}
 
-	public OrderInformation setTotal_price(int total_price)
+	public OrderInformation setTotal_price()
 	{
-		this.total_price = total_price;
+		this.total_price = item_price * order_quantity;
 		return this;
 	}
 

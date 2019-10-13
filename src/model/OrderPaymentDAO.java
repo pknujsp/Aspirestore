@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
 import etc.OrderInformation;
+import etc.Util;
 
 public class OrderPaymentDAO
 {
@@ -27,16 +28,12 @@ public class OrderPaymentDAO
 	public int[] requestOrderProcessing(OrderhistoryDTO orderFormData, ArrayList<OrderInformation> ordered_items,
 			String userId)
 	{
-		String query = "INSERT INTO orderhistory VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		int[] codes = new int[ordered_items.size() + 1];
-
-		java.util.Date date = new java.util.Date();
-		SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		final String currentTime = format.format(date);
+		final String currentTime = Util.getCurrentDateTime();
 
 		try (Connection connection = ds.getConnection();)
 		{
-
+			String query = "INSERT INTO orderhistory VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			PreparedStatement prstmt = connection.prepareStatement(query);
 
 			prstmt.setString(1, orderFormData.getUser_id());
@@ -61,14 +58,15 @@ public class OrderPaymentDAO
 
 			if (prstmt.executeUpdate() == 1)
 			{
+				connection.commit();
+
 				prstmt.clearBatch();
 				query = "INSERT INTO salehistory VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?)";
 				prstmt = connection.prepareStatement(query);
 
 				for (int i = 0; i < ordered_items.size(); ++i)
 				{
-
-					prstmt.setInt(1, getOrderOrSaleCode(currentTime, orderFormData.getUser_id(), true));
+					prstmt.setInt(1, codes[0]);
 					prstmt.setString(2, orderFormData.getUser_id());
 					prstmt.setInt(3, ordered_items.get(i).getItem_code());
 					prstmt.setString(4, ordered_items.get(i).getItem_category());
@@ -78,7 +76,6 @@ public class OrderPaymentDAO
 					prstmt.setString(8, "n");
 
 					prstmt.addBatch();
-					prstmt.clearParameters();
 					codes[i + 1] = getOrderOrSaleCode(currentTime, orderFormData.getUser_id(), false); // salecode
 				}
 
@@ -86,6 +83,18 @@ public class OrderPaymentDAO
 				{
 					connection.commit();
 				}
+			}
+
+			if (prstmt != null)
+			{
+				try
+				{
+					prstmt.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+
 			}
 		} catch (Exception e)
 		{
@@ -146,7 +155,7 @@ public class OrderPaymentDAO
 			prstmt.setString(2, userId);
 
 			set = prstmt.executeQuery();
-			while (set.next())
+			if (set.next())
 			{
 				code = set.getInt(1);
 			}
@@ -171,21 +180,22 @@ public class OrderPaymentDAO
 		return code;
 	}
 
-	public OrderhistoryDTO getOrderHistory(int orderCode)
+	public OrderhistoryDTO getOrderHistory(int orderCode, String userId)
 	{
 		ResultSet set = null;
-		String query = "SELECT * FROM orerhistory WHERE orderhistory_order_code = ? AND orderhistory_user_id = ?";
+		String query = "SELECT * FROM orderhistory WHERE orderhistory_order_code = ? AND orderhistory_user_id = ?";
 		OrderhistoryDTO dto = new OrderhistoryDTO();
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
 		{
 			prstmt.setInt(1, orderCode);
+			prstmt.setString(2, userId);
 
 			set = prstmt.executeQuery();
 
-			while (set.next())
+			if (set.next())
 			{
-				dto.setOrder_code(orderCode).setUser_id(set.getString(2)).setOrderer_name(set.getString(3))
+				dto.setOrder_code(orderCode).setUser_id(userId).setOrderer_name(set.getString(3))
 						.setOrderer_mobile(set.getString(4)).setOrderer_general(set.getString(5))
 						.setOrderer_email(set.getString(6)).setRecipient_name(set.getString(7))
 						.setRecipient_mobile(set.getString(8)).setRecipient_general(set.getString(9))
@@ -233,7 +243,6 @@ public class OrderPaymentDAO
 							.setSale_date(set.getString(6)).setSale_quantity(set.getInt(7))
 							.setTotal_price(set.getInt(8)).setStatus(set.getString(9));
 				}
-				prstmt.clearParameters();
 			}
 		} catch (Exception e)
 		{
@@ -276,7 +285,6 @@ public class OrderPaymentDAO
 			{
 				methods[i] = set.getString(1);
 			}
-
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -300,7 +308,7 @@ public class OrderPaymentDAO
 	{
 		Object[] objects = new Object[3];
 
-		objects[0] = getOrderHistory(codes[0]); // 주문 정보 (이름, 휴대전화, 주소 등)
+		objects[0] = getOrderHistory(codes[0], userId); // 주문 정보 (이름, 휴대전화, 주소 등)
 		objects[1] = getSaleHistory(codes);
 
 		Map<Integer, String> codeMap = new HashMap<Integer, String>(codes.length - 1);

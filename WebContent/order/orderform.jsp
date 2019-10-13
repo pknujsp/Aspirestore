@@ -24,7 +24,7 @@
 	@SuppressWarnings("unchecked")
 	ArrayList<OrderInformation> orderInformations = (ArrayList<OrderInformation>) request
 			.getAttribute("ORDER_INFORMATIONS");
-	
+
 	session.setAttribute("ORDER_LIST", orderInformations);
 
 	final int totalPrice = getTotalPrice(orderInformations);
@@ -76,7 +76,6 @@
 						<%
 							}
 						%>
-					
 				</tbody>
 			</table>
 		</div>
@@ -84,7 +83,13 @@
 		<hr>
 
 		<form method="post" id="orderForm" name="orderForm"
-			action="/AspireStore/payment.aspire">
+			action="/AspireStore/orderpayment.aspire">
+			<input type="hidden" name="orderer_mobile_number"
+				id="orderer_mobile_number" /><input type="hidden"
+				name="orderer_general_number" id="orderer_general_number" /><input
+				type="hidden" name="recepient_mobile_number"
+				id="recepient_mobile_number" /> <input type="hidden"
+				name="recepient_general_number" id="recepient_general_number" />
 			<div>
 				<h5>주문서 작성</h5>
 
@@ -94,32 +99,40 @@
 						<tr>
 							<th>성명</th>
 							<td><span><label><input type="text"
-										id="orderer_name" name="orderer_name" value="" /></label></span></td>
+										id="orderer_name" name="orderer_name" /></label></span></td>
 						</tr>
 						<tr>
 							<th>휴대전화</th>
-							<td><input type="text" class="text"
-								id="orderer_mobilephone_number_1"
-								name="orderer_mobilephone_number_1" value="" /> - <input
-								type="text" class="text" id="orderer_mobilephone_number_2"
-								name="orderer_mobilephone_number_2" value="" /> - <input
-								type="text" class="text" id="orderer_mobilephone_number_3"
-								name="orderer_mobilephone_number_3" value="" /></td>
+							<td>
+								<p id="orderer_phone">
+									<input type="text" class="text"
+										id="orderer_mobilephone_number_1"
+										name="orderer_mobilephone_number_1" /> - <input type="text"
+										class="text" id="orderer_mobilephone_number_2"
+										name="orderer_mobilephone_number_2" /> - <input type="text"
+										class="text" id="orderer_mobilephone_number_3"
+										name="orderer_mobilephone_number_3" />
+								</p>
+							</td>
 						</tr>
 						<tr>
 							<th>일반전화</th>
-							<td><input type="text" class="text"
-								id="orderer_generalphone_number_1"
-								name="orderer_generalphone_number_1" value="" /> - <input
-								type="text" class="text" id="orderer_generalphone_number_2"
-								name="orderer_generalphone_number_2" value="" /> - <input
-								type="text" class="text" id="orderer_generalphone_number_3"
-								name="orderer_generalphone_number_3" value="" /></td>
+							<td>
+								<p id="orderer_general">
+									<input type="text" class="text"
+										id="orderer_generalphone_number_1"
+										name="orderer_generalphone_number_1" /> - <input type="text"
+										class="text" id="orderer_generalphone_number_2"
+										name="orderer_generalphone_number_2"> - <input
+										type="text" class="text" id="orderer_generalphone_number_3"
+										name="orderer_generalphone_number_3" />
+								</p>
+							</td>
 						</tr>
 						<tr>
 							<th>이메일 주소</th>
 							<td><input type="email" id="orderer_email"
-								name="orderer_email" value="" /></td>
+								name="orderer_email" /></td>
 					</table>
 				</div>
 				<hr>
@@ -131,10 +144,9 @@
 							<td>
 								<div>
 									<span><label><input type="radio" class="radio"
-											id="delivery_method" name="delivery_method"
-											value="method_general_delivery" />일반택배</label></span> <span><label><input
-											type="radio" class="radio" id="delivery_method"
-											name="delivery_method" value="method_pickup_in_store" />편의점
+											id="delivery_method" name="delivery_method" value="1" />일반택배</label></span>
+									<span><label><input type="radio" class="radio"
+											id="delivery_method" name="delivery_method" value="2" />편의점
 											픽업</label></span>
 								</div>
 							</td>
@@ -169,8 +181,8 @@
 							<td>
 								<div>
 									<span><label><input type="text" class="text"
-											id="recepient_name" name="recepient_name" value="" /></label></span> <span><input
-										type="button" id="setRecepientInfo" name="setRecepientInfo"
+											id="recepient_name" name="recepient_name" /></label></span> <span><input
+										type="button" id="setRecepientInfo" name="setRecepientInfo" onclick="javascript:setRecepientData();"
 										value="주문자 정보와 동일" /></span>
 								</div>
 							</td>
@@ -181,45 +193,57 @@
 					<table>
 						<tr>
 							<th>휴대전화</th>
-							<td><input type="text" class="text"
-								id="recepient_mobilephone_number_1"
-								name="recepient_mobilephone_number_1" value="" /> - <input
-								type="text" class="text" id="recepient_mobilephone_number_2"
-								name="recepient_mobilephone_number_2" value="" /> - <input
-								type="text" class="text" id="recepient_mobilephone_number_3"
-								name="recepient_mobilephone_number_3" value="" /></td>
+							<td>
+								<p id="recepient_phone">
+									<input type="text" class="text"
+										id="recepient_mobilephone_number_1"
+										name="recepient_mobilephone_number_1" /> - <input
+										type="text" class="text" id="recepient_mobilephone_number_2"
+										name="recepient_mobilephone_number_2"/> - <input
+										type="text" class="text" id="recepient_mobilephone_number_3"
+										name="recepient_mobilephone_number_3"/>
+								</p>
+							</td>
 						</tr>
 						<tr>
 							<th>일반전화</th>
-							<td><input type="text" class="text"
-								id="recepient_generalphone_number_1"
-								name="recepient_generalphone_number_1" value="" /> - <input
-								type="text" class="text" id="recepient_generalphone_number_2"
-								name="recepient_generalphone_number_2" value="" /> - <input
-								type="text" class="text" id="recepient_generalphone_number_3"
-								name="recepient_generalphone_number_3" value="" /></td>
+							<td>
+								<p id="recepient_general">
+									<input type="text" class="text"
+										id="recepient_generalphone_number_1"
+										name="recepient_generalphone_number_1"/> - <input
+										type="text" class="text" id="recepient_generalphone_number_2"
+										name="recepient_generalphone_number_2"/> - <input
+										type="text" class="text" id="recepient_generalphone_number_3"
+										name="recepient_generalphone_number_3"/>
+								</p>
+							</td>
 						</tr>
 					</table>
 				</div>
 
 				<div>
-
 					<table>
 						<tr>
 							<td><p>
 									<span>우편번호 <input type="text" class="text"
-										id="postal_code" name="postal_code" value=""
-										readonly="readonly" /></span> <span><input type="button"
-										name="searchAddress" id="searchAddress" value="주소 검색" /></span>
+										id="postal_code" name="postal_code" value="" /></span> <span><input
+										type="button" name="searchAddress" id="searchAddress"
+										value="주소 검색" /></span>
 								</p>
 								<p>
 									도로명 주소 <input type="text" class="text" id="road_name_address"
-										name="road_name_address" value="" readonly="readonly" />
+										name="road_name_address" />
 								</p>
 								<p>
 									지번 주소 <input type="text" class="text" id="number_address"
-										name="number_address" value="" readonly="readonly" />
-								</p> <input type="button" name="add_to_addresslist"
+										name="number_address" />
+								</p>
+								<p>
+									상세 주소<input type="text" class="text" id="detail_address"
+										name="detail_address" />
+								</p> 
+								<input type="button" name="add_to_addresslist"
 								id="add_to_addresslist" value="주소록에 저장" /></td>
 						</tr>
 					</table>
@@ -236,30 +260,30 @@
 						<tr>
 							<th>신용카드</th>
 							<td><input type="radio" class="radio" name="payment_method"
-								id="payment_method" value="domestic_credit_card" />일반 신용카드(체크카드
-								포함)</td>
+								id="payment_method" value="1" />일반 신용카드(체크카드 포함)</td>
 						</tr>
 						<tr>
 							<th>계좌이체</th>
 							<td><input type="radio" class="radio" name="payment_method"
-								id="payment_method" value="account_transfer" />계좌이체 <input
-								type="radio" class="radio" name="payment_method"
-								id="payment_method" value="deposit" />무통장 입금</td>
+								id="payment_method" value="2" />계좌이체 <input type="radio"
+								class="radio" name="payment_method" id="payment_method"
+								value="3" />무통장 입금</td>
 						</tr>
 						<tr>
 							<th>간편결제</th>
 							<td><input type="radio" class="radio" name="payment_method"
-								id="payment_method" value="kakaopay" />카카오 페이 <input
-								type="radio" class="radio" name="payment_method"
-								id="payment_method" value="payco" />페이코</td>
+								id="payment_method" value="4" />카카오 페이 <input type="radio"
+								class="radio" name="payment_method" id="payment_method"
+								value="5" />페이코</td>
 						</tr>
 					</table>
 				</div>
 			</div>
 			<hr>
-			
+
 			<div>
-				<textarea id="requested_term" name="reqeusted_term"></textarea>
+				요청사항
+				<textarea id="requested_term" name="requested_term"></textarea>
 			</div>
 
 			<div>
@@ -282,7 +306,53 @@
 
 	<script type="text/javascript">
 		function payment() {
+			setMergedNumber();
 			document.getElementById('orderForm').submit();
+		}
+
+		function setMergedNumber() {
+			document.getElementById('orderer_mobile_number').value=getMergedNumber('orderer_phone');
+			document.getElementById('orderer_general_number').value=getMergedNumber('orderer_general');
+			document.getElementById('recepient_mobile_number').value=getMergedNumber('recepient_phone');
+			document.getElementById('recepient_general_number').value=getMergedNumber('recepient_general');
+		}
+		
+		function getMergedNumber(pId)
+		{
+			let inputList = $('#'+ pId +' input[type=text]');
+			let mergedNumber = '';
+			$.each(inputList, function(index,value) {
+				mergedNumber += $(value).val();
+			});
+
+			return mergedNumber;
+		}
+		
+		function setRecepientData(){
+			window.alert('call a Function');
+			document.getElementById('recepient_name').value = document.getElementById('orderer_name').value;
+			setTelNumber('recepient_phone','orderer_phone');
+			setTelNumber('recepient_general','orderer_general');
+		}
+		
+		function setTelNumber(rId,oId){
+			var numberArr = new Array();
+			let ordererInputList = $('#'+ oId + 'input[type=text]');
+			let i=0;
+			
+			$.each(ordererInputList, function(index,value) {
+				numberArr[i] = $(value).val();
+				++i;
+			});
+			
+			i=0;
+			
+			let recepientInputList = $('#'+ rId + input[type=text]');
+			
+			$.each(recepientInputList, function(index,value) {
+				$(value).val() = numberArr[i];
+				++i;
+			});
 		}
 	</script>
 </body>
