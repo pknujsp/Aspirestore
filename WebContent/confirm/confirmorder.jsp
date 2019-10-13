@@ -1,21 +1,24 @@
+<%@page import="model.OrderPaymentDAO"%>
+<%@page import="model.OrderedItemsDTO"%>
 <%@page import="model.ItemsDTO"%>
 <%@page import="model.SalehistoryDTO"%>
 <%@page import="model.OrderhistoryDTO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" session="true"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<jsp:useBean id="orderPaymentDAO" class="model.OrderPaymentDAO" />
 
 <%
 	String sessionKey = (String) session.getAttribute("SESSIONKEY");
+	ServletContext servletContext = this.getServletContext();
+	OrderPaymentDAO orderPaymentDAO = (OrderPaymentDAO) servletContext.getAttribute("ORDER_PAYMENT_DAO");
 	int[] codes = (int[]) session.getAttribute("ORDER_SALE_CODES");
 	session.removeAttribute("ORDER_SALE_CODES");
-	
-	Object[] data = orderPaymentDAO.getLatestOrderInfo(codes, sessionKey);
+
+	Object[] data = orderPaymentDAO.getLatestOrderInfo(codes, sessionKey, this.getServletContext());
 
 	pageContext.setAttribute("orderHistoryData", (OrderhistoryDTO) data[0]);
 	pageContext.setAttribute("saleHistoryData", (SalehistoryDTO[]) data[1]);
-	pageContext.setAttribute("orderedItemsData", (ItemsDTO[]) data[2]);
+	pageContext.setAttribute("orderedItemsData", (OrderedItemsDTO[]) data[2]);
 	pageContext.setAttribute("paymentMethods", orderPaymentDAO.getOrderMethod(
 			((OrderhistoryDTO) data[0]).getDelivery_method(), ((OrderhistoryDTO) data[0]).getPayment_method()));
 %>
@@ -59,9 +62,9 @@
 								&nbsp;<span><i><c:out value="${data.publisher_name }" /></i></span>
 							</td>
 							<td><c:out value="${ data.selling_price }" /></td>
-							<td><c:out value="${ data.quantity }" /></td>
+							<td><c:out value="${ data.selling_price }" /></td>
 							<td><c:out
-									value="${ data.quantity }*${ data.selling_price }" /></td>
+									value="${ data.selling_price }" /></td>
 						</tr>
 					</c:forEach>
 
@@ -147,10 +150,8 @@
 				</table>
 			</div>
 
-			<hr>		
-				<div>
-					결제 수단 
-				</div>				
+			<hr>
+			<div>결제 수단</div>
 		</div>
 
 	</div>

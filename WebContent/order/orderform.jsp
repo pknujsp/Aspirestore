@@ -76,6 +76,7 @@
 						<%
 							}
 						%>
+					
 				</tbody>
 			</table>
 		</div>
@@ -83,7 +84,7 @@
 		<hr>
 
 		<form method="post" id="orderForm" name="orderForm"
-			action="/AspireStore/orderpayment.aspire">
+			action="/AspireStore/orderpayment.aspire" onsubmit="return payment()">
 			<input type="hidden" name="orderer_mobile_number"
 				id="orderer_mobile_number" /><input type="hidden"
 				name="orderer_general_number" id="orderer_general_number" /><input
@@ -107,11 +108,11 @@
 								<p id="orderer_phone">
 									<input type="text" class="text"
 										id="orderer_mobilephone_number_1"
-										name="orderer_mobilephone_number_1" /> - <input type="text"
-										class="text" id="orderer_mobilephone_number_2"
-										name="orderer_mobilephone_number_2" /> - <input type="text"
-										class="text" id="orderer_mobilephone_number_3"
-										name="orderer_mobilephone_number_3" />
+										name="orderer_mobilephone_number_1" maxlength="3" /> - <input
+										type="text" class="text" id="orderer_mobilephone_number_2"
+										name="orderer_mobilephone_number_2" maxlength="4" /> - <input
+										type="text" class="text" id="orderer_mobilephone_number_3"
+										name="orderer_mobilephone_number_3" maxlength="4" />
 								</p>
 							</td>
 						</tr>
@@ -121,11 +122,11 @@
 								<p id="orderer_general">
 									<input type="text" class="text"
 										id="orderer_generalphone_number_1"
-										name="orderer_generalphone_number_1" /> - <input type="text"
-										class="text" id="orderer_generalphone_number_2"
-										name="orderer_generalphone_number_2"> - <input
+										name="orderer_generalphone_number_1" maxlength="3" /> - <input
+										type="text" class="text" id="orderer_generalphone_number_2"
+										name="orderer_generalphone_number_2" maxlength="4" /> - <input
 										type="text" class="text" id="orderer_generalphone_number_3"
-										name="orderer_generalphone_number_3" />
+										name="orderer_generalphone_number_3" maxlength="4" />
 								</p>
 							</td>
 						</tr>
@@ -182,8 +183,8 @@
 								<div>
 									<span><label><input type="text" class="text"
 											id="recepient_name" name="recepient_name" /></label></span> <span><input
-										type="button" id="setRecepientInfo" name="setRecepientInfo" onclick="javascript:setRecepientData();"
-										value="주문자 정보와 동일" /></span>
+										type="button" id="setRecepientInfo" name="setRecepientInfo"
+										onclick="javascript:setRecepientData()" / value="주문자 정보와 동일"></span>
 								</div>
 							</td>
 						</tr>
@@ -197,11 +198,11 @@
 								<p id="recepient_phone">
 									<input type="text" class="text"
 										id="recepient_mobilephone_number_1"
-										name="recepient_mobilephone_number_1" /> - <input
+										name="recepient_mobilephone_number_1" maxlength="3" /> - <input
 										type="text" class="text" id="recepient_mobilephone_number_2"
-										name="recepient_mobilephone_number_2"/> - <input
+										name="recepient_mobilephone_number_2" maxlength="4" /> - <input
 										type="text" class="text" id="recepient_mobilephone_number_3"
-										name="recepient_mobilephone_number_3"/>
+										name="recepient_mobilephone_number_3" maxlength="4" />
 								</p>
 							</td>
 						</tr>
@@ -211,11 +212,11 @@
 								<p id="recepient_general">
 									<input type="text" class="text"
 										id="recepient_generalphone_number_1"
-										name="recepient_generalphone_number_1"/> - <input
+										name="recepient_generalphone_number_1" maxlength="3" /> - <input
 										type="text" class="text" id="recepient_generalphone_number_2"
-										name="recepient_generalphone_number_2"/> - <input
+										name="recepient_generalphone_number_2" maxlength="4" /> - <input
 										type="text" class="text" id="recepient_generalphone_number_3"
-										name="recepient_generalphone_number_3"/>
+										name="recepient_generalphone_number_3" maxlength="4" />
 								</p>
 							</td>
 						</tr>
@@ -227,7 +228,7 @@
 						<tr>
 							<td><p>
 									<span>우편번호 <input type="text" class="text"
-										id="postal_code" name="postal_code" value="" /></span> <span><input
+										id="postal_code" name="postal_code" maxlength="5"/></span> <span><input
 										type="button" name="searchAddress" id="searchAddress"
 										value="주소 검색" /></span>
 								</p>
@@ -242,8 +243,7 @@
 								<p>
 									상세 주소<input type="text" class="text" id="detail_address"
 										name="detail_address" />
-								</p> 
-								<input type="button" name="add_to_addresslist"
+								</p> <input type="button" name="add_to_addresslist"
 								id="add_to_addresslist" value="주소록에 저장" /></td>
 						</tr>
 					</table>
@@ -282,17 +282,20 @@
 			<hr>
 
 			<div>
-				요청사항
-				<textarea id="requested_term" name="requested_term"></textarea>
+				<div>요청사항</div>
+				<div>
+					<textarea id="requested_term" name="requested_term" cols="50"
+						rows="10"></textarea>
+				</div>
 			</div>
 
 			<div>
 				<h5>최종 결제 금액</h5>
 				<div>
 					<span><strong><%=totalPrice%>원</strong></span> <input type="hidden"
-						id="total_price" name="total_price" value="<%=totalPrice%>" /> <span><button
-							id="payment_button" name="payment_button"
-							onclick="javascript:payment()">결제 하기</button></span>
+						id="total_price" name="total_price" value="<%=totalPrice%>" /> <span><input
+						type="submit" id="payment_button" name="payment_button"
+						value="결제하기" /> </span>
 				</div>
 			</div>
 		</form>
@@ -311,48 +314,50 @@
 		}
 
 		function setMergedNumber() {
-			document.getElementById('orderer_mobile_number').value=getMergedNumber('orderer_phone');
-			document.getElementById('orderer_general_number').value=getMergedNumber('orderer_general');
-			document.getElementById('recepient_mobile_number').value=getMergedNumber('recepient_phone');
-			document.getElementById('recepient_general_number').value=getMergedNumber('recepient_general');
+			document.getElementById('orderer_mobile_number').value = getMergedNumber('orderer_phone');
+			document.getElementById('orderer_general_number').value = getMergedNumber('orderer_general');
+			document.getElementById('recepient_mobile_number').value = getMergedNumber('recepient_phone');
+			document.getElementById('recepient_general_number').value = getMergedNumber('recepient_general');
 		}
-		
-		function getMergedNumber(pId)
-		{
-			let inputList = $('#'+ pId +' input[type=text]');
+
+		function getMergedNumber(pId) {
+			let inputList = $('#' + pId + ' input[type=text]');
 			let mergedNumber = '';
-			$.each(inputList, function(index,value) {
+			$.each(inputList, function(index, value) {
 				mergedNumber += $(value).val();
 			});
 
 			return mergedNumber;
 		}
-		
-		function setRecepientData(){
-			window.alert('call a Function');
-			document.getElementById('recepient_name').value = document.getElementById('orderer_name').value;
-			setTelNumber('recepient_phone','orderer_phone');
-			setTelNumber('recepient_general','orderer_general');
+
+		function setRecepientData() {
+			document.getElementById('recepient_name').value = document
+					.getElementById('orderer_name').value;
+			setTelNumber('recepient_phone', 'orderer_phone');
+			setTelNumber('recepient_general', 'orderer_general');
 		}
-		
-		function setTelNumber(rId,oId){
-			var numberArr = new Array();
-			let ordererInputList = $('#'+ oId + 'input[type=text]');
-			let i=0;
-			
-			$.each(ordererInputList, function(index,value) {
+
+		function setTelNumber(rId, oId) {
+			let numberArr = new Array();
+			let ordererInputList = $('#' + oId + ' input[type=text]');
+			let i = 0;
+
+			$.each(ordererInputList, function(index, value) {
 				numberArr[i] = $(value).val();
 				++i;
 			});
-			
-			i=0;
-			
-			let recepientInputList = $('#'+ rId + input[type=text]');
-			
-			$.each(recepientInputList, function(index,value) {
-				$(value).val() = numberArr[i];
-				++i;
-			});
+
+			i = 0;
+
+			let recepientInputList = $('#' + rId + ' input[type=text]');
+
+			$
+					.each(
+							recepientInputList,
+							function(index, value) {
+								document.getElementById($(value).attr('id')).value = numberArr[i];
+								++i;
+							});
 		}
 	</script>
 </body>

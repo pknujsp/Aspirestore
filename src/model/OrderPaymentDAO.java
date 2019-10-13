@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
@@ -54,13 +55,12 @@ public class OrderPaymentDAO
 			prstmt.setString(16, orderFormData.getDelivery_method());
 			prstmt.setString(17, currentTime);
 
-			codes[0] = getOrderOrSaleCode(currentTime, orderFormData.getUser_id(), true); // ordercode
-
 			if (prstmt.executeUpdate() == 1)
 			{
 				connection.commit();
-
+				codes[0] = getOrderOrSaleCode(currentTime, orderFormData.getUser_id(), -1); // ordercode
 				prstmt.clearBatch();
+
 				query = "INSERT INTO salehistory VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?)";
 				prstmt = connection.prepareStatement(query);
 
@@ -76,12 +76,18 @@ public class OrderPaymentDAO
 					prstmt.setString(8, "n");
 
 					prstmt.addBatch();
-					codes[i + 1] = getOrderOrSaleCode(currentTime, orderFormData.getUser_id(), false); // salecode
+
 				}
 
 				if (prstmt.executeBatch().length == ordered_items.size())
 				{
 					connection.commit();
+				}
+
+				for (int i = 0; i < ordered_items.size(); ++i)
+				{
+					codes[i + 1] = getOrderOrSaleCode(currentTime, orderFormData.getUser_id(),
+							ordered_items.get(i).getItem_code()); // salecode
 				}
 			}
 
@@ -135,16 +141,16 @@ public class OrderPaymentDAO
 		return items;
 	}
 
-	public int getOrderOrSaleCode(String date, String userId, boolean flag)
+	public int getOrderOrSaleCode(String date, String userId, int itemCode)
 	{
 		String query = null;
 
-		if (flag) // true 면 ordercode
+		if (itemCode == -1) // true 면 ordercode
 		{
 			query = "SELECT orderhistory_order_code FROM orderhistory WHERE orderhistory_order_date = ? AND orderhistory_user_id = ?";
 		} else
 		{
-			query = "SELECT salehistory_sale_code FROM salehistory WHERE salehistory_order_date = ? AND salehistory_user_id = ?";
+			query = "SELECT salehistory_sale_code FROM salehistory WHERE salehistory_sale_date = ? AND salehistory_user_id = ? AND salehistory_item_code = ?";
 		}
 		ResultSet set = null;
 		int code = 0;
@@ -154,8 +160,13 @@ public class OrderPaymentDAO
 			prstmt.setString(1, date);
 			prstmt.setString(2, userId);
 
+			if (itemCode != -1)
+			{
+				prstmt.setInt(3, itemCode);
+			}
+
 			set = prstmt.executeQuery();
-			if (set.next())
+			while (set.next())
 			{
 				code = set.getInt(1);
 			}
@@ -193,7 +204,7 @@ public class OrderPaymentDAO
 
 			set = prstmt.executeQuery();
 
-			if (set.next())
+			while (set.next())
 			{
 				dto.setOrder_code(orderCode).setUser_id(userId).setOrderer_name(set.getString(3))
 						.setOrderer_mobile(set.getString(4)).setOrderer_general(set.getString(5))
@@ -231,18 +242,17 @@ public class OrderPaymentDAO
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
 		{
-			for (int i = 1; i < codes.length; ++i)
+			for (int i = 0; i < data.length; ++i)
 			{
-				prstmt.setInt(1, codes[i]);
+				prstmt.setInt(1, codes[i+1]);
 				set = prstmt.executeQuery();
-
-				while (set.next())
-				{
-					data[i] = new SalehistoryDTO().setSale_code(set.getInt(1)).setOrder_code(set.getInt(2))
-							.setUser_id(set.getString(3)).setItem_code(set.getInt(4)).setItem_category(set.getString(5))
-							.setSale_date(set.getString(6)).setSale_quantity(set.getInt(7))
-							.setTotal_price(set.getInt(8)).setStatus(set.getString(9));
-				}
+			}
+			for (int i = 0; set.next(); ++i)
+			{
+				data[i] = new SalehistoryDTO().setSale_code(set.getInt(1)).setOrder_code(set.getInt(2))
+						.setUser_id(set.getString(3)).setItem_code(set.getInt(4)).setItem_category(set.getString(5))
+						.setSale_date(set.getString(6)).setSale_quantity(set.getInt(7)).setTotal_price(set.getInt(8))
+						.setStatus(set.getString(9));
 			}
 		} catch (Exception e)
 		{
@@ -304,17 +314,18 @@ public class OrderPaymentDAO
 		return methods;
 	}
 
-	public Object[] getLatestOrderInfo(int[] codes, String userId)
+	public Object[] getLatestOrderInfo(int[] codes, String userId, ServletContext sc)
 	{
 		Object[] objects = new Object[3];
 
-		objects[0] = getOrderHistory(codes[0], userId); // 주문 정보 (이름, 휴대전화, 주소 등)
-		objects[1] = getSaleHistory(codes);
+		objects[0] = getOrderHistory(codes[0], userId); // 주문 정보 (이름, 휴대전화, 주소 등) ordercode
+		objects[1] = getSaleHistory(codes); // salecodes
 
 		Map<Integer, String> codeMap = new HashMap<Integer, String>(codes.length - 1);
 		insertCodesToMap((SalehistoryDTO[]) objects[1], codeMap);
 
-		objects[2] = new ItemsDAO().getSimpleOrderedItemData(codeMap);
+		ItemsDAO itemsDao = (ItemsDAO) sc.getAttribute("itemsDAO");
+		objects[2] = itemsDao.getSimpleOrderedItemData(codeMap);
 
 		return objects;
 	}

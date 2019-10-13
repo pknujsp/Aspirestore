@@ -91,9 +91,9 @@ public class ItemsDAO
 	{
 		OrderedItemsDTO[] items = new OrderedItemsDTO[codeMap.size()];
 		String query = "SELECT a.author_name, p.publisher_name, i.item_name, i.item_code, i.item_category_code, "
-				+ "i.item_selling_price " + "FROM items as i"
-				+ "INNER JOIN publishers p ON i.item_publisher_code = p.publisher_code"
-				+ "INNER JOIN authors a ON i.item_author_code = a.author_code"
+				+ "i.item_selling_price " + "FROM items as i "
+				+ "INNER JOIN publishers p ON i.item_publisher_code = p.publisher_code "
+				+ "INNER JOIN authors a ON i.item_author_code = a.author_code "
 				+ "WHERE i.item_code = ? AND i.item_category_code = ?";
 		ResultSet set = null;
 
@@ -113,12 +113,10 @@ public class ItemsDAO
 
 				while (set.next())
 				{
-					items[i] = new OrderedItemsDTO(set.getString("i.item_name"), set.getString("ia.author_name"),
-							set.getString("p.publisher_name"), set.getInt("i.item_code"),
-							set.getString("i.item_category_code"), set.getInt("i.item_selling_price"));
+					items[i] = new OrderedItemsDTO(set.getString(3), set.getString(1), set.getString(2), set.getInt(4),
+							set.getString(5), set.getInt(6));
 					++i;
 				}
-				prstmt.clearParameters();
 			}
 		} catch (Exception e)
 		{
