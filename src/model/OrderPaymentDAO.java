@@ -1,5 +1,6 @@
 package model;
 
+import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -244,7 +245,7 @@ public class OrderPaymentDAO
 		{
 			for (int i = 0; i < data.length; ++i)
 			{
-				prstmt.setInt(1, codes[i+1]);
+				prstmt.setInt(1, codes[i + 1]);
 				set = prstmt.executeQuery();
 			}
 			for (int i = 0; set.next(); ++i)
@@ -275,36 +276,48 @@ public class OrderPaymentDAO
 
 	public String[] getOrderMethod(String delivery, String payment)
 	{
-		String query1 = "SELECT paymentmethod FROM paymentmethod WHERE paymentmethod_code = ?";
-		String query2 = "SELECT deliverymethod FROM deliverymethod WHERE deliverymethod_code = ?";
+		String query1 = "SELECT paymentmethod FROM paymentmethod WHERE paymentmethod_code = \'" + payment + "\'";
+		String query2 = "SELECT deliverymethod FROM deliverymethod WHERE deliverymethod_code = \'" + delivery + "\'";
 		String[] methods = new String[2];
 
-		ResultSet set = null;
+		ResultSet set1 = null;
+		ResultSet set2 = null;
 
-		try (Connection connection = ds.getConnection();
-				PreparedStatement prstmt1 = connection.prepareStatement(query1);
-				PreparedStatement prstmt2 = connection.prepareStatement(query2);)
+		try (Connection connection = ds.getConnection(); Statement stmt = connection.createStatement();)
 		{
-			prstmt1.setString(1, payment);
-			set = prstmt1.executeQuery();
 
-			prstmt2.setString(1, delivery);
-			set = prstmt2.executeQuery();
+			set1 = stmt.executeQuery(query1);
+			set2 = stmt.executeQuery(query2);
 
-			for (int i = 0; set.next(); ++i)
+			while (set1.next())
 			{
-				methods[i] = set.getString(1);
+				methods[0] = set1.getString(1); // payment
 			}
+			while (set2.next())
+			{
+				methods[1] = set2.getString(1); // delivery
+			}
+
 		} catch (Exception e)
 		{
 			e.printStackTrace();
 		} finally
 		{
-			if (set != null)
+			if (set1 != null)
 			{
 				try
 				{
-					set.close();
+					set1.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+			if (set2 != null)
+			{
+				try
+				{
+					set2.close();
 				} catch (Exception e)
 				{
 					e.printStackTrace();

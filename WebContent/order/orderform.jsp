@@ -1,9 +1,14 @@
+<%@page import="model.UserDTO"%>
+<%@page import="model.UserDAO"%>
+<%@page import="model.AddressDTO"%>
+<%@page import="model.AddressDAO"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="etc.OrderInformation"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="model.ItemsDTO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" session="true"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <%!int getTotalPrice(ArrayList<OrderInformation> list) {
 		int totalPrice = 0;
@@ -26,6 +31,14 @@
 			.getAttribute("ORDER_INFORMATIONS");
 
 	session.setAttribute("ORDER_LIST", orderInformations);
+
+	AddressDAO addressDao = (AddressDAO) this.getServletContext().getAttribute("ADDRESS_DAO"); // 주소록 DAO
+	UserDAO userDao = (UserDAO) this.getServletContext().getAttribute("USER_DAO"); // 주문자 정보 DAO
+	UserDTO userInfo = userDao.getUserInfo(sessionKey);
+
+	if (userInfo != null) {
+		pageContext.setAttribute("USER_INFO", userInfo);
+	}
 
 	final int totalPrice = getTotalPrice(orderInformations);
 %>
@@ -99,8 +112,9 @@
 					<table>
 						<tr>
 							<th>성명</th>
-							<td><span><label><input type="text"
-										id="orderer_name" name="orderer_name" /></label></span></td>
+							<td><span><label> <input type="text"
+										id="orderer_name" name="orderer_name" /> <c:out
+											value="${pageScope.USER_INFO.user_name }" /></label></span></td>
 						</tr>
 						<tr>
 							<th>휴대전화</th>
@@ -108,11 +122,16 @@
 								<p id="orderer_phone">
 									<input type="text" class="text"
 										id="orderer_mobilephone_number_1"
-										name="orderer_mobilephone_number_1" maxlength="3" /> - <input
-										type="text" class="text" id="orderer_mobilephone_number_2"
-										name="orderer_mobilephone_number_2" maxlength="4" /> - <input
-										type="text" class="text" id="orderer_mobilephone_number_3"
+										name="orderer_mobilephone_number_1" maxlength="3" />
+									<c:out value="${pageScope.USER_INFO.mobile1 }" />
+									- <input type="text" class="text"
+										id="orderer_mobilephone_number_2"
+										name="orderer_mobilephone_number_2" maxlength="4" />
+									<c:out value="${pageScope.USER_INFO.mobile2 }" />
+									- <input type="text" class="text"
+										id="orderer_mobilephone_number_3"
 										name="orderer_mobilephone_number_3" maxlength="4" />
+									<c:out value="${pageScope.USER_INFO.mobile3 }" />
 								</p>
 							</td>
 						</tr>
@@ -122,11 +141,16 @@
 								<p id="orderer_general">
 									<input type="text" class="text"
 										id="orderer_generalphone_number_1"
-										name="orderer_generalphone_number_1" maxlength="3" /> - <input
-										type="text" class="text" id="orderer_generalphone_number_2"
-										name="orderer_generalphone_number_2" maxlength="4" /> - <input
-										type="text" class="text" id="orderer_generalphone_number_3"
+										name="orderer_generalphone_number_1" maxlength="3" />
+									<c:out value="${pageScope.USER_INFO.general1 }" />
+									- <input type="text" class="text"
+										id="orderer_generalphone_number_2"
+										name="orderer_generalphone_number_2" maxlength="4" />
+									<c:out value="${pageScope.USER_INFO.general2 }" />
+									- <input type="text" class="text"
+										id="orderer_generalphone_number_3"
 										name="orderer_generalphone_number_3" maxlength="4" />
+									<c:out value="${pageScope.USER_INFO.general3 }" />
 								</p>
 							</td>
 						</tr>
@@ -228,7 +252,7 @@
 						<tr>
 							<td><p>
 									<span>우편번호 <input type="text" class="text"
-										id="postal_code" name="postal_code" maxlength="5"/></span> <span><input
+										id="postal_code" name="postal_code" maxlength="5" /></span> <span><input
 										type="button" name="searchAddress" id="searchAddress"
 										value="주소 검색" /></span>
 								</p>
@@ -358,6 +382,11 @@
 								document.getElementById($(value).attr('id')).value = numberArr[i];
 								++i;
 							});
+		}
+		
+		function getLastestAddress(userId)	// ajax 이용하여 최근 사용된 주소 가져옴
+		{
+			
 		}
 	</script>
 </body>

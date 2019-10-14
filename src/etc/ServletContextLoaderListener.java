@@ -13,6 +13,7 @@ import model.OrderPaymentDAO;
 import model.PublisherDAO;
 import model.SigninDAO;
 import model.SignupDAO;
+import model.UserDAO;
 
 public class ServletContextLoaderListener implements ServletContextListener
 {
@@ -31,8 +32,9 @@ public class ServletContextLoaderListener implements ServletContextListener
 			ItemsDAO itemsDAO = new ItemsDAO();
 			AuthorDAO authorDAO = new AuthorDAO();
 			OrderPaymentDAO orderpaymentDAO = new OrderPaymentDAO();
-			PublisherDAO publisherDAO=new PublisherDAO();
+			PublisherDAO publisherDAO = new PublisherDAO();
 			AddressDAO addressDAO = new AddressDAO();
+			UserDAO userDAO = new UserDAO();
 
 			signinDAO.setDataSource(ds);
 			signupDAO.setDataSource(ds);
@@ -41,6 +43,7 @@ public class ServletContextLoaderListener implements ServletContextListener
 			orderpaymentDAO.setDataSource(ds);
 			publisherDAO.setDataSource(ds);
 			addressDAO.setDataSource(ds);
+			userDAO.setDataSource(ds);
 
 			servletContext.setAttribute("signinDAO", signinDAO);
 			servletContext.setAttribute("signupDAO", signupDAO);
@@ -49,6 +52,7 @@ public class ServletContextLoaderListener implements ServletContextListener
 			servletContext.setAttribute("ORDER_PAYMENT_DAO", orderpaymentDAO);
 			servletContext.setAttribute("PUBLISHER_DAO", publisherDAO);
 			servletContext.setAttribute("ADDRESS_DAO", addressDAO);
+			servletContext.setAttribute("USER_DAO", userDAO);
 		} catch (Exception e)
 		{
 			e.printStackTrace();

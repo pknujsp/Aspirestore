@@ -17,6 +17,8 @@ import model.ItemsDTO;
 import model.OrderPaymentDAO;
 import model.OrderhistoryDTO;
 import model.SalehistoryDTO;
+import model.UserDAO;
+import model.UserDTO;
 
 public class ServletOrderPayment extends HttpServlet
 {
@@ -27,6 +29,16 @@ public class ServletOrderPayment extends HttpServlet
 		{
 			ServletContext servletContext = this.getServletContext();
 
+			UserDTO userData = (UserDTO) request.getAttribute("USER_INFO");
+			UserDAO userDao = (UserDAO) servletContext.getAttribute("USER_DAO");
+
+			if (userDao.isExistingData(userData.getUser_id()))
+			{
+				userDao.insertUserInfo(userData);
+			} else
+			{
+				userDao.updateUserInfo(userData);
+			}
 			OrderhistoryDTO orderFromData = (OrderhistoryDTO) request.getAttribute("ORDER_FORM_DATA");
 			ArrayList<OrderInformation> orderedItems = (ArrayList<OrderInformation>) request
 					.getAttribute("ORDERED_ITEMS");

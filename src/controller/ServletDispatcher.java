@@ -18,6 +18,7 @@ import model.ItemsDTO;
 import model.OrderhistoryDTO;
 import model.SalehistoryDTO;
 import model.SignupDTO;
+import model.UserDTO;
 
 public class ServletDispatcher extends HttpServlet
 {
@@ -86,6 +87,12 @@ public class ServletDispatcher extends HttpServlet
 				{
 					pageControllerPath = "/orderpayment";
 
+					request.setAttribute("USER_INFO",
+							new UserDTO().setUser_id((String) request.getSession().getAttribute("SESSIONKEY"))
+									.setMobile(request.getParameter(request.getParameter("orderer_mobile_number")))
+									.setGeneral(request.getParameter("orderer_general_number"))
+									.setUser_name(request.getParameter("orderer_name")));
+					
 					request.setAttribute("ORDER_FORM_DATA",
 							new OrderhistoryDTO().setOrderer_name(request.getParameter("orderer_name"))
 									.setOrderer_mobile(request.getParameter("orderer_mobile_number"))
