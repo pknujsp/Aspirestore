@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import etc.OrderInformation;
 import model.ItemsDTO;
 import model.OrderPaymentDAO;
+import model.UserDAO;
+import model.UserDTO;
 
 public class ServletCreateOrderForm extends HttpServlet
 {
@@ -28,6 +30,15 @@ public class ServletCreateOrderForm extends HttpServlet
 
 			OrderPaymentDAO orderPaymentDAO = (OrderPaymentDAO) servletContext.getAttribute("ORDER_PAYMENT_DAO");
 			ArrayList<ItemsDTO> items = orderPaymentDAO.getItemsInfo(informations);
+
+			UserDTO userData = null;
+			UserDAO userDao = (UserDAO) servletContext.getAttribute("USER_DAO");
+			userData = userDao.getUserInfo((String) request.getSession().getAttribute("SESSIONKEY"));
+
+			if (userData != null) // 최초 주문 X
+			{
+				request.getSession().setAttribute("USER_INFO_SESSION", userData);
+			}
 
 			request.setAttribute("ITEMS", items);
 			request.setAttribute("ORDER_INFORMATIONS", informations);

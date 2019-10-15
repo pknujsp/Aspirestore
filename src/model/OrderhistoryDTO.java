@@ -5,12 +5,20 @@ public class OrderhistoryDTO
 	private int order_code;
 	private String user_id;
 	private String orderer_name;
-	private String orderer_mobile;
-	private String orderer_general;
+	private String orderer_mobile1;
+	private String orderer_mobile2;
+	private String orderer_mobile3;
+	private String orderer_general1;
+	private String orderer_general2;
+	private String orderer_general3;
 	private String orderer_email;
-	private String recipient_name;
-	private String recipient_mobile;
-	private String recipient_general;
+	private String recepient_name;
+	private String recepient_mobile1;
+	private String recepient_mobile2;
+	private String recepient_mobile3;
+	private String recepient_general1;
+	private String recepient_general2;
+	private String recepient_general3;
 	private String postal_code;
 	private String road;
 	private String number;
@@ -36,14 +44,34 @@ public class OrderhistoryDTO
 		return orderer_name;
 	}
 
-	public String getOrderer_mobile()
+	public String getOrderer_mobile1()
 	{
-		return orderer_mobile;
+		return orderer_mobile1;
 	}
 
-	public String getOrderer_general()
+	public String getOrderer_mobile2()
 	{
-		return orderer_general;
+		return orderer_mobile2;
+	}
+
+	public String getOrderer_mobile3()
+	{
+		return orderer_mobile3;
+	}
+
+	public String getOrderer_general1()
+	{
+		return orderer_general1;
+	}
+
+	public String getOrderer_general2()
+	{
+		return orderer_general2;
+	}
+
+	public String getOrderer_general3()
+	{
+		return orderer_general3;
 	}
 
 	public String getOrderer_email()
@@ -51,19 +79,39 @@ public class OrderhistoryDTO
 		return orderer_email;
 	}
 
-	public String getRecipient_name()
+	public String getRecepient_name()
 	{
-		return recipient_name;
+		return recepient_name;
 	}
 
-	public String getRecipient_mobile()
+	public String getRecepient_mobile1()
 	{
-		return recipient_mobile;
+		return recepient_mobile1;
 	}
 
-	public String getRecipient_general()
+	public String getRecepient_mobile2()
 	{
-		return recipient_general;
+		return recepient_mobile2;
+	}
+
+	public String getRecepient_mobile3()
+	{
+		return recepient_mobile3;
+	}
+
+	public String getRecepient_general1()
+	{
+		return recepient_general1;
+	}
+
+	public String getRecepient_general2()
+	{
+		return recepient_general2;
+	}
+
+	public String getRecepient_general3()
+	{
+		return recepient_general3;
 	}
 
 	public String getPostal_code()
@@ -129,15 +177,39 @@ public class OrderhistoryDTO
 		return this;
 	}
 
-	public OrderhistoryDTO setOrderer_mobile(String orderer_mobile)
+	public OrderhistoryDTO setOrderer_mobile1(String orderer_mobile1)
 	{
-		this.orderer_mobile = orderer_mobile;
+		this.orderer_mobile1 = orderer_mobile1;
 		return this;
 	}
 
-	public OrderhistoryDTO setOrderer_general(String orderer_general)
+	public OrderhistoryDTO setOrderer_mobile2(String orderer_mobile2)
 	{
-		this.orderer_general = orderer_general;
+		this.orderer_mobile2 = orderer_mobile2;
+		return this;
+	}
+
+	public OrderhistoryDTO setOrderer_mobile3(String orderer_mobile3)
+	{
+		this.orderer_mobile3 = orderer_mobile3;
+		return this;
+	}
+
+	public OrderhistoryDTO setOrderer_general1(String orderer_general1)
+	{
+		this.orderer_general1 = orderer_general1;
+		return this;
+	}
+
+	public OrderhistoryDTO setOrderer_general2(String orderer_general2)
+	{
+		this.orderer_general2 = orderer_general2;
+		return this;
+	}
+
+	public OrderhistoryDTO setOrderer_general3(String orderer_general3)
+	{
+		this.orderer_general3 = orderer_general3;
 		return this;
 	}
 
@@ -147,21 +219,45 @@ public class OrderhistoryDTO
 		return this;
 	}
 
-	public OrderhistoryDTO setRecipient_name(String recipient_name)
+	public OrderhistoryDTO setRecepient_name(String recepient_name)
 	{
-		this.recipient_name = recipient_name;
+		this.recepient_name = recepient_name;
 		return this;
 	}
 
-	public OrderhistoryDTO setRecipient_mobile(String recipient_mobile)
+	public OrderhistoryDTO setRecepient_mobile1(String recepient_mobile1)
 	{
-		this.recipient_mobile = recipient_mobile;
+		this.recepient_mobile1 = recepient_mobile1;
 		return this;
 	}
 
-	public OrderhistoryDTO setRecipient_general(String recipient_general)
+	public OrderhistoryDTO setRecepient_mobile2(String recepient_mobile2)
 	{
-		this.recipient_general = recipient_general;
+		this.recepient_mobile2 = recepient_mobile2;
+		return this;
+	}
+
+	public OrderhistoryDTO setRecepient_mobile3(String recepient_mobile3)
+	{
+		this.recepient_mobile3 = recepient_mobile3;
+		return this;
+	}
+
+	public OrderhistoryDTO setRecepient_general1(String recepient_general1)
+	{
+		this.recepient_general1 = recepient_general1;
+		return this;
+	}
+
+	public OrderhistoryDTO setRecepient_general2(String recepient_general2)
+	{
+		this.recepient_general2 = recepient_general2;
+		return this;
+	}
+
+	public OrderhistoryDTO setRecepient_general3(String recepient_general3)
+	{
+		this.recepient_general3 = recepient_general3;
 		return this;
 	}
 

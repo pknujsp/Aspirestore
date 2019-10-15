@@ -7,11 +7,9 @@ public class UserDTO
 	private String mobile1;
 	private String mobile2;
 	private String mobile3;
-	private String mobile;
 	private String general1;
 	private String general2;
 	private String general3;
-	private String general;
 	private String date_time;
 
 	public String getUser_id()
@@ -23,7 +21,7 @@ public class UserDTO
 	{
 		return user_name;
 	}
-
+	
 	public String getMobile1()
 	{
 		return mobile1;
@@ -83,27 +81,6 @@ public class UserDTO
 		return this;
 	}
 
-	public String getMobile()
-	{
-		return mobile;
-	}
-
-	public String getGeneral()
-	{
-		return general;
-	}
-
-	public UserDTO setMobile(String mobile)
-	{
-		this.mobile = mobile;
-		return this;
-	}
-
-	public UserDTO setGeneral(String general)
-	{
-		this.general = general;
-		return this;
-	}
 
 	public UserDTO setMobile3(String mobile3)
 	{

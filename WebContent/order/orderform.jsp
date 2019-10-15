@@ -33,8 +33,8 @@
 	session.setAttribute("ORDER_LIST", orderInformations);
 
 	AddressDAO addressDao = (AddressDAO) this.getServletContext().getAttribute("ADDRESS_DAO"); // 주소록 DAO
-	UserDAO userDao = (UserDAO) this.getServletContext().getAttribute("USER_DAO"); // 주문자 정보 DAO
-	UserDTO userInfo = userDao.getUserInfo(sessionKey);
+
+	UserDTO userInfo = (UserDTO) session.getAttribute("USER_INFO_SESSION");
 
 	if (userInfo != null) {
 		pageContext.setAttribute("USER_INFO", userInfo);
@@ -62,6 +62,18 @@
 <link href="/AspireStore/css/shop-homepage.css" rel="stylesheet">
 </head>
 <body>
+
+	<script type="text/javascript">
+		let selectBoxId = 'orderer_general_1_select';
+		let selectBox = document.getElementById(selectBoxId);
+
+		for (let idx = 0; idx < selectBox.options.length; ++idx) {
+			if (selectBox.options[idx].value == '${pageScope.USER_INFO.general1}') {
+				selectBox.options[idx].selected = true;
+				break;
+			}
+		}
+	</script>
 	<jsp:include page="/navbar.jsp"></jsp:include>
 	<div>
 		<h5>주문 도서 확인</h5>
@@ -98,12 +110,7 @@
 
 		<form method="post" id="orderForm" name="orderForm"
 			action="/AspireStore/orderpayment.aspire" onsubmit="return payment()">
-			<input type="hidden" name="orderer_mobile_number"
-				id="orderer_mobile_number" /><input type="hidden"
-				name="orderer_general_number" id="orderer_general_number" /><input
-				type="hidden" name="recepient_mobile_number"
-				id="recepient_mobile_number" /> <input type="hidden"
-				name="recepient_general_number" id="recepient_general_number" />
+
 			<div>
 				<h5>주문서 작성</h5>
 
@@ -113,25 +120,30 @@
 						<tr>
 							<th>성명</th>
 							<td><span><label> <input type="text"
-										id="orderer_name" name="orderer_name" /> <c:out
-											value="${pageScope.USER_INFO.user_name }" /></label></span></td>
+										id="orderer_name" name="orderer_name" /> <c:if
+											test="${not empty pageScope.USER_INFO }">
+											<c:out value="${pageScope.USER_INFO.user_name }" />
+										</c:if></label></span></td>
 						</tr>
 						<tr>
 							<th>휴대전화</th>
 							<td>
 								<p id="orderer_phone">
-									<input type="text" class="text"
-										id="orderer_mobilephone_number_1"
-										name="orderer_mobilephone_number_1" maxlength="3" />
-									<c:out value="${pageScope.USER_INFO.mobile1 }" />
-									- <input type="text" class="text"
-										id="orderer_mobilephone_number_2"
-										name="orderer_mobilephone_number_2" maxlength="4" />
-									<c:out value="${pageScope.USER_INFO.mobile2 }" />
-									- <input type="text" class="text"
-										id="orderer_mobilephone_number_3"
-										name="orderer_mobilephone_number_3" maxlength="4" />
-									<c:out value="${pageScope.USER_INFO.mobile3 }" />
+									<input type="text" class="text" id="orderer_mobile_1"
+										name="orderer_mobile_1" maxlength="3" />
+									<c:if test="${not empty pageScope.USER_INFO}">
+										<c:out value="${pageScope.USER_INFO.mobile1 }" />
+									</c:if>
+									- <input type="text" class="text" id="orderer_mobile_2"
+										name="orderer_mobile_2" maxlength="4" />
+									<c:if test="${not empty pageScope.USER_INFO }">
+										<c:out value="${pageScope.USER_INFO.mobile2 }" />
+									</c:if>
+									- <input type="text" class="text" id="orderer_mobile_3"
+										name="orderer_mobile_3" maxlength="4" />
+									<c:if test="${not empty pageScope.USER_INFO }">
+										<c:out value="${pageScope.USER_INFO.mobile3 }" />
+									</c:if>
 								</p>
 							</td>
 						</tr>
@@ -139,18 +151,43 @@
 							<th>일반전화</th>
 							<td>
 								<p id="orderer_general">
-									<input type="text" class="text"
-										id="orderer_generalphone_number_1"
-										name="orderer_generalphone_number_1" maxlength="3" />
-									<c:out value="${pageScope.USER_INFO.general1 }" />
-									- <input type="text" class="text"
-										id="orderer_generalphone_number_2"
-										name="orderer_generalphone_number_2" maxlength="4" />
-									<c:out value="${pageScope.USER_INFO.general2 }" />
-									- <input type="text" class="text"
-										id="orderer_generalphone_number_3"
-										name="orderer_generalphone_number_3" maxlength="4" />
-									<c:out value="${pageScope.USER_INFO.general3 }" />
+									<select name="orderer_general_1_select"
+										id="orderer_general_1_select">
+										<option value="" selected>선택 안함</option>
+										<option value="02">02</option>
+										<option value="031">031</option>
+										<option value="032">032</option>
+										<option value="033">033</option>
+										<option value="041">041</option>
+										<option value="042">042</option>
+										<option value="043">043</option>
+										<option value="044">044</option>
+										<option value="051">051</option>
+										<option value="052">052</option>
+										<option value="053">053</option>
+										<option value="054">054</option>
+										<option value="055">055</option>
+										<option value="061">061</option>
+										<option value="062">062</option>
+										<option value="063">063</option>
+										<option value="064">064</option>
+										<option value="070">070</option>
+										<option value="0502">0502</option>
+										<option value="0503">0503</option>
+										<option value="0505">0505</option>
+										<option value="0506">0506</option>
+										<option value="0507">0507</option>
+										<option value="0508">0508</option>
+									</select> - <input type="text" class="text" id="orderer_general_2"
+										name="orderer_general_2" maxlength="4" />
+									<c:if test="${not empty pageScope.USER_INFO}">
+										<c:out value="${pageScope.USER_INFO.general2 }" />
+									</c:if>
+									- <input type="text" class="text" id="orderer_general_3"
+										name="orderer_general_3" maxlength="4" />
+									<c:if test="${not empty pageScope.USER_INFO }">
+										<c:out value="${pageScope.USER_INFO.general3 }" />
+									</c:if>
 								</p>
 							</td>
 						</tr>
@@ -220,13 +257,12 @@
 							<th>휴대전화</th>
 							<td>
 								<p id="recepient_phone">
-									<input type="text" class="text"
-										id="recepient_mobilephone_number_1"
-										name="recepient_mobilephone_number_1" maxlength="3" /> - <input
-										type="text" class="text" id="recepient_mobilephone_number_2"
-										name="recepient_mobilephone_number_2" maxlength="4" /> - <input
-										type="text" class="text" id="recepient_mobilephone_number_3"
-										name="recepient_mobilephone_number_3" maxlength="4" />
+									<input type="text" class="text" id="recepient_mobile_1"
+										name="recepient_mobile_1" maxlength="3" /> - <input
+										type="text" class="text" id="recepient_mobile_2"
+										name="recepient_mobile_2" maxlength="4" /> - <input
+										type="text" class="text" id="recepient_mobile_3"
+										name="recepient_mobile_3" maxlength="4" />
 								</p>
 							</td>
 						</tr>
@@ -234,13 +270,37 @@
 							<th>일반전화</th>
 							<td>
 								<p id="recepient_general">
-									<input type="text" class="text"
-										id="recepient_generalphone_number_1"
-										name="recepient_generalphone_number_1" maxlength="3" /> - <input
-										type="text" class="text" id="recepient_generalphone_number_2"
-										name="recepient_generalphone_number_2" maxlength="4" /> - <input
-										type="text" class="text" id="recepient_generalphone_number_3"
-										name="recepient_generalphone_number_3" maxlength="4" />
+									<select name="recepient_general_1_select"
+										id="recepient_general_1_select">
+										<option value="" selected>선택 안함</option>
+										<option value="02">02</option>
+										<option value="031">031</option>
+										<option value="032">032</option>
+										<option value="033">033</option>
+										<option value="041">041</option>
+										<option value="042">042</option>
+										<option value="043">043</option>
+										<option value="044">044</option>
+										<option value="051">051</option>
+										<option value="052">052</option>
+										<option value="053">053</option>
+										<option value="054">054</option>
+										<option value="055">055</option>
+										<option value="061">061</option>
+										<option value="062">062</option>
+										<option value="063">063</option>
+										<option value="064">064</option>
+										<option value="070">070</option>
+										<option value="0502">0502</option>
+										<option value="0503">0503</option>
+										<option value="0505">0505</option>
+										<option value="0506">0506</option>
+										<option value="0507">0507</option>
+										<option value="0508">0508</option>
+									</select>- <input type="text" class="text" id="recepient_general_2"
+										name="recepient_general_2" maxlength="4" /> - <input
+										type="text" class="text" id="recepient_general_3"
+										name="recepient_general_3" maxlength="4" />
 								</p>
 							</td>
 						</tr>
@@ -272,8 +332,6 @@
 						</tr>
 					</table>
 				</div>
-
-
 			</div>
 			<hr>
 
@@ -304,7 +362,6 @@
 				</div>
 			</div>
 			<hr>
-
 			<div>
 				<div>요청사항</div>
 				<div>
@@ -359,6 +416,7 @@
 					.getElementById('orderer_name').value;
 			setTelNumber('recepient_phone', 'orderer_phone');
 			setTelNumber('recepient_general', 'orderer_general');
+			setGeneral();
 		}
 
 		function setTelNumber(rId, oId) {
@@ -383,10 +441,25 @@
 								++i;
 							});
 		}
-		
-		function getLastestAddress(userId)	// ajax 이용하여 최근 사용된 주소 가져옴
+
+		function getLastestAddress(userId) // ajax 이용하여 최근 사용된 주소 가져옴
 		{
-			
+
+		}
+
+		function setGeneral1() {
+			let recepientSelectBox = document
+					.getElementById('recepient_general_1_select');
+			let ordererGeneral1 = document
+					.getElementById('orderer_general_1_select');
+			let ordererValue = ordererGeneral1.options[ordererGeneral1.selectedIndex].value;
+
+			for (let idx = 0; idx < recepientSelectBox.options.length; ++idx) {
+				if (recepientSelectBox.options[idx].value == ordererValue) {
+					recepientSelectBox.options[idx].selected = true;
+					break;
+				}
+			}
 		}
 	</script>
 </body>

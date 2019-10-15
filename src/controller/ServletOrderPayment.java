@@ -29,16 +29,29 @@ public class ServletOrderPayment extends HttpServlet
 		{
 			ServletContext servletContext = this.getServletContext();
 
-			UserDTO userData = (UserDTO) request.getAttribute("USER_INFO");
+			UserDTO requestUserData = (UserDTO) request.getAttribute("USER_INFO_REQUEST");
+			UserDTO sessionUserData = (UserDTO) request.getSession().getAttribute("USER_INFO_SESSION");
 			UserDAO userDao = (UserDAO) servletContext.getAttribute("USER_DAO");
 
-			if (userDao.isExistingData(userData.getUser_id()))
+			if (sessionUserData != null) // 최초 주문 X
 			{
-				userDao.insertUserInfo(userData);
-			} else
+				// true - 주문자 정보가 수정된 경우
+				if (!(requestUserData.getUser_name().equals(sessionUserData.getUser_name())
+						&& requestUserData.getMobile1().equals(sessionUserData.getMobile1())
+						&& requestUserData.getMobile2().equals(sessionUserData.getMobile2())
+						&& requestUserData.getMobile3().equals(sessionUserData.getMobile3())
+						&& requestUserData.getGeneral1().equals(sessionUserData.getGeneral1())
+						&& requestUserData.getGeneral2().equals(sessionUserData.getGeneral2())
+						&& requestUserData.getGeneral3().equals(sessionUserData.getGeneral3())))
+				{
+					request.getSession().removeAttribute("USER_INFO_SESSION");
+					userDao.updateUserInfo(requestUserData);
+				}
+			} else // 최초 주문 O
 			{
-				userDao.updateUserInfo(userData);
+				userDao.insertUserInfo(requestUserData);
 			}
+
 			OrderhistoryDTO orderFromData = (OrderhistoryDTO) request.getAttribute("ORDER_FORM_DATA");
 			ArrayList<OrderInformation> orderedItems = (ArrayList<OrderInformation>) request
 					.getAttribute("ORDERED_ITEMS");

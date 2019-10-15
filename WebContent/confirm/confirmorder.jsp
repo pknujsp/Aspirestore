@@ -53,8 +53,9 @@
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach var="data" items="${pageScope.orderedItemsData }" varStatus="status">
-						<c:set var="idx" value="${status.index }"/>
+					<c:forEach var="data" items="${pageScope.orderedItemsData }"
+						varStatus="status">
+						<c:set var="idx" value="${status.index }" />
 						<tr>
 							<td><span><b><a
 										href="/AspireStore/items/item.aspire?ccode=${data.item_category}&icode=${data.item_code}">
@@ -63,7 +64,8 @@
 								&nbsp;<span><i><c:out value="${data.publisher_name }" /></i></span>
 							</td>
 							<td><c:out value="${ data.selling_price }" /></td>
-							<td><c:out value="${ pageScope.saleHistoryData[idx].sale_quantity }" /></td>
+							<td><c:out
+									value="${ pageScope.saleHistoryData[idx].sale_quantity }" /></td>
 							<td><c:out
 									value="${ data.selling_price * pageScope.saleHistoryData[idx].sale_quantity}" /></td>
 						</tr>
@@ -80,22 +82,22 @@
 				<h5>주문자 정보</h5>
 				<table>
 					<tr>
-						<td>성명  <c:out
+						<td>성명 <c:out
 								value="${pageScope.orderHistoryData.orderer_name}" />
 						</td>
 					</tr>
 					<tr>
-						<td>휴대전화  <c:out
-								value="${pageScope.orderHistoryData.orderer_mobile}" />
+						<td>휴대전화 <c:out
+								value="${pageScope.orderHistoryData.orderer_mobile1+pageScope.orderHistoryData.orderer_mobile2+pageScope.orderHistoryData.orderer_mobile3}" />
 						</td>
 					</tr>
 					<tr>
-						<td>일반전화  <c:out
-								value="${pageScope.orderHistoryData.orderer_general}" />
+						<td>일반전화 <c:out
+								value="${pageScope.orderHistoryData.orderer_general1+pageScope.orderHistoryData.orderer_general2+pageScope.orderHistoryData.orderer_general3}" />
 						</td>
 					</tr>
 					<tr>
-						<td>이메일 주소  <c:out
+						<td>이메일 주소 <c:out
 								value="${pageScope.orderHistoryData.orderer_email}" />
 						</td>
 					</tr>
@@ -106,58 +108,63 @@
 				<h5>수령인 정보</h5>
 				<table>
 					<tr>
-						<td>성명  <c:out
-								value="${pageScope.orderHistoryData.recipient_name}" />
+						<td>성명 <c:out
+								value="${pageScope.orderHistoryData.recepient_name}" />
 						</td>
 					</tr>
 					<tr>
-						<td>휴대전화  <c:out
-								value="${pageScope.orderHistoryData.recipient_mobile}" />
+						<td>휴대전화 <c:out
+								value="${pageScope.orderHistoryData.recepient_mobile1+pageScope.orderHistoryData.recepient_mobile2+pageScope.orderHistoryData.recepient_mobile3}" />
 						</td>
 					</tr>
 					<tr>
-						<td>일반전화  <c:out
-								value="${pageScope.orderHistoryData.recipient_general}" />
+						<td>일반전화 <c:out
+								value="${pageScope.orderHistoryData.recepient_general1+pageScope.orderHistoryData.recepient_general2+pageScope.orderHistoryData.recepient_general3}" />
 						</td>
 					</tr>
 				</table>
 			</div>
 
 			<hr>
-			
+
 			<div>
 				<h5>요청 사항</h5>
-				<pre><c:out value="${pageScope.orderHistoryData.requested_term }"/></pre>
+				<pre>
+					<c:out value="${pageScope.orderHistoryData.requested_term }" />
+				</pre>
 			</div>
 
 			<div>
 				<h5>배송 정보</h5>
 				<table>
 					<tr>
-						<td>배송 방법 <c:out value="${pageScope.paymentMethods[1]}"/></td>
+						<td>배송 방법 <c:out value="${pageScope.paymentMethods[1]}" /></td>
 					</tr>
 					<tr>
-						<td>우편번호  <c:out
+						<td>우편번호 <c:out
 								value="${pageScope.orderHistoryData.postal_code}" />
 						</td>
 					</tr>
 					<tr>
-						<td>도로명 주소  <c:out value="${pageScope.orderHistoryData.road}" />
+						<td>도로명 주소 <c:out value="${pageScope.orderHistoryData.road}" />
 						</td>
 					</tr>
 					<tr>
-						<td>지번 주소  <c:out value="${pageScope.orderHistoryData.number}" />
+						<td>지번 주소 <c:out value="${pageScope.orderHistoryData.number}" />
 						</td>
 					</tr>
 					<tr>
-						<td>세부 주소  <c:out value="${pageScope.orderHistoryData.detail}" />
+						<td>세부 주소 <c:out value="${pageScope.orderHistoryData.detail}" />
 						</td>
 					</tr>
 				</table>
 			</div>
 
 			<hr>
-			<div>결제 수단 <c:out value="${pageScope.paymentMethods[0]}"/></div>
+			<div>
+				결제 수단
+				<c:out value="${pageScope.paymentMethods[0]}" />
+			</div>
 		</div>
 
 	</div>

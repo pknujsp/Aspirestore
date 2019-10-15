@@ -87,20 +87,32 @@ public class ServletDispatcher extends HttpServlet
 				{
 					pageControllerPath = "/orderpayment";
 
-					request.setAttribute("USER_INFO",
+					request.setAttribute("USER_INFO_REQUEST",
 							new UserDTO().setUser_id((String) request.getSession().getAttribute("SESSIONKEY"))
-									.setMobile(request.getParameter(request.getParameter("orderer_mobile_number")))
-									.setGeneral(request.getParameter("orderer_general_number"))
+									.setMobile1(request.getParameter("orderer_mobile_1"))
+									.setMobile2(request.getParameter("orderer_mobile_2"))
+									.setMobile3(request.getParameter("orderer_mobile_3"))
+									.setGeneral1(request.getParameter("orderer_general_1"))
+									.setGeneral2(request.getParameter("orderer_general_2"))
+									.setGeneral3(request.getParameter("orderer_general_3"))
 									.setUser_name(request.getParameter("orderer_name")));
-					
+
 					request.setAttribute("ORDER_FORM_DATA",
 							new OrderhistoryDTO().setOrderer_name(request.getParameter("orderer_name"))
-									.setOrderer_mobile(request.getParameter("orderer_mobile_number"))
-									.setOrderer_general(request.getParameter("orderer_general_number"))
+									.setOrderer_mobile1(request.getParameter("orderer_mobile_1"))
+									.setOrderer_mobile2(request.getParameter("orderer_mobile_2"))
+									.setOrderer_mobile3(request.getParameter("orderer_mobile_3"))
+									.setOrderer_general1(request.getParameter("orderer_general_1"))
+									.setOrderer_general2(request.getParameter("orderer_general_2"))
+									.setOrderer_general3(request.getParameter("orderer_general_3"))
 									.setOrderer_email(request.getParameter("orderer_email"))
-									.setRecipient_name(request.getParameter("recepient_name"))
-									.setRecipient_mobile(request.getParameter("recepient_mobile_number"))
-									.setRecipient_general(request.getParameter("recepient_general_number"))
+									.setRecepient_name(request.getParameter("recepient_name"))
+									.setRecepient_mobile1(request.getParameter("recepient_mobile_1"))
+									.setRecepient_mobile2(request.getParameter("recepient_mobile_2"))
+									.setRecepient_mobile3(request.getParameter("recepient_mobile_3"))
+									.setRecepient_general1(request.getParameter("recepient_general_1"))
+									.setRecepient_general2(request.getParameter("recepient_general_2"))
+									.setRecepient_general3(request.getParameter("recepient_general_3"))
 									.setPostal_code(request.getParameter("postal_code"))
 									.setRoad(request.getParameter("road_name_address"))
 									.setNumber(request.getParameter("number_address"))
