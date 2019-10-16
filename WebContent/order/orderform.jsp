@@ -55,25 +55,11 @@
 
 <title>주문서 작성 및 결제</title>
 
-<!-- Bootstrap core CSS -->
 <link href="/AspireStore/css/bootstrap.css" rel="stylesheet">
-
-<!-- Custom styles for this template -->
 <link href="/AspireStore/css/shop-homepage.css" rel="stylesheet">
 </head>
 <body>
 
-	<script type="text/javascript">
-		const selectBoxId = 'orderer_general_1_select';
-		var selectBox = document.getElementById(selectBoxId);
-		alert(${pageScope.USER_INFO.general1});
-		for (let idx = 0; idx < selectBox.options.length; ++idx) {
-			if (selectBox.options[idx].value == '${pageScope.USER_INFO.general1}') {
-				selectBox.options[idx].selected = true;
-				break;
-			}
-		}
-	</script>
 	<jsp:include page="/navbar.jsp"></jsp:include>
 	<div>
 		<h5>주문 도서 확인</h5>
@@ -110,10 +96,8 @@
 
 		<form method="post" id="orderForm" name="orderForm"
 			action="/AspireStore/orderpayment.aspire" onsubmit="return payment()">
-
 			<div>
 				<h5>주문서 작성</h5>
-
 				<div>
 					<strong>주문자 정보</strong>
 					<table>
@@ -201,7 +185,6 @@
 											픽업</label></span>
 								</div>
 							</td>
-
 						</tr>
 					</table>
 				</div>
@@ -431,25 +414,48 @@
 							});
 		}
 
-		function getLastestAddress(userId) // ajax 이용하여 최근 사용된 주소 가져옴
-		{
-
-		}
-
 		function setGeneral1() {
 			let recepientSelectBox = document
 					.getElementById('recepient_general_1_select');
 			let ordererGeneral1 = document
 					.getElementById('orderer_general_1_select');
-			let ordererValue = ordererGeneral1.options[ordererGeneral1.selectedIndex].value;
+			recepientSelectBox.options[ordererGeneral1.selectedIndex].selected = true;
+		}
 
-			for (let idx = 0; idx < recepientSelectBox.options.length; ++idx) {
-				if (recepientSelectBox.options[idx].value == ordererValue) {
-					recepientSelectBox.options[idx].selected = true;
+		function getLastestAddress(userId) // ajax 이용하여 최근 사용된 주소 가져옴
+		{
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if(xhttp.readyState == XMLHttpRequest.DONE && xhttp.status == 200)
+				{
+					document.orderForm.postal_code.value;
+					document.orderForm.road_name_address.value;
+					document.orderForm.number_address.value;
+					document.orderForm.detail_address.value;
+				}
+			};
+			
+			var data = 
+				{
+					id : userId 
+				};
+			xhttp.open('POST','/AspireStore/addressbook.aspire',true);
+			xhttp.setRequestHeader('Content-type', 'application/json');
+			xhttp.send(JSON.stringify(data));
+		}
+	</script>
+
+	<script type="text/javascript">
+		(function() {
+			var selectBox = document.getElementById('orderer_general_1_select');
+
+			for (let idx = 0; idx < selectBox.options.length; ++idx) {
+				if (selectBox.options[idx].value == '${pageScope.USER_INFO.general1}') {
+					selectBox.options[idx].selected = true;
 					break;
 				}
 			}
-		}
+		})();
 	</script>
 </body>
 </html>

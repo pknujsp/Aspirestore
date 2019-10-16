@@ -86,17 +86,19 @@ public class UserDAO
 		String query = "SELECT userinfo_name, userinfo_mobile1, userinfo_mobile2, userinfo_mobile3, userinfo_general1, userinfo_general2, userinfo_general3 FROM userinfo WHERE userinfo_id = ?";
 		UserDTO data = null;
 		ResultSet set = null;
+		
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
 		{
 			prstmt.setString(1, userId);
 
 			set = prstmt.executeQuery();
-			while (set.next())
+			while (set.next() && updateDateTime(userId, connection))
 			{
 				data = new UserDTO();
 				data.setUser_name(set.getString(1)).setMobile1(set.getString(2)).setMobile2(set.getString(3))
 						.setMobile3(set.getString(4)).setGeneral1(set.getString(5)).setGeneral2(set.getString(6))
-						.setGeneral3(set.getString(7)).setDate_time(Util.getCurrentDateTime());
+						.setGeneral3(set.getString(7));
+
 			}
 		} catch (Exception e)
 		{
@@ -133,6 +135,27 @@ public class UserDAO
 			prstmt.setString(7, data.getGeneral3());
 			prstmt.setString(8, Util.getCurrentDateTime());
 			prstmt.setString(9, data.getUser_id());
+
+			if (prstmt.executeUpdate() == 1)
+			{
+				flag = true;
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return flag;
+	}
+
+	public boolean updateDateTime(String userId, Connection connection)
+	{
+		String query = "UPDATE userinfo SET userinfo_datetime = ? WHERE userinfo_id = ?";
+		boolean flag = false;
+
+		try (PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			prstmt.setString(1, Util.getCurrentDateTime());
+			prstmt.setString(2, userId);
 
 			if (prstmt.executeUpdate() == 1)
 			{
