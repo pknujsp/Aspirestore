@@ -35,26 +35,34 @@ public class OrderPaymentDAO
 
 		try (Connection connection = ds.getConnection();)
 		{
-			String query = "INSERT INTO orderhistory VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			String query = "INSERT INTO orderhistory VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			PreparedStatement prstmt = connection.prepareStatement(query);
 
 			prstmt.setString(1, orderFormData.getUser_id());
 			prstmt.setString(2, orderFormData.getOrderer_name());
-			prstmt.setString(3, orderFormData.getOrderer_mobile());
-			prstmt.setString(4, orderFormData.getOrderer_general());
-			prstmt.setString(5, orderFormData.getOrderer_email());
-			prstmt.setString(6, orderFormData.getRecipient_name());
-			prstmt.setString(7, orderFormData.getRecipient_mobile());
-			prstmt.setString(8, orderFormData.getRecipient_general());
-			prstmt.setString(9, orderFormData.getPostal_code());
-			prstmt.setString(10, orderFormData.getRoad());
-			prstmt.setString(11, orderFormData.getNumber());
-			prstmt.setString(12, orderFormData.getDetail());
-			prstmt.setString(13, orderFormData.getRequested_term());
-			prstmt.setInt(14, orderFormData.getTotal_price());
-			prstmt.setString(15, orderFormData.getPayment_method());
-			prstmt.setString(16, orderFormData.getDelivery_method());
-			prstmt.setString(17, currentTime);
+			prstmt.setString(3, orderFormData.getOrderer_mobile1());
+			prstmt.setString(4, orderFormData.getOrderer_mobile2());
+			prstmt.setString(5, orderFormData.getOrderer_mobile3());
+			prstmt.setString(6, orderFormData.getOrderer_general1());
+			prstmt.setString(7, orderFormData.getOrderer_general2());
+			prstmt.setString(8, orderFormData.getOrderer_general3());
+			prstmt.setString(9, orderFormData.getOrderer_email());
+			prstmt.setString(10, orderFormData.getRecepient_name());
+			prstmt.setString(11, orderFormData.getRecepient_mobile1());
+			prstmt.setString(12, orderFormData.getRecepient_mobile2());
+			prstmt.setString(13, orderFormData.getRecepient_mobile3());
+			prstmt.setString(14, orderFormData.getRecepient_general1());
+			prstmt.setString(15, orderFormData.getRecepient_general2());
+			prstmt.setString(16, orderFormData.getRecepient_general3());
+			prstmt.setString(17, orderFormData.getPostal_code());
+			prstmt.setString(18, orderFormData.getRoad());
+			prstmt.setString(19, orderFormData.getNumber());
+			prstmt.setString(20, orderFormData.getDetail());
+			prstmt.setString(21, orderFormData.getRequested_term());
+			prstmt.setInt(22, orderFormData.getTotal_price());
+			prstmt.setString(23, orderFormData.getPayment_method());
+			prstmt.setString(24, orderFormData.getDelivery_method());
+			prstmt.setString(25, currentTime);
 
 			if (prstmt.executeUpdate() == 1)
 			{
@@ -208,13 +216,17 @@ public class OrderPaymentDAO
 			while (set.next())
 			{
 				dto.setOrder_code(orderCode).setUser_id(userId).setOrderer_name(set.getString(3))
-						.setOrderer_mobile(set.getString(4)).setOrderer_general(set.getString(5))
-						.setOrderer_email(set.getString(6)).setRecipient_name(set.getString(7))
-						.setRecipient_mobile(set.getString(8)).setRecipient_general(set.getString(9))
-						.setPostal_code(set.getString(10)).setRoad(set.getString(11)).setNumber(set.getString(12))
-						.setDetail(set.getString(13)).setRequested_term(set.getString(14))
-						.setTotal_price(set.getInt(15)).setPayment_method(set.getString(16))
-						.setDelivery_method(set.getString(17)).setOrder_date(set.getString(18));
+						.setOrderer_mobile1(set.getString(4)).setOrderer_mobile2(set.getString(5))
+						.setOrderer_mobile3(set.getString(6)).setOrderer_general1(set.getString(7))
+						.setOrderer_general2(set.getString(8)).setOrderer_general3(set.getString(9))
+						.setOrderer_email(set.getString(10)).setRecepient_name(set.getString(11))
+						.setRecepient_mobile1(set.getString(12)).setRecepient_mobile2(set.getString(13))
+						.setRecepient_mobile3(set.getString(14)).setRecepient_general1(set.getString(15))
+						.setRecepient_general2(set.getString(16)).setRecepient_general3(set.getString(17))
+						.setPostal_code(set.getString(18)).setRoad(set.getString(19)).setNumber(set.getString(20))
+						.setDetail(set.getString(21)).setRequested_term(set.getString(22))
+						.setTotal_price(set.getInt(23)).setPayment_method(set.getString(24))
+						.setDelivery_method(set.getString(25)).setOrder_date(set.getString(26));
 			}
 		} catch (Exception e)
 		{

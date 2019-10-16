@@ -26,9 +26,9 @@ public class SignupDAO
 		try
 		{
 			connection = ds.getConnection();
-			String query = "INSERT INTO tblmember";
-			String fieldName = "(user_id,user_password,user_birth_date, user_name, user_nickname, user_phone_number, user_gender)";
-			query = query + fieldName + " VALUES (?,password(password(?)),?,?,?,?,?)";
+			String query = "INSERT INTO users";
+			String fieldName = "(user_id, user_password, user_birth_date, user_name, user_nickname, user_phone1, user_phone2, user_phone3, user_gender)";
+			query = query + fieldName + " VALUES (? ,password(password(?)) ,? ,? ,? ,? ,? ,? ,?)";
 
 			prstmt = connection.prepareStatement(query);
 
@@ -37,10 +37,12 @@ public class SignupDAO
 			prstmt.setString(3, dto.getBirthdate());
 			prstmt.setString(4, dto.getName());
 			prstmt.setString(5, dto.getNickname());
-			prstmt.setString(6, dto.getPhone());
-			prstmt.setString(7, dto.getGender());
+			prstmt.setString(6, dto.getPhone1());
+			prstmt.setString(7, dto.getPhone2());
+			prstmt.setString(8, dto.getPhone3());
+			prstmt.setString(9, dto.getGender());
 
-			if (1 == prstmt.executeUpdate())
+			if (prstmt.executeUpdate() == 1)
 			{
 				flag = true;
 			}

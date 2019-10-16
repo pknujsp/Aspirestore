@@ -46,8 +46,9 @@ public class ServletDispatcher extends HttpServlet
 					request.setAttribute("SIGNUPDTO",
 							new SignupDTO(request.getParameter("InputEmail"), request.getParameter("InputPassword"),
 									request.getParameter("InputName"), request.getParameter("InputNickName"),
-									request.getParameter("SetBirthdate"), request.getParameter("InputPhoneNumber"),
-									request.getParameter("InputGender")));
+									request.getParameter("SetBirthdate"), request.getParameter("InputPhoneNumber1"),
+									request.getParameter("InputPhoneNumber2"),
+									request.getParameter("InputPhoneNumber3"), request.getParameter("InputGender")));
 				}
 				break;
 

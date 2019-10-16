@@ -88,12 +88,20 @@
 					</tr>
 					<tr>
 						<td>휴대전화 <c:out
-								value="${pageScope.orderHistoryData.orderer_mobile1+pageScope.orderHistoryData.orderer_mobile2+pageScope.orderHistoryData.orderer_mobile3}" />
+								value="${pageScope.orderHistoryData.orderer_mobile1}" />-
+								<c:out
+								value="${pageScope.orderHistoryData.orderer_mobile2}" />-
+								<c:out
+								value="${pageScope.orderHistoryData.orderer_mobile3}" />
 						</td>
 					</tr>
 					<tr>
 						<td>일반전화 <c:out
-								value="${pageScope.orderHistoryData.orderer_general1+pageScope.orderHistoryData.orderer_general2+pageScope.orderHistoryData.orderer_general3}" />
+								value="${pageScope.orderHistoryData.orderer_general1}" />-
+								<c:out
+								value="${pageScope.orderHistoryData.orderer_general2}" />-
+								<c:out
+								value="${pageScope.orderHistoryData.orderer_general3}" />
 						</td>
 					</tr>
 					<tr>
@@ -114,12 +122,16 @@
 					</tr>
 					<tr>
 						<td>휴대전화 <c:out
-								value="${pageScope.orderHistoryData.recepient_mobile1+pageScope.orderHistoryData.recepient_mobile2+pageScope.orderHistoryData.recepient_mobile3}" />
+								value="${pageScope.orderHistoryData.recepient_mobile1}" />-<c:out
+								value="${pageScope.orderHistoryData.recepient_mobile2}" />-<c:out
+								value="${pageScope.orderHistoryData.recepient_mobile3}" />
 						</td>
 					</tr>
 					<tr>
 						<td>일반전화 <c:out
-								value="${pageScope.orderHistoryData.recepient_general1+pageScope.orderHistoryData.recepient_general2+pageScope.orderHistoryData.recepient_general3}" />
+								value="${pageScope.orderHistoryData.recepient_general1}" />-<c:out
+								value="${pageScope.orderHistoryData.recepient_general2}" />-<c:out
+								value="${pageScope.orderHistoryData.recepient_general3}" />
 						</td>
 					</tr>
 				</table>
@@ -166,7 +178,6 @@
 				<c:out value="${pageScope.paymentMethods[0]}" />
 			</div>
 		</div>
-
 	</div>
 </body>
 </html>

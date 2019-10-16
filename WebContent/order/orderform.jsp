@@ -64,9 +64,9 @@
 <body>
 
 	<script type="text/javascript">
-		let selectBoxId = 'orderer_general_1_select';
-		let selectBox = document.getElementById(selectBoxId);
-
+		const selectBoxId = 'orderer_general_1_select';
+		var selectBox = document.getElementById(selectBoxId);
+		alert(${pageScope.USER_INFO.general1});
 		for (let idx = 0; idx < selectBox.options.length; ++idx) {
 			if (selectBox.options[idx].value == '${pageScope.USER_INFO.general1}') {
 				selectBox.options[idx].selected = true;
@@ -120,30 +120,23 @@
 						<tr>
 							<th>성명</th>
 							<td><span><label> <input type="text"
-										id="orderer_name" name="orderer_name" /> <c:if
-											test="${not empty pageScope.USER_INFO }">
-											<c:out value="${pageScope.USER_INFO.user_name }" />
-										</c:if></label></span></td>
+										id="orderer_name" name="orderer_name"
+										value="<c:out value="${pageScope.USER_INFO.user_name}"/>">
+								</label></span></td>
 						</tr>
 						<tr>
 							<th>휴대전화</th>
 							<td>
 								<p id="orderer_phone">
 									<input type="text" class="text" id="orderer_mobile_1"
-										name="orderer_mobile_1" maxlength="3" />
-									<c:if test="${not empty pageScope.USER_INFO}">
-										<c:out value="${pageScope.USER_INFO.mobile1 }" />
-									</c:if>
+										name="orderer_mobile_1" maxlength="3"
+										value="<c:out value="${pageScope.USER_INFO.mobile1 }" />">
 									- <input type="text" class="text" id="orderer_mobile_2"
-										name="orderer_mobile_2" maxlength="4" />
-									<c:if test="${not empty pageScope.USER_INFO }">
-										<c:out value="${pageScope.USER_INFO.mobile2 }" />
-									</c:if>
+										name="orderer_mobile_2" maxlength="4"
+										value="<c:out value="${pageScope.USER_INFO.mobile2 }" />">
 									- <input type="text" class="text" id="orderer_mobile_3"
-										name="orderer_mobile_3" maxlength="4" />
-									<c:if test="${not empty pageScope.USER_INFO }">
-										<c:out value="${pageScope.USER_INFO.mobile3 }" />
-									</c:if>
+										name="orderer_mobile_3" maxlength="4"
+										value="<c:out value="${pageScope.USER_INFO.mobile3 }" />">
 								</p>
 							</td>
 						</tr>
@@ -179,15 +172,11 @@
 										<option value="0507">0507</option>
 										<option value="0508">0508</option>
 									</select> - <input type="text" class="text" id="orderer_general_2"
-										name="orderer_general_2" maxlength="4" />
-									<c:if test="${not empty pageScope.USER_INFO}">
-										<c:out value="${pageScope.USER_INFO.general2 }" />
-									</c:if>
+										name="orderer_general_2" maxlength="4"
+										value="<c:out value="${pageScope.USER_INFO.general2 }" />">
 									- <input type="text" class="text" id="orderer_general_3"
-										name="orderer_general_3" maxlength="4" />
-									<c:if test="${not empty pageScope.USER_INFO }">
-										<c:out value="${pageScope.USER_INFO.general3 }" />
-									</c:if>
+										name="orderer_general_3" maxlength="4"
+										value="<c:out value="${pageScope.USER_INFO.general3 }" />">
 								</p>
 							</td>
 						</tr>
@@ -416,7 +405,7 @@
 					.getElementById('orderer_name').value;
 			setTelNumber('recepient_phone', 'orderer_phone');
 			setTelNumber('recepient_general', 'orderer_general');
-			setGeneral();
+			setGeneral1();
 		}
 
 		function setTelNumber(rId, oId) {

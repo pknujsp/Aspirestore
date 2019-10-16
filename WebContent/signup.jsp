@@ -88,9 +88,13 @@
 					value="2000-01-01">
 			</div>
 			<div class="form-group">
-				<label for="InputPhoneNumber">휴대폰 번호</label> <input type="tel"
-					class="form-control" id="InputPhoneNumber" name="InputPhoneNumber"
-					placeholder="01012345678">
+				<label for="InputPhoneNumber">휴대폰 번호</label> <input type="text"
+					class="form-control" id="InputPhoneNumber1"
+					name="InputPhoneNumber1"> - <input type="text"
+					class="form-control" id="InputPhoneNumber2"
+					name="InputPhoneNumber2"> - <input type="text"
+					class="form-control" id="InputPhoneNumber3"
+					name="InputPhoneNumber3">
 			</div>
 			<div class="form-group">
 				<label for="InputGender">성별</label> <input type="radio"

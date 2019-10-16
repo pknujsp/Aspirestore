@@ -28,7 +28,7 @@ public class SigninDAO
 		try
 		{
 			connection = ds.getConnection();
-			String query = "SELECT COUNT(user_id) FROM tblmember WHERE user_id=? AND user_password=password(password(?))";
+			String query = "SELECT COUNT(user_id) FROM users WHERE user_id=? AND user_password=password(password(?))";
 			prstmt = connection.prepareStatement(query);
 
 			prstmt.setString(1, email);
