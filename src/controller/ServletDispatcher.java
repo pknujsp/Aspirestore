@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import etc.OrderInformation;
+import model.AddressDTO;
 import model.ItemsDTO;
 import model.OrderhistoryDTO;
 import model.SalehistoryDTO;
@@ -93,7 +94,7 @@ public class ServletDispatcher extends HttpServlet
 									.setMobile1(request.getParameter("orderer_mobile_1"))
 									.setMobile2(request.getParameter("orderer_mobile_2"))
 									.setMobile3(request.getParameter("orderer_mobile_3"))
-									.setGeneral1(request.getParameter("orderer_general_1"))
+									.setGeneral1(request.getParameter("orderer_general_1_select"))
 									.setGeneral2(request.getParameter("orderer_general_2"))
 									.setGeneral3(request.getParameter("orderer_general_3"))
 									.setUser_name(request.getParameter("orderer_name")));
@@ -103,7 +104,7 @@ public class ServletDispatcher extends HttpServlet
 									.setOrderer_mobile1(request.getParameter("orderer_mobile_1"))
 									.setOrderer_mobile2(request.getParameter("orderer_mobile_2"))
 									.setOrderer_mobile3(request.getParameter("orderer_mobile_3"))
-									.setOrderer_general1(request.getParameter("orderer_general_1"))
+									.setOrderer_general1(request.getParameter("orderer_general_1_select"))
 									.setOrderer_general2(request.getParameter("orderer_general_2"))
 									.setOrderer_general3(request.getParameter("orderer_general_3"))
 									.setOrderer_email(request.getParameter("orderer_email"))
@@ -111,7 +112,7 @@ public class ServletDispatcher extends HttpServlet
 									.setRecepient_mobile1(request.getParameter("recepient_mobile_1"))
 									.setRecepient_mobile2(request.getParameter("recepient_mobile_2"))
 									.setRecepient_mobile3(request.getParameter("recepient_mobile_3"))
-									.setRecepient_general1(request.getParameter("recepient_general_1"))
+									.setRecepient_general1(request.getParameter("recepient_general_1_select"))
 									.setRecepient_general2(request.getParameter("recepient_general_2"))
 									.setRecepient_general3(request.getParameter("recepient_general_3"))
 									.setPostal_code(request.getParameter("postal_code"))
@@ -124,6 +125,18 @@ public class ServletDispatcher extends HttpServlet
 									.setUser_id((String) request.getSession().getAttribute("SESSIONKEY"))
 									.setTotal_price(Integer.parseInt(request.getParameter("total_price"))));
 
+					if (request.getParameter("address_code").equals("")) // 신규 입력
+					{
+						request.setAttribute("NEW_ADDRESS",
+								new AddressDTO().setPostal_code(request.getParameter("postal_code"))
+										.setRoad(request.getParameter("road_name_address"))
+										.setNumber(request.getParameter("number_address"))
+										.setDetail(request.getParameter("detail_address"))
+										.setUser_id((String) request.getSession().getAttribute("SESSIONKEY")));
+					} else
+					{
+						request.setAttribute("address_code", request.getParameter("address_code"));
+					}
 					request.setAttribute("ORDERED_ITEMS",
 							(ArrayList<OrderInformation>) request.getSession().getAttribute("ORDER_LIST"));
 					request.getSession().removeAttribute("ORDER_LIST");
@@ -158,6 +171,16 @@ public class ServletDispatcher extends HttpServlet
 					request.setAttribute("ORDER_INFORMATIONS", orderInformations);
 				}
 				break;
+
+			case "/addressbook.aspire":
+				if (checkNullParameters())
+				{
+						request.setAttribute("ID", request.getParameter("ID"));
+						request.setAttribute("CODE", request.getParameter("CODE"));
+						request.setAttribute("TYPE", request.getParameter("TYPE")); // 0 = 최근주소  1 = 주소 삭제
+						pageControllerPath = "/addressbook";
+				}
+				break;
 			}
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher(pageControllerPath);
 			requestDispatcher.include(request, response);
@@ -171,6 +194,9 @@ public class ServletDispatcher extends HttpServlet
 			{
 				requestDispatcher = request.getRequestDispatcher(viewUrl.substring(8));
 				requestDispatcher.forward(request, response);
+			} else if (viewUrl.startsWith("ajax:"))
+			{
+
 			} else
 			{
 				requestDispatcher = request.getRequestDispatcher(viewUrl);

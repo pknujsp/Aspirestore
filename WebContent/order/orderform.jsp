@@ -170,7 +170,9 @@
 								name="orderer_email" /></td>
 					</table>
 				</div>
+
 				<hr>
+
 				<div>
 					<strong>배송 정보</strong>
 					<table>
@@ -192,32 +194,13 @@
 				<div>
 					<table>
 						<tr>
-							<th>배송지</th>
-							<td>
-								<div>
-									<span><label><input type="radio" class="radio"
-											name="select_address" id="select_address"
-											value="latest_address" />최근 배송지</label></span> <span><label><input
-											type="radio" class="radio" name="select_address"
-											id="select_address" value="address_list" />주소록</label></span> <span><label><input
-											type="radio" class="radio" name="select_address"
-											id="select_address" value="write_new_address" />신규 입력</label></span>
-								</div>
-							</td>
-						</tr>
-					</table>
-				</div>
-
-				<div>
-					<table>
-						<tr>
 							<th>수령인 성명</th>
 							<td>
 								<div>
 									<span><label><input type="text" class="text"
 											id="recepient_name" name="recepient_name" /></label></span> <span><input
 										type="button" id="setRecepientInfo" name="setRecepientInfo"
-										onclick="javascript:setRecepientData()" / value="주문자 정보와 동일"></span>
+										onclick="javascript:setRecepientData()" value="주문자 정보와 동일"></span>
 								</div>
 							</td>
 						</tr>
@@ -282,6 +265,28 @@
 				<div>
 					<table>
 						<tr>
+							<th>배송지</th>
+							<td>
+								<div>
+									<span><label><input type="radio" class="radio"
+											name="select_address" id="select_address"
+											value="latest_address"
+											onclick="javascript:getLastestAddress()" />최근 배송지</label></span> <span><label><input
+											type="radio" class="radio" name="select_address"
+											id="select_address" value="address_list"
+											onclick="javascript:showAddressListModal()" />주소록</label> </span> <span><label><input
+											type="radio" class="radio" name="select_address"
+											id="select_address" value="write_new_address"
+											onclick="javascript:clearAddressCodeValue()" />신규 입력</label></span>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+
+				<div>
+					<table>
+						<tr>
 							<td><p>
 									<span>우편번호 <input type="text" class="text"
 										id="postal_code" name="postal_code" maxlength="5" /></span> <span><input
@@ -298,9 +303,10 @@
 								</p>
 								<p>
 									상세 주소<input type="text" class="text" id="detail_address"
-										name="detail_address" />
-								</p> <input type="button" name="add_to_addresslist"
-								id="add_to_addresslist" value="주소록에 저장" /></td>
+										name="detail_address" /><input type="hidden"
+										id="address_code" name="address_code" value="" />
+								</p></td>
+
 						</tr>
 					</table>
 				</div>
@@ -405,9 +411,7 @@
 
 			let recepientInputList = $('#' + rId + ' input[type=text]');
 
-			$
-					.each(
-							recepientInputList,
+			$.each(recepientInputList,
 							function(index, value) {
 								document.getElementById($(value).attr('id')).value = numberArr[i];
 								++i;
@@ -422,26 +426,46 @@
 			recepientSelectBox.options[ordererGeneral1.selectedIndex].selected = true;
 		}
 
-		function getLastestAddress(userId) // ajax 이용하여 최근 사용된 주소 가져옴
+		function getLastestAddress() // ajax 이용하여 최근 사용된 주소 가져옴
 		{
 			var xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function() {
-				if(xhttp.readyState == XMLHttpRequest.DONE && xhttp.status == 200)
-				{
-					document.orderForm.postal_code.value;
-					document.orderForm.road_name_address.value;
-					document.orderForm.number_address.value;
-					document.orderForm.detail_address.value;
+				if (xhttp.readyState == XMLHttpRequest.DONE
+						&& xhttp.status == 200) {
+					var responseArr = xhttp.response;
+
+					setReadonlyAddressInput(true);
+					document.orderForm.postal_code.value = responseArr[0].POSTAL_CODE;
+					document.orderForm.road_name_address.value = responseArr[0].ROAD_NAME;
+					document.orderForm.number_address.value = responseArr[0].NUMBER;
+					document.orderForm.detail_address.value = responseArr[0].DETAIL;
+					document.orderForm.address_code.value = responseArr[0].ADDRESS_CODE;
 				}
 			};
-			
-			var data = 
-				{
-					id : userId 
-				};
-			xhttp.open('POST','/AspireStore/addressbook.aspire',true);
-			xhttp.setRequestHeader('Content-type', 'application/json');
-			xhttp.send(JSON.stringify(data));
+
+			xhttp.open('POST', '/AspireStore/addressbook.aspire', true);
+			xhttp.setRequestHeader('Content-type',
+					'application/x-www-form-urlencoded');
+			xhttp.responseType = 'json';
+			xhttp.send('ID=' + '${sessionScope.SESSIONKEY}' + '&TYPE=' + '0');
+		}
+
+		function clearAddressCodeValue() {
+			setReadonlyAddressInput(false);
+			document.orderForm.address_code.value = '';
+		}
+
+		function showAddressListModal() {
+			setReadonlyAddressInput(true);
+			let id = '${sessionScope.SESSIONKEY}';
+			window.open('addressListModal.jsp?user_id=' + id, 'scrollbars=yes');
+		}
+		
+		function setReadonlyAddressInput(status){
+			document.orderForm.postal_code.readOnly = status;
+			document.orderForm.road_name_address.readOnly = status;
+			document.orderForm.number_address.readOnly = status;
+			document.orderForm.detail_address.readOnly = status;
 		}
 	</script>
 

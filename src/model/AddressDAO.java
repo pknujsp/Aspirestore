@@ -9,6 +9,8 @@ import java.util.Date;
 
 import javax.sql.DataSource;
 
+import etc.Util;
+
 public class AddressDAO
 {
 	private DataSource ds;
@@ -43,33 +45,66 @@ public class AddressDAO
 		return list;
 	}
 
-	public AddressDTO getLatestAddress(String user_id)
+	public boolean deleteAddress(String userId, int code)
 	{
-		String query = "SELECT * FROM addressbook WHERE addressbook_user_id = ? ORDER BY address_last_usage DESC LIMIT 1";
+		String query = "DELETE FROM addressbook WHERE addressbook_user_id = ? AND addressbook_code = ?";
+		boolean flag = false;
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
 		{
-			prstmt.setString(1, user_id);
-			ResultSet set = prstmt.executeQuery();
-
-			while (set.next())
+			prstmt.setString(1, userId);
+			prstmt.setInt(2, code);
+			if (prstmt.executeUpdate() == 1)
 			{
-				return new AddressDTO().setUser_id(set.getString(1)).setCode(set.getInt(2))
-						.setPostal_code(set.getString(3)).setRoad(set.getString(4)).setNumber(set.getString(5))
-						.setDetail(set.getString(6));
+				flag = true;
 			}
-
-			set.close();
 		} catch (Exception e)
 		{
 			e.printStackTrace();
 		}
-		return null;
+		return flag;
+	}
+
+	public AddressDTO getLatestAddress(String user_id)
+	{
+		String query = "SELECT * FROM addressbook WHERE addressbook_user_id = ? ORDER BY addressbook_last_usage DESC LIMIT 1";
+		ResultSet set = null;
+		AddressDTO data = null;
+		
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			prstmt.setString(1, user_id);
+			set = prstmt.executeQuery();
+
+			while (set.next())
+			{
+				data = new AddressDTO().setUser_id(set.getString(1)).setCode(set.getInt(2))
+						.setPostal_code(set.getString(3)).setRoad(set.getString(4)).setNumber(set.getString(5))
+						.setDetail(set.getString(6));
+			}
+
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return data;
 	}
 
 	public boolean insertAddressToBook(AddressDTO data)
 	{
-		String query = "INSERT INTO addressbook VALUES (?,null,?,?,?,?)";
+		String query = "INSERT INTO addressbook VALUES (?, null, ?, ?, ?, ?, ?)";
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
 		{
@@ -78,6 +113,7 @@ public class AddressDAO
 			prstmt.setString(3, data.getRoad());
 			prstmt.setString(4, data.getNumber());
 			prstmt.setString(5, data.getDetail());
+			prstmt.setString(6, Util.getCurrentDateTime());
 
 			if (prstmt.executeUpdate() == 1)
 			{
@@ -96,7 +132,7 @@ public class AddressDAO
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
 		{
-			prstmt.setString(1, getCurrentDateTime());
+			prstmt.setString(1, Util.getCurrentDateTime());
 			prstmt.setString(2, user_id);
 			prstmt.setInt(3, code);
 
@@ -109,12 +145,5 @@ public class AddressDAO
 			e.printStackTrace();
 		}
 		return false;
-	}
-
-	private String getCurrentDateTime()
-	{
-		Date date = new Date();
-		SimpleDateFormat pattern = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		return new String(pattern.format(date));
 	}
 }

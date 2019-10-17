@@ -96,6 +96,16 @@
 		<servlet-name>requestorderservlet</servlet-name>
 		<url-pattern>/orderpayment</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>addressbookservlet</servlet-name>
+		<servlet-class>controller.ServletAddressBook</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>addressbookservlet</servlet-name>
+		<url-pattern>/addressbook</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<servlet-name>frontcontroller</servlet-name>

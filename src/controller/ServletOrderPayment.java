@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import etc.OrderInformation;
+import model.AddressDAO;
+import model.AddressDTO;
 import model.ItemsDAO;
 import model.ItemsDTO;
 import model.OrderPaymentDAO;
@@ -28,6 +30,7 @@ public class ServletOrderPayment extends HttpServlet
 		try
 		{
 			ServletContext servletContext = this.getServletContext();
+			final String userId = (String) request.getSession().getAttribute("SESSIONKEY");
 
 			UserDTO requestUserData = (UserDTO) request.getAttribute("USER_INFO_REQUEST");
 			UserDTO sessionUserData = (UserDTO) request.getSession().getAttribute("USER_INFO_SESSION");
@@ -50,6 +53,17 @@ public class ServletOrderPayment extends HttpServlet
 			} else // 최초 주문 O
 			{
 				userDao.insertUserInfo(requestUserData);
+			}
+
+			AddressDAO addressDAO = (AddressDAO) servletContext.getAttribute("ADDRESS_DAO");
+
+			if (request.getAttribute("NEW_ADDRESS") != null)   // 신규 입력
+			{
+				AddressDTO address = (AddressDTO) request.getAttribute("NEW_ADDRESS");
+				addressDAO.insertAddressToBook(address);
+			} else
+			{
+				addressDAO.updateLastUsageDateTime(userId, Integer.parseInt((String)request.getAttribute("address_code")));
 			}
 
 			OrderhistoryDTO orderFromData = (OrderhistoryDTO) request.getAttribute("ORDER_FORM_DATA");
