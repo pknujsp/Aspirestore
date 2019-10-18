@@ -360,7 +360,6 @@
 		</form>
 	</div>
 
-
 	<%@ include file="/footer.html"%>
 	<!-- Bootstrap core JavaScript -->
 	<script src="jquery/jquery.min.js"></script>
@@ -458,7 +457,7 @@
 		function showAddressListModal() {
 			setReadonlyAddressInput(true);
 			let id = '${sessionScope.SESSIONKEY}';
-			window.open('addressListModal.jsp?user_id=' + id, 'scrollbars=yes');
+			window.open('addressListModal.jsp?user_id=' + id, 'scrollbars=yes,width=400,height=250');
 		}
 		
 		function setReadonlyAddressInput(status){

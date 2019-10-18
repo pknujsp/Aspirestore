@@ -199,6 +199,53 @@ public class ItemsDAO
 		return bookList;
 	}
 
+	public ArrayList<ItemsDTO> getitemsForBasket(Map<Integer, String> codeMap)
+	{
+		String query = "SELECT item_name, item_author_code, item_publisher_code, item_selling_price FROM items WHERE item_code = ? AND item_category_code = ?";
+		ResultSet set = null;
+		ArrayList<ItemsDTO> list = null;
+
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			Iterator<Integer> it = codeMap.keySet().iterator();
+
+			while (it.hasNext())
+			{
+				int itemCode = it.next().intValue();
+				String categoryCode = codeMap.get(itemCode);
+
+				prstmt.setInt(1, itemCode);
+				prstmt.setString(2, categoryCode);
+
+				set = prstmt.executeQuery();
+			}
+
+			list = new ArrayList<ItemsDTO>();
+
+			while (set.next())
+			{
+				list.add(new ItemsDTO().setItem_name(set.getString(1)).setItem_author_code(set.getInt(2))
+						.setItem_publisher_code(set.getInt(3)).setItem_selling_price(set.getInt(4)));
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return list;
+	}
+
 	private String cutString(String str)
 	{
 		if (str.length() >= 150)

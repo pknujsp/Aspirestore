@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import etc.OrderInformation;
 import model.AddressDTO;
+import model.BasketDTO;
 import model.ItemsDTO;
 import model.OrderhistoryDTO;
 import model.SalehistoryDTO;
@@ -175,16 +176,52 @@ public class ServletDispatcher extends HttpServlet
 			case "/addressbook.aspire":
 				if (checkNullParameters())
 				{
-						request.setAttribute("ID", request.getParameter("ID"));
-						request.setAttribute("CODE", request.getParameter("CODE"));
-						request.setAttribute("TYPE", request.getParameter("TYPE")); // 0 = 최근주소  1 = 주소 삭제
-						pageControllerPath = "/addressbook";
+					request.setAttribute("ID", request.getParameter("ID"));
+					request.setAttribute("CODE", request.getParameter("CODE"));
+					request.setAttribute("TYPE", request.getParameter("TYPE")); // 0 = 최근주소 1 = 주소 삭제
+					pageControllerPath = "/addressbook";
 				}
 				break;
+
+			case "/basket.aspire":
+				if (checkNullParameters())
+				{
+					pageControllerPath = "/basket";
+					String type = request.getParameter("type");
+					request.setAttribute("TYPE", type);
+
+					switch (type)
+					{
+					case "ADD":
+						request.setAttribute("BOOK_TO_ADD",
+								new BasketDTO().setUser_id(request.getSession().getAttribute("SESSIONKEY").toString())
+										.setItem_code(Integer.parseInt(request.getParameter("itemCode")))
+										.setCategory_code(request.getParameter("itemCategory"))
+										.setQuantity(Integer.parseInt(request.getParameter("quantity"))));
+						break;
+
+					case "DELETE":
+						String[] checkedBooksCodes = request.getParameterValues("checkBoxBook");
+						String[] checkedBooksCcodes = request.getParameterValues("checkedCcode");
+
+						ArrayList<BasketDTO> list = new ArrayList<BasketDTO>(checkedBooksCodes.length);
+
+						for (int i = 0; i < list.size(); ++i)
+						{
+							list.add(new BasketDTO().setItem_code(Integer.parseInt(checkedBooksCodes[i]))
+									.setCategory_code(checkedBooksCcodes[i]));
+						}
+						request.setAttribute("BOOKS_TO_BE_DELETED", list);
+						break;
+
+					case "GET_BASKET":
+						break;
+					}
+				}
 			}
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher(pageControllerPath);
 			requestDispatcher.include(request, response);
-			String viewUrl = (String) request.getAttribute("VIEWURL");
+			String viewUrl = request.getAttribute("VIEWURL").toString();
 
 			if (viewUrl.startsWith("redirect:"))
 			{

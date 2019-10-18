@@ -33,13 +33,7 @@
 
 </head>
 <body>
-	<script>
-		function clickButton(uri) {
-			var form = document.getElementById('itemInfoForm');
-			form.setAttribute('action', uri);
-			paymentForm.submit();
-		}
-	</script>
+
 
 	<jsp:include page="/navbar.jsp"></jsp:include>
 	<br>
@@ -86,15 +80,16 @@
 
 			<form method="post" id="itemInfoForm">
 
-				<span> <input type="number" name="quantity" id="quantity"
+				<span> 수량 <input type="number" name="quantity" id="quantity"
 					value="1" min="1" /> <input type="hidden" name="itemPrice"
 					id="itemPrice" value="<%=item.getItem_selling_price()%>" /> <input
 					type="hidden" name="itemCategory" id="itemCategory"
 					value="<%=item.getItem_category_code()%>" /> <input type="hidden"
-					name="itemCode" id="itemPrice" value="<%=item.getItem_code()%>" />
-				</span> <span> <input type="submit" class="btn btn-primary"
-					onclick="javascript:clickButton('/AspireStore/cart.aspire')"
-					role="button" value="장바구니에 추가" />
+					name="itemCode" id="itemCode" value="<%=item.getItem_code()%>" />
+				</span> <span>
+					<button class="btn btn-primary"
+						onclick="javascript:addBookToTheBasket('/AspireStore/basket.aspire')">장바구니에
+						추가</button>
 				</span> <span> <input type="submit" class="btn btn-primary"
 					onclick="javascript:clickButton('/AspireStore/orderform.aspire')"
 					value="바로 구매" />
@@ -217,11 +212,37 @@
 	<%@ include file="/footer.html"%>
 
 	<!-- Bootstrap core JavaScript -->
-	<script src="jquery/jquery.min.js">
-		
-	</script>
+	<script src="jquery/jquery.min.js"></script>
 	<script src="js/bootstrap.bundle.min.js"></script>
 
+	<script type="text/javascript">
+		function addBookToTheBasket(url) {
+			var xhttp = new XMLHttpRequest();
+
+			xhttp.onreadystatechange = function() {
+				if (xhttp.readyState == XMLHttpRequest.DONE
+						&& xhttp.status == 200) {
+					alert('장바구니에 추가됨');
+				}
+			};
+			xhttp.open('POST', url, true);
+			xhttp.setRequestHeader('Content-type',
+					'application/x-www-form-urlencoded');
+
+			var icode = document.getElementById('itemCode').value;
+			var ccode = document.getElementById('itemCategory').value;
+			var quantity = document.getElementById('quantity').value;
+			xhttp.send('itemCode=' + icode + '&itemCategory=' + ccode
+					+ '&type=' + 'ADD' + '&quantity=' + quantity);
+		}
+	</script>
+	<script>
+		function clickButton(uri) {
+			var form = document.getElementById('itemInfoForm');
+			form.setAttribute('action', uri);
+			paymentForm.submit();
+		}
+	</script>
 </body>
 
 </html>

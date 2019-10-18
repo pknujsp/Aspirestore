@@ -82,32 +82,28 @@
 				<h5>주문자 정보</h5>
 				<table>
 					<tr>
-						<td>성명 <c:out
-								value="${pageScope.orderHistoryData.orderer_name}" />
+						<th>성명</th>
+						<td><c:out value="${pageScope.orderHistoryData.orderer_name}" />
 						</td>
 					</tr>
 					<tr>
-						<td>휴대전화 <c:out
-								value="${pageScope.orderHistoryData.orderer_mobile1}" />-
-								<c:out
-								value="${pageScope.orderHistoryData.orderer_mobile2}" />-
-								<c:out
-								value="${pageScope.orderHistoryData.orderer_mobile3}" />
-						</td>
+						<th>휴대전화</th>
+						<td><c:out
+								value="${pageScope.orderHistoryData.orderer_mobile1}" />-<c:out
+								value="${pageScope.orderHistoryData.orderer_mobile2}" />-<c:out
+								value="${pageScope.orderHistoryData.orderer_mobile3}" /></td>
 					</tr>
 					<tr>
-						<td>일반전화 <c:out
-								value="${pageScope.orderHistoryData.orderer_general1}" />-
-								<c:out
-								value="${pageScope.orderHistoryData.orderer_general2}" />-
-								<c:out
-								value="${pageScope.orderHistoryData.orderer_general3}" />
-						</td>
+						<th>일반전화</th>
+						<td><c:out
+								value="${pageScope.orderHistoryData.orderer_general1}" />-<c:out
+								value="${pageScope.orderHistoryData.orderer_general2}" />-<c:out
+								value="${pageScope.orderHistoryData.orderer_general3}" /></td>
 					</tr>
 					<tr>
-						<td>이메일 주소 <c:out
-								value="${pageScope.orderHistoryData.orderer_email}" />
-						</td>
+						<th>이메일 주소</th>
+						<td><c:out
+								value="${pageScope.orderHistoryData.orderer_email}" /></td>
 					</tr>
 				</table>
 			</div>
@@ -116,23 +112,23 @@
 				<h5>수령인 정보</h5>
 				<table>
 					<tr>
-						<td>성명 <c:out
-								value="${pageScope.orderHistoryData.recepient_name}" />
-						</td>
+						<th>성명</th>
+						<td><c:out
+								value="${pageScope.orderHistoryData.recepient_name}" /></td>
 					</tr>
 					<tr>
-						<td>휴대전화 <c:out
+						<th>휴대전화</th>
+						<td><c:out
 								value="${pageScope.orderHistoryData.recepient_mobile1}" />-<c:out
 								value="${pageScope.orderHistoryData.recepient_mobile2}" />-<c:out
-								value="${pageScope.orderHistoryData.recepient_mobile3}" />
-						</td>
+								value="${pageScope.orderHistoryData.recepient_mobile3}" /></td>
 					</tr>
 					<tr>
-						<td>일반전화 <c:out
+						<th>일반전화</th>
+						<td><c:out
 								value="${pageScope.orderHistoryData.recepient_general1}" />-<c:out
 								value="${pageScope.orderHistoryData.recepient_general2}" />-<c:out
-								value="${pageScope.orderHistoryData.recepient_general3}" />
-						</td>
+								value="${pageScope.orderHistoryData.recepient_general3}" /></td>
 					</tr>
 				</table>
 			</div>
@@ -150,31 +146,32 @@
 				<h5>배송 정보</h5>
 				<table>
 					<tr>
-						<td>배송 방법 <c:out value="${pageScope.paymentMethods[1]}" /></td>
+						<th>배송 방법</th>
+						<td><c:out value="${pageScope.paymentMethods[1]}" /></td>
 					</tr>
 					<tr>
-						<td>우편번호 <c:out
-								value="${pageScope.orderHistoryData.postal_code}" />
+						<th>우편번호</th>
+						<td><c:out value="${pageScope.orderHistoryData.postal_code}" />
 						</td>
 					</tr>
 					<tr>
-						<td>도로명 주소 <c:out value="${pageScope.orderHistoryData.road}" />
-						</td>
+						<th>도로명 주소</th>
+						<td><c:out value="${pageScope.orderHistoryData.road}" /></td>
 					</tr>
 					<tr>
-						<td>지번 주소 <c:out value="${pageScope.orderHistoryData.number}" />
-						</td>
+						<th>지번 주소</th>
+						<td><c:out value="${pageScope.orderHistoryData.number}" /></td>
 					</tr>
 					<tr>
-						<td>세부 주소 <c:out value="${pageScope.orderHistoryData.detail}" />
-						</td>
+						<th>세부 주소</th>
+						<td><c:out value="${pageScope.orderHistoryData.detail}" /></td>
 					</tr>
 				</table>
 			</div>
 
 			<hr>
 			<div>
-				결제 수단
+				<h5>결제 수단</h5>
 				<c:out value="${pageScope.paymentMethods[0]}" />
 			</div>
 		</div>

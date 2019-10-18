@@ -21,6 +21,7 @@
 		<welcome-file>navbar.jsp</welcome-file>
 		<welcome-file>footer.html</welcome-file>
 		<welcome-file>confirmorder.jsp</welcome-file>
+		<welcome-file>basket.jsp</welcome-file>
 	</welcome-file-list>
 
 	<listener>
@@ -86,7 +87,7 @@
 		<servlet-name>createorderformservlet</servlet-name>
 		<url-pattern>/orderform</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>requestorderservlet</servlet-name>
 		<servlet-class>controller.ServletOrderPayment</servlet-class>
@@ -96,15 +97,25 @@
 		<servlet-name>requestorderservlet</servlet-name>
 		<url-pattern>/orderpayment</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>addressbookservlet</servlet-name>
 		<servlet-class>controller.ServletAddressBook</servlet-class>
 	</servlet>
-	
+
 	<servlet-mapping>
 		<servlet-name>addressbookservlet</servlet-name>
 		<url-pattern>/addressbook</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>basketservlet</servlet-name>
+		<servlet-class>controller.ServletBasket</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>basketservlet</servlet-name>
+		<url-pattern>/basket</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
