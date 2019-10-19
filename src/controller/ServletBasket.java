@@ -41,33 +41,44 @@ public class ServletBasket extends HttpServlet
 			getBasket(request, response);
 			break;
 		}
-		destroy();
 	}
 
 	protected void addBookToTheBasket(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
-		ServletContext sc = this.getServletContext();
+		try
+		{
+			ServletContext sc = this.getServletContext();
 
-		BasketDAO basketDAO = (BasketDAO) sc.getAttribute("BASKET_DAO");
-		BasketDTO data = (BasketDTO) request.getAttribute("BOOK_TO_ADD");
-		basketDAO.addBookToTheBasket(data);
+			BasketDAO basketDAO = (BasketDAO) sc.getAttribute("BASKET_DAO");
+			BasketDTO data = (BasketDTO) request.getAttribute("BOOK_TO_ADD");
+			basketDAO.addBookToTheBasket(data);
 
-		request.setAttribute("VIEWURL", "ajax:/");
+			request.setAttribute("VIEWURL", "ajax:/");
+		} catch (Exception e)
+		{
+			throw new ServletException(e);
+		}
 	}
 
 	protected void deleteBooksFromBasket(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
-		ServletContext sc = this.getServletContext();
+		try
+		{
+			ServletContext sc = this.getServletContext();
 
-		BasketDAO basketDAO = (BasketDAO) sc.getAttribute("BASKET_DAO");
+			BasketDAO basketDAO = (BasketDAO) sc.getAttribute("BASKET_DAO");
 
-		@SuppressWarnings("unchecked")
-		ArrayList<BasketDTO> list = (ArrayList<BasketDTO>) request.getAttribute("BOOKS_TO_BE_DELETED");
-		basketDAO.deleteBooksFromBasket(list);
+			@SuppressWarnings("unchecked")
+			ArrayList<BasketDTO> list = (ArrayList<BasketDTO>) request.getAttribute("BOOKS_TO_BE_DELETED");
+			basketDAO.deleteBooksFromBasket(list);
 
-		request.setAttribute("VIEWURL", "ajax:/");
+			request.setAttribute("VIEWURL", "ajax:/");
+		} catch (Exception e)
+		{
+			throw new ServletException(e);
+		}
 	}
 
 	protected void getBasket(HttpServletRequest request, HttpServletResponse response)

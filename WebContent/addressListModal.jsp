@@ -17,8 +17,6 @@
 <title>주소록</title>
 <!-- Bootstrap core CSS -->
 <link href="/AspireStore/css/bootstrap.css" rel="stylesheet">
-
-<!-- Custom styles for this template -->
 <link href="/AspireStore/css/shop-homepage.css" rel="stylesheet">
 </head>
 

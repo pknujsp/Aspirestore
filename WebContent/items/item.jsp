@@ -87,7 +87,7 @@
 					value="<%=item.getItem_category_code()%>" /> <input type="hidden"
 					name="itemCode" id="itemCode" value="<%=item.getItem_code()%>" />
 				</span> <span>
-					<button class="btn btn-primary"
+					<button class="btn btn-primary" type="button"
 						onclick="javascript:addBookToTheBasket('/AspireStore/basket.aspire')">장바구니에
 						추가</button>
 				</span> <span> <input type="submit" class="btn btn-primary"
@@ -207,13 +207,15 @@
 		</div>
 		<hr />
 	</div>
-
+	
+	<form action="/AspireStore/basket.aspire" id="basketForm" name="basketForm" method="post">
+		<input type="hidden" id="type" name="type" value="GET_BASKET" >
+	</form>
 
 	<%@ include file="/footer.html"%>
 
-	<!-- Bootstrap core JavaScript -->
-	<script src="jquery/jquery.min.js"></script>
-	<script src="js/bootstrap.bundle.min.js"></script>
+	<script src="/AspireStore/jquery/jquery.js"></script>
+	<script src="/AspireStore/js/bootstrap.bundle.js"></script>
 
 	<script type="text/javascript">
 		function addBookToTheBasket(url) {
@@ -222,7 +224,7 @@
 			xhttp.onreadystatechange = function() {
 				if (xhttp.readyState == XMLHttpRequest.DONE
 						&& xhttp.status == 200) {
-					alert('장바구니에 추가됨');
+					showDialog();
 				}
 			};
 			xhttp.open('POST', url, true);
@@ -234,6 +236,15 @@
 			var quantity = document.getElementById('quantity').value;
 			xhttp.send('itemCode=' + icode + '&itemCategory=' + ccode
 					+ '&type=' + 'ADD' + '&quantity=' + quantity);
+		}
+
+		function showDialog() {
+			var dialogMessage = '장바구니에 추가 되었습니다.\n장바구니로 이동하시겠습니까?';
+			if(dialogMessage){
+				var paging=document.basketForm;
+				paging.submit();
+			}else{
+			}
 		}
 	</script>
 	<script>

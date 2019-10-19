@@ -1,6 +1,26 @@
+<%@page import="model.BasketDTO"%>
+<%@page import="model.PublisherDTO"%>
+<%@page import="model.AuthorDTO"%>
+<%@page import="model.ItemsDTO"%>
+<%@page import="java.util.ArrayList"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" session="true"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%
+	@SuppressWarnings("unchecked")
+	ArrayList<ItemsDTO> books = (ArrayList<ItemsDTO>) request.getAttribute("ITEMS");
+	@SuppressWarnings("unchecked")
+	ArrayList<AuthorDTO> authors = (ArrayList<AuthorDTO>) request.getAttribute("AUTHORS");
+	@SuppressWarnings("unchecked")
+	ArrayList<PublisherDTO> publishers = (ArrayList<PublisherDTO>) request.getAttribute("PUBLISHERS");
+	@SuppressWarnings("unchecked")
+	ArrayList<BasketDTO> basket = (ArrayList<BasketDTO>) request.getAttribute("BASKET");
+
+	pageContext.setAttribute("bookData", books);
+	pageContext.setAttribute("authorData", authors);
+	pageContext.setAttribute("publisherData", publishers);
+	pageContext.setAttribute("basketData", basket);
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,17 +54,17 @@
 							varStatus="status">
 							<tr>
 								<td><input type="checkbox" id="checkBoxBook"
-									name="checkBoxBook" value="${book.code }"><input
+									name="checkBoxBook" value="${book.item_code}"><input
 									type="hidden" name="checkedCcode[]"
-									value="${book.category_code }"></td>
+									value="${book.item_category_code}"></td>
 								<td><span><img src="..." alt="이미지 없음"> </span><span><a
-										href="/AspireStore/items/item.aspire?ccode=${book.category_code}&icode=${book.code}"><c:out
-												value="${book.name }" /></a>&nbsp;<c:out
-											value="[${book.author }]" />&nbsp;<c:out
-											value="[${book.publisher }]" /></span></td>
-								<td><c:out value="${book.selling_price }" /></td>
-								<td><c:out value="${book.quantity }" /></td>
-								<td><c:out value="${book.total_price }" /></td>
+										href="/AspireStore/items/item.aspire?ccode=${book.item_category_code}&icode=${book.item_code}"><c:out
+												value="${book.item_name}" /></a>&nbsp;<c:out
+											value="[${pageScope.authorData[status.index].author_name}]" />&nbsp;<c:out
+											value="[${pageScope.publisherData[status.index].publisher_name}]" /></span></td>
+								<td><c:out value="${book.item_selling_price}" /></td>
+								<td><c:out value="${book.quantity}" /></td>
+								<td><c:out value="${book.total_price}" /></td>
 								<td><div>
 										<div>
 											<button type="button" id="btnOrderInstantly"
@@ -92,5 +112,8 @@
 	</div>
 
 	<jsp:include page="/footer.html" />
+	
+		<script src="jquery/jquery.js"></script>
+	<script src="js/bootstrap.bundle.js"></script>
 </body>
 </html>
