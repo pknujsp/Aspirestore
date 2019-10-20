@@ -87,17 +87,19 @@ public class AuthorDAO
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
 		{
-			for (int i = 0; i < codes.size(); ++i)
-			{
-				prstmt.setInt(1, codes.get(i).intValue());
-				set = prstmt.executeQuery();
-			}
 
 			list = new ArrayList<AuthorDTO>(codes.size());
 
-			while (set.next())
+			for (int i = 0; i < codes.size(); ++i)
 			{
-				list.add(new AuthorDTO().setAuthor_name(set.getString(1)));
+				set = null;
+				prstmt.setInt(1, codes.get(i).intValue());
+				set = prstmt.executeQuery();
+
+				if (set.next())
+				{
+					list.add(new AuthorDTO().setAuthor_name(set.getString(1)));
+				}
 			}
 		} catch (Exception e)
 		{

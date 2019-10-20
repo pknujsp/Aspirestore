@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import model.AuthorDAO;
 import model.AuthorDTO;
 import model.BasketDAO;
@@ -52,8 +55,24 @@ public class ServletBasket extends HttpServlet
 
 			BasketDAO basketDAO = (BasketDAO) sc.getAttribute("BASKET_DAO");
 			BasketDTO data = (BasketDTO) request.getAttribute("BOOK_TO_ADD");
-			basketDAO.addBookToTheBasket(data);
 
+			JSONArray jsonArr = new JSONArray();
+			JSONObject result = new JSONObject();
+
+			if (!basketDAO.checkDuplication(data.getUser_id(), data.getItem_code())) // 중복X
+			{
+				basketDAO.addBookToTheBasket(data);
+				result.put("MESSAGE", "장바구니에 추가되었습니다.");
+				result.put("RESULT", "true");
+			} else
+			{
+				result.put("MESSAGE", "이 도서는 이미 장바구니에 존재합니다.");
+				result.put("RESULT", "false");
+			}
+			
+			jsonArr.put(result);
+			response.setContentType("application/json");
+			response.getWriter().write(jsonArr.toString());
 			request.setAttribute("VIEWURL", "ajax:/");
 		} catch (Exception e)
 		{
@@ -89,7 +108,7 @@ public class ServletBasket extends HttpServlet
 			ServletContext sc = this.getServletContext();
 
 			BasketDAO basketDAO = (BasketDAO) sc.getAttribute("BASKET_DAO");
-			ItemsDAO itemsDAO = (ItemsDAO) sc.getAttribute("ITEMS_DAO");
+			ItemsDAO itemsDAO = (ItemsDAO) sc.getAttribute("itemsDAO");
 			AuthorDAO authorDAO = (AuthorDAO) sc.getAttribute("authorDAO");
 			PublisherDAO publisherDAO = (PublisherDAO) sc.getAttribute("PUBLISHER_DAO");
 
@@ -100,15 +119,16 @@ public class ServletBasket extends HttpServlet
 
 			for (int i = 0; i < basket.size(); ++i)
 			{
-				codeMap.put(basket.get(i).getItem_code(), basket.get(i).getCategory_code());
+				codeMap.put(basket.get(i).getItem_code(), basket.get(i).getCategory_code()); // Map에 키 : 도서코드, 값 : 카테고리
+																								// 코드 삽입(중복불가)
 			}
 
 			ArrayList<ItemsDTO> items = itemsDAO.getitemsForBasket(codeMap); // 아이템 정보
 
-			ArrayList<Integer> authorCodes = new ArrayList<Integer>(items.size());
-			ArrayList<Integer> publisherCodes = new ArrayList<Integer>(items.size());
+			ArrayList<Integer> authorCodes = new ArrayList<Integer>(basket.size()); // 저자 코드 리스트
+			ArrayList<Integer> publisherCodes = new ArrayList<Integer>(basket.size()); // 출판사 코드 리스트
 
-			for (int i = 0; i < items.size(); ++i)
+			for (int i = 0; i < basket.size(); ++i)
 			{
 				authorCodes.add(items.get(i).getItem_author_code());
 				publisherCodes.add(items.get(i).getItem_publisher_code());

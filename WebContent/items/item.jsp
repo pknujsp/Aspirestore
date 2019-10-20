@@ -207,9 +207,10 @@
 		</div>
 		<hr />
 	</div>
-	
-	<form action="/AspireStore/basket.aspire" id="basketForm" name="basketForm" method="post">
-		<input type="hidden" id="type" name="type" value="GET_BASKET" >
+
+	<form action="/AspireStore/basket.aspire" id="basketForm"
+		name="basketForm" method="post">
+		<input type="hidden" id="type" name="type" value="GET_BASKET">
 	</form>
 
 	<%@ include file="/footer.html"%>
@@ -224,7 +225,9 @@
 			xhttp.onreadystatechange = function() {
 				if (xhttp.readyState == XMLHttpRequest.DONE
 						&& xhttp.status == 200) {
-					showDialog();
+					var responseArr = xhttp.response;
+					showDialog(responseArr[0].MESSAGE,
+							responseArr[0].RESULT);
 				}
 			};
 			xhttp.open('POST', url, true);
@@ -234,16 +237,23 @@
 			var icode = document.getElementById('itemCode').value;
 			var ccode = document.getElementById('itemCategory').value;
 			var quantity = document.getElementById('quantity').value;
+
+			xhttp.responseType = 'json';
 			xhttp.send('itemCode=' + icode + '&itemCategory=' + ccode
 					+ '&type=' + 'ADD' + '&quantity=' + quantity);
 		}
 
-		function showDialog() {
-			var dialogMessage = '장바구니에 추가 되었습니다.\n장바구니로 이동하시겠습니까?';
-			if(dialogMessage){
-				var paging=document.basketForm;
-				paging.submit();
-			}else{
+		function showDialog(message, result) {
+			if (result === 'true') {
+				var dialogMessage = confirm(message);
+				if (dialogMessage) {
+					var paging = document.basketForm;
+					paging.submit();
+				} else {
+
+				}
+			} else {
+				alert(message);
 			}
 		}
 	</script>

@@ -37,6 +37,7 @@ public class ServletDispatcher extends HttpServlet
 		try
 		{
 			String pageControllerPath = null;
+
 			this.request = request;
 
 			switch (servletPath)
@@ -89,10 +90,10 @@ public class ServletDispatcher extends HttpServlet
 				if (checkNullParameters())
 				{
 					pageControllerPath = "/orderpayment";
+					final String userId = request.getSession().getAttribute("SESSIONKEY").toString();
 
 					request.setAttribute("USER_INFO_REQUEST",
-							new UserDTO().setUser_id((String) request.getSession().getAttribute("SESSIONKEY"))
-									.setMobile1(request.getParameter("orderer_mobile_1"))
+							new UserDTO().setUser_id(userId).setMobile1(request.getParameter("orderer_mobile_1"))
 									.setMobile2(request.getParameter("orderer_mobile_2"))
 									.setMobile3(request.getParameter("orderer_mobile_3"))
 									.setGeneral1(request.getParameter("orderer_general_1_select"))
@@ -187,6 +188,7 @@ public class ServletDispatcher extends HttpServlet
 				if (checkNullParameters())
 				{
 					pageControllerPath = "/basket";
+					final String userId = request.getSession().getAttribute("SESSIONKEY").toString();
 					String type = request.getParameter("type");
 					request.setAttribute("TYPE", type);
 
@@ -201,17 +203,24 @@ public class ServletDispatcher extends HttpServlet
 						break;
 
 					case "DELETE":
-						String[] checkedBooksCodes = request.getParameterValues("checkBoxBook");
-						String[] checkedBooksCcodes = request.getParameterValues("checkedCcode");
+						String[] checkedCodes = request.getParameterValues("itemCodes");
+						String[] checkedCcodes = request.getParameterValues("categoryCodes");
 
-						ArrayList<BasketDTO> list = new ArrayList<BasketDTO>(checkedBooksCodes.length);
+						ArrayList<BasketDTO> list = new ArrayList<BasketDTO>(checkedCodes.length);
 
-						for (int i = 0; i < list.size(); ++i)
+						for (int i = 0; i < checkedCodes.length; ++i)
 						{
-							list.add(new BasketDTO().setItem_code(Integer.parseInt(checkedBooksCodes[i]))
-									.setCategory_code(checkedBooksCcodes[i]));
+							list.add(new BasketDTO().setUser_id(userId).setItem_code(Integer.parseInt(checkedCodes[i]))
+									.setCategory_code(checkedCcodes[i]));
 						}
 						request.setAttribute("BOOKS_TO_BE_DELETED", list);
+						break;
+
+					case "DELETE_ONE":
+						request.setAttribute("BOOK_TO_BE_DELETED",
+								new BasketDTO().setUser_id(request.getSession().getAttribute("SESSIONKEY").toString())
+										.setItem_code(Integer.parseInt(request.getParameter("itemCode")))
+										.setCategory_code(request.getParameter("itemCategory")));
 						break;
 
 					case "GET_BASKET":

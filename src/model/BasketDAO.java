@@ -21,11 +21,14 @@ public class BasketDAO
 		String query = "SELECT basket_item_code, basket_item_category, basket_quantity FROM basket WHERE basket_user_id = ?";
 
 		ResultSet set = null;
-		ArrayList<BasketDTO> list = new ArrayList<BasketDTO>();
+		ArrayList<BasketDTO> list = null;
+
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
 		{
 			prstmt.setString(1, userId);
 			set = prstmt.executeQuery();
+
+			list = new ArrayList<BasketDTO>();
 
 			while (set.next())
 			{
@@ -49,6 +52,44 @@ public class BasketDAO
 			}
 		}
 		return list;
+	}
+
+	public boolean checkDuplication(String userId, int itemCode)
+	{
+		String query = "SELECT count(basket_item_code) FROM basket WHERE basket_user_id = ? AND basket_item_code = ?";
+		ResultSet set = null;
+		boolean flag = false;
+
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			prstmt.setString(1, userId);
+			prstmt.setInt(2, itemCode);
+
+			set = prstmt.executeQuery();
+			if (set.next())
+			{
+				if (set.getInt(1) == 1)
+				{
+					flag = true;
+				}
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return flag;
 	}
 
 	public boolean addBookToTheBasket(BasketDTO data)

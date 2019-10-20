@@ -6,7 +6,7 @@
 
 <script>
 	function goToHome() {
-		location.href='/AspireStore/index.jsp';
+		location.href = '/AspireStore/index.jsp';
 	}
 </script>
 <!-- Navigation -->
@@ -129,14 +129,22 @@
 					href="/AspireStore/items/itemlist.jsp?ccode=500" tabindex="4"
 					class="dropdown-header dropdown-submenu">모바일/태블릿/SNS</a>
 					<ul class="dropdown-menu">
-						<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=501&cpcode=500">아이패드</a></li>
-						<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=502&cpcode=500">아이폰</a></li>
-						<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=503&cpcode=500">안드로이드태블릿</a></li>
-						<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=504&cpcode=500">안드로이드폰</a></li>
-						<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=505&cpcode=500">트위터</a></li>
-						<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=506&cpcode=500">페이스북</a></li>
-						<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=507&cpcode=500">유튜브</a></li>
-						<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=508&cpcode=500">앱가이드</a></li>
+						<li><a class="dropdown-item"
+							href="/AspireStore/items/itemlist.aspire?ccode=501&cpcode=500">아이패드</a></li>
+						<li><a class="dropdown-item"
+							href="/AspireStore/items/itemlist.aspire?ccode=502&cpcode=500">아이폰</a></li>
+						<li><a class="dropdown-item"
+							href="/AspireStore/items/itemlist.aspire?ccode=503&cpcode=500">안드로이드태블릿</a></li>
+						<li><a class="dropdown-item"
+							href="/AspireStore/items/itemlist.aspire?ccode=504&cpcode=500">안드로이드폰</a></li>
+						<li><a class="dropdown-item"
+							href="/AspireStore/items/itemlist.aspire?ccode=505&cpcode=500">트위터</a></li>
+						<li><a class="dropdown-item"
+							href="/AspireStore/items/itemlist.aspire?ccode=506&cpcode=500">페이스북</a></li>
+						<li><a class="dropdown-item"
+							href="/AspireStore/items/itemlist.aspire?ccode=507&cpcode=500">유튜브</a></li>
+						<li><a class="dropdown-item"
+							href="/AspireStore/items/itemlist.aspire?ccode=508&cpcode=500">앱가이드</a></li>
 					</ul></li>
 				<li class="dropdown-divider"></li>
 
@@ -145,14 +153,22 @@
 					class="dropdown-header dropdown-submenu">오피스 활용</a>
 					<ul class="dropdown-menu">
 
-						<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=601&cpcode=600">한글</a></li>
-						<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=602&cpcode=600">엑셀</a></li>
-						<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=603&cpcode=600">파워포인트</a></li>
-						<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=604&cpcode=600">워드</a></li>
-						<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=605&cpcode=600">액세스</a></li>
-						<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=606&cpcode=600">아웃룩</a></li>
-						<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=607&cpcode=600">프레젠테이션</a></li>
-						<li><a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=608&cpcode=600">오피스</a></li>
+						<li><a class="dropdown-item"
+							href="/AspireStore/items/itemlist.aspire?ccode=601&cpcode=600">한글</a></li>
+						<li><a class="dropdown-item"
+							href="/AspireStore/items/itemlist.aspire?ccode=602&cpcode=600">엑셀</a></li>
+						<li><a class="dropdown-item"
+							href="/AspireStore/items/itemlist.aspire?ccode=603&cpcode=600">파워포인트</a></li>
+						<li><a class="dropdown-item"
+							href="/AspireStore/items/itemlist.aspire?ccode=604&cpcode=600">워드</a></li>
+						<li><a class="dropdown-item"
+							href="/AspireStore/items/itemlist.aspire?ccode=605&cpcode=600">액세스</a></li>
+						<li><a class="dropdown-item"
+							href="/AspireStore/items/itemlist.aspire?ccode=606&cpcode=600">아웃룩</a></li>
+						<li><a class="dropdown-item"
+							href="/AspireStore/items/itemlist.aspire?ccode=607&cpcode=600">프레젠테이션</a></li>
+						<li><a class="dropdown-item"
+							href="/AspireStore/items/itemlist.aspire?ccode=608&cpcode=600">오피스</a></li>
 					</ul></li>
 				<li class="dropdown-divider"></li>
 
@@ -357,8 +373,7 @@
 			<ul class="navbar-nav ml-auto">
 
 				<%
-					if (sessionKey != null)
-					{
+					if (sessionKey != null) {
 				%><li class="nav-item"><a class="nav-link disabled"><i><%=sessionKey.toString()%></i></a>
 				</li>
 				<li class="nav-item"><a class="nav-link"
@@ -366,13 +381,12 @@
 				<li class="nav-item"><a class="nav-link" href="#">나의 Aspire</a></li>
 
 				<%
-					} else
-					{
+					} else {
 				%>
-				<li class="nav-item"><a class="nav-link" href="/AspireStore/signin.jsp">로그인</a>
-				</li>
-				<li class="nav-item"><a class="nav-link" href="/AspireStore/signup.jsp">회원가입</a>
-				</li>
+				<li class="nav-item"><a class="nav-link"
+					href="/AspireStore/signin.jsp">로그인</a></li>
+				<li class="nav-item"><a class="nav-link"
+					href="/AspireStore/signup.jsp">회원가입</a></li>
 				<%
 					}
 				%>
@@ -380,8 +394,26 @@
 
 				<li class="nav-item"><a class="nav-link" href="#">고객센터</a></li>
 				<li class="nav-item"><a class="nav-link" href="#">상품 문의</a></li>
-				<li class="nav-item"><a class="nav-link" href="#">장바구니</a></li>
+				<li class="nav-item"><a class="nav-link"
+					href="javascript:moveToAnotherPage('GET_BASKET','/AspireStore/basket.aspire')">장바구니</a></li>
 			</ul>
 		</div>
 	</div>
+
+	<script type="text/javascript">
+		function moveToAnotherPage(type,action) {
+			var form = document.createElement('form');
+			form.setAttribute('action', action);
+			form.setAttribute('method', 'Post');
+			
+			var hiddenTag = document.createElement('input');
+			hiddenTag.setAttribute('type', 'hidden');
+			hiddenTag.setAttribute('name', 'type');
+			hiddenTag.setAttribute('value', type);
+			form.appendChild(hiddenTag);
+			
+			document.body.appendChild(form);
+			form.submit();
+		}
+	</script>
 </nav>

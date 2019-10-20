@@ -44,16 +44,17 @@ public class PublisherDAO
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
 		{
+			list = new ArrayList<PublisherDTO>(codes.size());
 			for (int i = 0; i < codes.size(); ++i)
 			{
+				set = null;
 				prstmt.setInt(1, codes.get(i).intValue());
 				set = prstmt.executeQuery();
-			}
-			list = new ArrayList<PublisherDTO>(codes.size());
 
-			while (set.next())
-			{
-				list.add(new PublisherDTO().setPublisher_name(set.getString(1)));
+				if (set.next())
+				{
+					list.add(new PublisherDTO().setPublisher_name(set.getString(1)));
+				}
 			}
 		} catch (Exception e)
 		{

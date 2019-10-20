@@ -201,7 +201,7 @@ public class ItemsDAO
 
 	public ArrayList<ItemsDTO> getitemsForBasket(Map<Integer, String> codeMap)
 	{
-		String query = "SELECT item_name, item_author_code, item_publisher_code, item_selling_price FROM items WHERE item_code = ? AND item_category_code = ?";
+		String query = "SELECT item_name, item_code, item_category_code, item_author_code, item_publisher_code, item_selling_price FROM items WHERE item_code = ? AND item_category_code = ?";
 		ResultSet set = null;
 		ArrayList<ItemsDTO> list = null;
 
@@ -209,8 +209,10 @@ public class ItemsDAO
 		{
 			Iterator<Integer> it = codeMap.keySet().iterator();
 
+			list = new ArrayList<ItemsDTO>(codeMap.size());
 			while (it.hasNext())
 			{
+				set = null;
 				int itemCode = it.next().intValue();
 				String categoryCode = codeMap.get(itemCode);
 
@@ -218,14 +220,12 @@ public class ItemsDAO
 				prstmt.setString(2, categoryCode);
 
 				set = prstmt.executeQuery();
-			}
-
-			list = new ArrayList<ItemsDTO>();
-
-			while (set.next())
-			{
-				list.add(new ItemsDTO().setItem_name(set.getString(1)).setItem_author_code(set.getInt(2))
-						.setItem_publisher_code(set.getInt(3)).setItem_selling_price(set.getInt(4)));
+				if (set.next())
+				{
+					list.add(new ItemsDTO().setItem_name(set.getString(1)).setItem_code(set.getInt(2))
+							.setItem_category_code(set.getString(3)).setItem_author_code(set.getInt(4))
+							.setItem_publisher_code(set.getInt(5)).setItem_selling_price(set.getInt(6)));
+				}
 			}
 		} catch (Exception e)
 		{
