@@ -149,6 +149,38 @@ public class OrderPaymentDAO
 
 		return items;
 	}
+	
+	public ArrayList<ItemsDTO> getItemsInfoBasket(ArrayList<BasketDTO> basket)
+	{
+		String query = "SELECT item_code, item_name, item_author_code, item_publisher_code, item_selling_price, item_category_code FROM items WHERE item_code = ? AND item_category_code = ?";
+		ArrayList<ItemsDTO> items = new ArrayList<ItemsDTO>();
+
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			ResultSet set = null;
+
+			for (int i = 0; i < basket.size(); ++i)
+			{
+				prstmt.setInt(1, basket.get(i).getItem_code());
+				prstmt.setString(2, basket.get(i).getCategory_code());
+				set = prstmt.executeQuery();
+
+				while (set.next())
+				{
+					items.add(new ItemsDTO().setItem_code(set.getInt(1)).setItem_name(set.getString(2))
+							.setItem_author_code(set.getInt(3)).setItem_publisher_code(set.getInt(4))
+							.setItem_selling_price(set.getInt(5)).setItem_category_code(set.getString(6)));
+				}
+			}
+
+			set.close();
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return items;
+	}
 
 	public int getOrderOrSaleCode(String date, String userId, int itemCode)
 	{

@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import etc.OrderInformation;
+import model.BasketDAO;
+import model.BasketDTO;
 import model.ItemsDTO;
 import model.OrderPaymentDAO;
 import model.UserDAO;
@@ -23,17 +25,28 @@ public class ServletCreateOrderForm extends HttpServlet
 		try
 		{
 			ServletContext servletContext = this.getServletContext();
+			final String type = request.getAttribute("TYPE").toString();
+			final String userId = request.getSession().getAttribute("SESSIONKEY").toString();
 
 			@SuppressWarnings("unchecked")
 			ArrayList<OrderInformation> informations = (ArrayList<OrderInformation>) request
 					.getAttribute("ORDER_INFORMATIONS");
 
+			BasketDAO basketDAO = (BasketDAO) servletContext.getAttribute("BASKET_DAO");
 			OrderPaymentDAO orderPaymentDAO = (OrderPaymentDAO) servletContext.getAttribute("ORDER_PAYMENT_DAO");
-			ArrayList<ItemsDTO> items = orderPaymentDAO.getItemsInfo(informations);
+			ArrayList<ItemsDTO> items = null;
 
+			if (type.equals("BASKET_ORDER"))
+			{
+				ArrayList<BasketDTO> basket = basketDAO.getBasket(userId);
+				items = orderPaymentDAO.getItemsInfoBasket(basket);
+			} else
+			{
+				items = orderPaymentDAO.getItemsInfo(informations);
+			}
 			UserDTO userData = null;
 			UserDAO userDao = (UserDAO) servletContext.getAttribute("USER_DAO");
-			userData = userDao.getUserInfo((String) request.getSession().getAttribute("SESSIONKEY"));
+			userData = userDao.getUserInfo(userId);
 
 			if (userData != null) // 최초 주문 X
 			{

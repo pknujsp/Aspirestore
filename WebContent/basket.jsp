@@ -40,7 +40,8 @@
 			<table class="table" id="tableBasketList">
 				<thead>
 					<tr>
-						<th><button type="button">모두 선택</button></th>
+						<th><button type="button" onclick="checkAllCheckBox()">모두
+								선택</button></th>
 						<th>도서 명/저자/출판사</th>
 						<th>판매가</th>
 						<th>수량</th>
@@ -48,40 +49,52 @@
 						<th>처리</th>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody id="bookDataTBody">
 
 					<c:if test="${not empty pageScope.basketData}">
-						<form action="post" id="formTable">
-							<c:forEach var="book" items="${pageScope.bookData}"
-								varStatus="status">
-								<tr>
-									<td><input type="checkbox" id="checkBoxCode"
-										name="checkBoxCode" value="${book.item_code}"><input
-										type="hidden" id="checkBoxCcode[]" name="checkBoxCcode[]"
-										value="${book.item_category_code}"></td>
-									<td><span><img src="..." alt="이미지 없음"> </span><span><a
-											href="/AspireStore/items/item.aspire?ccode=${book.item_category_code}&icode=${book.item_code}"><c:out
-													value="${book.item_name}" /></a>&nbsp;<c:out
-												value="[${pageScope.authorData[status.index].author_name}]" />&nbsp;<c:out
-												value="[${pageScope.publisherData[status.index].publisher_name}]" /></span></td>
-									<td><c:out value="${book.item_selling_price}" /></td>
-									<td><c:out
-											value="${pageScope.basketData[status.index].quantity}" /></td>
-									<td><c:out
-											value="${book.item_selling_price * pageScope.basketData[status.index].quantity}" /></td>
-									<td><div>
-											<div>
-												<button type="button" id="btnOrderInstantly"
-													name="btnOrderInstantly" onclick="javascript:orderBook()">주문</button>
-											</div>
-											<div>
-												<button type="button" id="btnRemoveBook"
-													name="bbtnRemoveBook" onclick="javascript:removeBooks()">삭제</button>
-											</div>
-										</div></td>
-								</tr>
-							</c:forEach>
+
+						<c:forEach var="book" items="${pageScope.bookData}"
+							varStatus="status">
+							<tr>
+								<td><input type="checkbox" id="checkBoxCode"
+									name="checkBoxCode" value="${book.item_code}"><input
+									type="hidden" id="checkBoxCcode[]" name="checkBoxCcode[]"
+									value="${book.item_category_code}"></td>
+								<td><span><img src="..." alt="이미지 없음"> </span><span><a
+										href="/AspireStore/items/item.aspire?ccode=${book.item_category_code}&icode=${book.item_code}"><c:out
+												value="${book.item_name}" /></a>&nbsp;<c:out
+											value="[${pageScope.authorData[status.index].author_name}]" />&nbsp;<c:out
+											value="[${pageScope.publisherData[status.index].publisher_name}]" /></span></td>
+								<td><c:out value="${book.item_selling_price}" /></td>
+								<td><c:out
+										value="${pageScope.basketData[status.index].quantity}" /></td>
+								<td><c:out
+										value="${book.item_selling_price * pageScope.basketData[status.index].quantity}" /></td>
+								<td><div>
+										<div>
+											<button type="button" id="btnOrderInstantly"
+												name="btnOrderInstantly" onclick="javascript:orderBooks()">주문</button>
+										</div>
+										<div>
+											<button type="button" id="btnRemoveBook" name="btnRemoveBook"
+												onclick="javascript:removeBooks()">삭제</button>
+										</div>
+									</div></td>
+							</tr>
+						</c:forEach>
+						
+						<form method="post" id="formBasket" action="/AspireStore/orderform.aspire">
+							<input type="hidden" id="type" name="type" value="BASKET_ORDER">
 						</form>
+						<!-- 
+						<form action="post" id="formBasket" action="/AspireStore/orderform.aspire">
+							<input type="hidden" id="categoryCode[]" name="categoryCode[]" value="${book.item_category_code}">
+							<input type="hidden" id="itemCode[]" name="itemCode[]" value="${book.item_code}">
+							<input type="hidden" id="quantity[]" name="quantity[]" value="${pageScope.basketData[status.index].quantity}">
+							<input type="hidden" id="sellingPrice[]" name="sellingPrice[]" value="${book.item_selling_price}">
+						</form>
+						-->
+						
 					</c:if>
 
 				</tbody>
@@ -134,7 +147,7 @@
 		}
 
 		function getTotalDiscount() {
-			return 1000;
+			return 0;
 		}
 
 		function getFinalTotalPrice() {
@@ -149,14 +162,14 @@
 
 		function removeBooks() {
 			var xhttp = new XMLHttpRequest();
-			var indexes = getIndexes();
-			
+
 			xhttp.onreadystatechange = function() {
 				if (xhttp.readyState == XMLHttpRequest.DONE
 						&& xhttp.status == 200) {
-					var table = document.getElementById('formTable');
-					for(var idx = 0;idx<indexes.length;++idx){
-						table.deleteRow(indexes[idx]);
+					var data = document.getElementById('bookDataTBody');
+					var indexes = getIndexes();
+					for (var idx = 0; idx < indexes.length; ++idx) {
+						data.deleteRow(indexes[idx]);
 					}
 				}
 			};
@@ -186,15 +199,28 @@
 		}
 
 		function getIndexes() {
-			var checkBox = document.getElementById('checkBoxCode');
+			var checkBox = document.getElementsByName('checkBoxCode');
 			var indexes = new Array();
 
-			for (var index = checkBox.length-1 ; index >= 0 ; --index) {
-				if (checkBoxCode[idx].checked == true) {
+			for (var index = checkBox.length - 1; index >= 0; --index) {
+				if (checkBox[index].checked == true) {
 					indexes.push(index);
 				}
 			}
 			return indexes;
+		}
+
+		function checkAllCheckBox() {
+			var checkBox = document.getElementsByName('checkBoxCode');
+
+			for (var index = 0; index < checkBox.length; ++index) {
+				checkBox[index].checked = true;
+			}
+		}
+
+		function orderBooks() {
+			var form = document.getElementById('formBasket');
+			form.submit();
 		}
 	</script>
 </body>

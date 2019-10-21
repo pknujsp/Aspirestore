@@ -75,8 +75,7 @@
 			xhttp.open('POST', '/AspireStore/addressbook.aspire', true);
 			xhttp.setRequestHeader('Content-type',
 					'application/x-www-form-urlencoded');
-			xhttp
-					.send('ID=' + userId + '&CODE=' + addressCode + '&TYPE='
+			xhttp.send('ID=' + userId + '&CODE=' + addressCode + '&TYPE='
 							+ '1');
 		}
 

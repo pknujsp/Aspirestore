@@ -150,11 +150,16 @@ public class ServletDispatcher extends HttpServlet
 				if (checkNullParameters())
 				{
 					pageControllerPath = "/orderform";
+					String type = request.getParameter("type");
+					request.setAttribute("TYPE", type);
 
 					ArrayList<OrderInformation> orderInformations = new ArrayList<OrderInformation>();
-
-					if (request.getParameter("itemCode") != null)
+					switch (type)
 					{
+					case "BASKET_ORDER":
+						break;
+
+					case "ONE_ORDER":
 						int itemCode = Integer.parseInt(request.getParameter("itemCode"));
 						String itemCategory = request.getParameter("itemCategory");
 						int itemPrice = Integer.parseInt(request.getParameter("itemPrice"));
@@ -166,9 +171,6 @@ public class ServletDispatcher extends HttpServlet
 
 						orderInformations.trimToSize();
 
-					} else
-					{
-						orderInformations = (ArrayList<OrderInformation>) request.getAttribute("orderInformations");
 					}
 					request.setAttribute("ORDER_INFORMATIONS", orderInformations);
 				}

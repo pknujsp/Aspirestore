@@ -93,7 +93,7 @@
 				</span> <span> <input type="submit" class="btn btn-primary"
 					onclick="javascript:clickButton('/AspireStore/orderform.aspire')"
 					value="바로 구매" />
-				</span>
+				</span><input type="hidden" id="type" name="type" value="ONE_ORDER">
 			</form>
 		</div>
 		<hr />
