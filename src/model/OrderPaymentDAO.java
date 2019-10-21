@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
@@ -149,16 +150,16 @@ public class OrderPaymentDAO
 
 		return items;
 	}
-	
+
 	public ArrayList<ItemsDTO> getItemsInfoBasket(ArrayList<BasketDTO> basket)
 	{
 		String query = "SELECT item_code, item_name, item_author_code, item_publisher_code, item_selling_price, item_category_code FROM items WHERE item_code = ? AND item_category_code = ?";
-		ArrayList<ItemsDTO> items = new ArrayList<ItemsDTO>();
+		ArrayList<ItemsDTO> items = null;
+		ResultSet set = null;
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
 		{
-			ResultSet set = null;
-
+			items = new ArrayList<ItemsDTO>();
 			for (int i = 0; i < basket.size(); ++i)
 			{
 				prstmt.setInt(1, basket.get(i).getItem_code());
@@ -172,13 +173,22 @@ public class OrderPaymentDAO
 							.setItem_selling_price(set.getInt(5)).setItem_category_code(set.getString(6)));
 				}
 			}
-
-			set.close();
 		} catch (Exception e)
 		{
 			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
 		}
-
 		return items;
 	}
 

@@ -69,7 +69,7 @@ public class ServletBasket extends HttpServlet
 				result.put("MESSAGE", "이 도서는 이미 장바구니에 존재합니다.");
 				result.put("RESULT", "false");
 			}
-			
+
 			jsonArr.put(result);
 			response.setContentType("application/json");
 			response.getWriter().write(jsonArr.toString());
@@ -120,11 +120,9 @@ public class ServletBasket extends HttpServlet
 			for (int i = 0; i < basket.size(); ++i)
 			{
 				codeMap.put(basket.get(i).getItem_code(), basket.get(i).getCategory_code()); // Map에 키 : 도서코드, 값 : 카테고리
-																								// 코드 삽입(중복불가)
 			}
 
 			ArrayList<ItemsDTO> items = itemsDAO.getitemsForBasket(codeMap); // 아이템 정보
-
 			ArrayList<Integer> authorCodes = new ArrayList<Integer>(basket.size()); // 저자 코드 리스트
 			ArrayList<Integer> publisherCodes = new ArrayList<Integer>(basket.size()); // 출판사 코드 리스트
 
@@ -133,7 +131,6 @@ public class ServletBasket extends HttpServlet
 				authorCodes.add(items.get(i).getItem_author_code());
 				publisherCodes.add(items.get(i).getItem_publisher_code());
 			}
-
 			ArrayList<AuthorDTO> authors = authorDAO.getAuthors(authorCodes); // 저자 정보
 			ArrayList<PublisherDTO> publishers = publisherDAO.getPublishers(publisherCodes); // 출판사 정보
 

@@ -8,9 +8,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <%
-	String sessionKey = (String) session.getAttribute("SESSIONKEY");
+	String sessionKey = session.getAttribute("SESSIONKEY").toString();
 	ServletContext servletContext = this.getServletContext();
 	OrderPaymentDAO orderPaymentDAO = (OrderPaymentDAO) servletContext.getAttribute("ORDER_PAYMENT_DAO");
+	
 	int[] codes = (int[]) session.getAttribute("ORDER_SALE_CODES");
 	session.removeAttribute("ORDER_SALE_CODES");
 
@@ -55,7 +56,7 @@
 				<tbody>
 					<c:forEach var="data" items="${pageScope.orderedItemsData }"
 						varStatus="status">
-						<c:set var="idx" value="${status.index }" />
+						<c:set var="idx" value="${status.index}" />
 						<tr>
 							<td><span><b><a
 										href="/AspireStore/items/item.aspire?ccode=${data.item_category}&icode=${data.item_code}">

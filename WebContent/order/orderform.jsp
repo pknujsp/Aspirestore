@@ -1,3 +1,5 @@
+<%@page import="model.PublisherDTO"%>
+<%@page import="model.AuthorDTO"%>
 <%@page import="model.UserDTO"%>
 <%@page import="model.UserDAO"%>
 <%@page import="model.AddressDTO"%>
@@ -18,10 +20,9 @@
 		}
 		return totalPrice;
 	}%>
-
 <%
 	request.setCharacterEncoding("UTF-8");
-	String sessionKey = (String) session.getAttribute("SESSIONKEY");
+	String sessionKey = session.getAttribute("SESSIONKEY").toString();
 
 	@SuppressWarnings("unchecked")
 	ArrayList<ItemsDTO> items = (ArrayList<ItemsDTO>) request.getAttribute("ITEMS");
@@ -30,8 +31,13 @@
 	ArrayList<OrderInformation> orderInformations = (ArrayList<OrderInformation>) request
 			.getAttribute("ORDER_INFORMATIONS");
 
-	session.setAttribute("ORDER_LIST", orderInformations);
+	@SuppressWarnings("unchecked")
+	ArrayList<AuthorDTO> authors = (ArrayList<AuthorDTO>) request.getAttribute("AUTHORS");
 
+	@SuppressWarnings("unchecked")
+	ArrayList<PublisherDTO> publishers = (ArrayList<PublisherDTO>) request.getAttribute("PUBLISHERS");
+
+	session.setAttribute("ORDER_LIST", orderInformations);
 	AddressDAO addressDao = (AddressDAO) this.getServletContext().getAttribute("ADDRESS_DAO"); // 주소록 DAO
 
 	UserDTO userInfo = (UserDTO) session.getAttribute("USER_INFO_SESSION");
@@ -39,20 +45,19 @@
 	if (userInfo != null) {
 		pageContext.setAttribute("USER_INFO", userInfo);
 	}
-
 	final int totalPrice = getTotalPrice(orderInformations);
-%>
 
+	pageContext.setAttribute("BOOKS", items);
+	pageContext.setAttribute("ORDER_INFORMATIONS", orderInformations);
+	pageContext.setAttribute("AUTHORS", authors);
+	pageContext.setAttribute("PUBLISHERS", publishers);
+%>
 <!DOCTYPE html>
 <html>
 <head>
-
 <meta charset="utf-8">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="">
-<meta name="author" content="">
-
 <title>주문서 작성 및 결제</title>
 
 <link href="/AspireStore/css/bootstrap.css" rel="stylesheet">
@@ -61,33 +66,35 @@
 <body>
 
 	<jsp:include page="/navbar.jsp"></jsp:include>
+
 	<div>
 		<h5>주문 도서 확인</h5>
 		<div>
 			<table class="table">
 				<thead>
 					<tr>
-						<th>도서 명</th>
+						<th>도서 명/ 저자 / 출판사</th>
 						<th>금액</th>
 						<th>주문 수량</th>
 						<th>합계</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<%
-							for (int i = 0; i < items.size(); ++i) {
-						%>
-						<td><b><a
-								href="/AspireStore/items/item.aspire?ccode=<%=items.get(i).getItem_category_code()%>&icode=<%=items.get(i).getItem_code()%>"
-								id="itemName"><%=items.get(i).getItem_name()%></a></b></td>
-						<td><label><%=items.get(i).getItem_selling_price()%></label></td>
-						<td><label><%=orderInformations.get(i).getOrder_quantity()%></label></td>
-						<td><label><%=orderInformations.get(i).getTotal_price()%></label></td>
-						<%
-							}
-						%>
-					
+
+					<c:forEach var="book" items="${pageScope.BOOKS }"
+						varStatus="status">
+						<tr>
+							<td><b><a
+									href="/AspireStore/items/item.aspire?ccode=${book.item_category_code }&icode=${book.item_code }"
+									id="itemName"><c:out value="${ book.item_name}" /></a></b>&nbsp;<c:out
+									value="${ pageScope.AUTHORS[status.index].author_name}" />&nbsp;<c:out
+									value="${ pageScope.PUBLISHERS[status.index].publisher_name}" /></td>
+							<td><label><c:out
+										value="${ book.item_selling_price}" /></label></td>
+							<td><label><c:out value="${ pageScope.ORDER_INFORMATIONS[status.index].order_quantity}"/></label></td>
+							<td><label><c:out value="${ pageScope.ORDER_INFORMATIONS[status.index].total_price}"/></label></td>
+						</tr>
+					</c:forEach>
 				</tbody>
 			</table>
 		</div>
@@ -311,6 +318,7 @@
 					</table>
 				</div>
 			</div>
+
 			<hr>
 
 			<div>
@@ -410,7 +418,9 @@
 
 			let recepientInputList = $('#' + rId + ' input[type=text]');
 
-			$.each(recepientInputList,
+			$
+					.each(
+							recepientInputList,
 							function(index, value) {
 								document.getElementById($(value).attr('id')).value = numberArr[i];
 								++i;
@@ -457,10 +467,11 @@
 		function showAddressListModal() {
 			setReadonlyAddressInput(true);
 			let id = '${sessionScope.SESSIONKEY}';
-			window.open('addressListModal.jsp?user_id=' + id, 'scrollbars=yes,width=400,height=250');
+			window.open('addressListModal.jsp?user_id=' + id,
+					'scrollbars=yes,width=400,height=250');
 		}
-		
-		function setReadonlyAddressInput(status){
+
+		function setReadonlyAddressInput(status) {
 			document.orderForm.postal_code.readOnly = status;
 			document.orderForm.road_name_address.readOnly = status;
 			document.orderForm.number_address.readOnly = status;

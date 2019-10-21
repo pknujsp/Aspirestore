@@ -34,6 +34,7 @@ public class ServletDispatcher extends HttpServlet
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
 		String servletPath = request.getServletPath();
+		
 		try
 		{
 			String pageControllerPath = null;
@@ -90,7 +91,7 @@ public class ServletDispatcher extends HttpServlet
 				if (checkNullParameters())
 				{
 					pageControllerPath = "/orderpayment";
-					final String userId = request.getSession().getAttribute("SESSIONKEY").toString();
+					String userId = request.getSession().getAttribute("SESSIONKEY").toString();
 
 					request.setAttribute("USER_INFO_REQUEST",
 							new UserDTO().setUser_id(userId).setMobile1(request.getParameter("orderer_mobile_1"))
@@ -124,7 +125,7 @@ public class ServletDispatcher extends HttpServlet
 									.setPayment_method(request.getParameter("payment_method"))
 									.setDelivery_method(request.getParameter("delivery_method"))
 									.setRequested_term(request.getParameter("requested_term"))
-									.setUser_id((String) request.getSession().getAttribute("SESSIONKEY"))
+									.setUser_id(userId)
 									.setTotal_price(Integer.parseInt(request.getParameter("total_price"))));
 
 					if (request.getParameter("address_code").equals("")) // 신규 입력
@@ -139,10 +140,6 @@ public class ServletDispatcher extends HttpServlet
 					{
 						request.setAttribute("address_code", request.getParameter("address_code"));
 					}
-					request.setAttribute("ORDERED_ITEMS",
-							(ArrayList<OrderInformation>) request.getSession().getAttribute("ORDER_LIST"));
-					request.getSession().removeAttribute("ORDER_LIST");
-
 				}
 				break;
 
@@ -170,7 +167,6 @@ public class ServletDispatcher extends HttpServlet
 										.setItem_price(itemPrice).setOrder_quantity(quantity).setTotal_price());
 
 						orderInformations.trimToSize();
-
 					}
 					request.setAttribute("ORDER_INFORMATIONS", orderInformations);
 				}

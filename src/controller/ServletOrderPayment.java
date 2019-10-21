@@ -57,7 +57,7 @@ public class ServletOrderPayment extends HttpServlet
 
 			AddressDAO addressDAO = (AddressDAO) servletContext.getAttribute("ADDRESS_DAO");
 
-			if (request.getAttribute("NEW_ADDRESS") != null)   // 신규 입력
+			if (request.getAttribute("NEW_ADDRESS") != null)   // 배송지 신규 입력
 			{
 				AddressDTO address = (AddressDTO) request.getAttribute("NEW_ADDRESS");
 				addressDAO.insertAddressToBook(address);
