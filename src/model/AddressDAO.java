@@ -22,7 +22,7 @@ public class AddressDAO
 
 	public ArrayList<AddressDTO> getAddressList(String user_id)
 	{
-		String query = "SELECT * FROM addressbook WHERE addressbook_user_id = ?";
+		String query = "SELECT * FROM addressbook WHERE addressbook_user_id = ? ORDER BY address_book_code ASC";
 		ArrayList<AddressDTO> list = new ArrayList<AddressDTO>();
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)

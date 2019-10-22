@@ -111,7 +111,7 @@ public class OrderPaymentDAO
 
 	public ArrayList<ItemsDTO> getItemsInfo(ArrayList<OrderInformation> informations)
 	{
-		String query = "SELECT item_code, item_name, item_author_code, item_publisher_code, item_selling_price, item_category_code FROM items WHERE item_code = ? AND item_category_code = ?";
+		String query = "SELECT item_code, item_name, item_author_code, item_publisher_code, item_selling_price, item_category_code FROM items WHERE item_code = ? AND item_category_code = ? ORDER BY item_code ASC";
 		ArrayList<ItemsDTO> items = new ArrayList<ItemsDTO>();
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
@@ -143,7 +143,7 @@ public class OrderPaymentDAO
 
 	public ArrayList<ItemsDTO> getItemsInfoBasket(ArrayList<BasketDTO> basket)
 	{
-		String query = "SELECT item_code, item_name, item_author_code, item_publisher_code, item_selling_price, item_category_code FROM items WHERE item_code = ? AND item_category_code = ?";
+		String query = "SELECT item_code, item_name, item_author_code, item_publisher_code, item_selling_price, item_category_code FROM items WHERE item_code = ? AND item_category_code = ? ORDER BY item_code ASC";
 		ArrayList<ItemsDTO> items = null;
 		ResultSet set = null;
 
@@ -191,7 +191,7 @@ public class OrderPaymentDAO
 			query = "SELECT orderhistory_order_code FROM orderhistory WHERE orderhistory_order_date = ? AND orderhistory_user_id = ?";
 		} else
 		{
-			query = "SELECT salehistory_sale_code FROM salehistory WHERE salehistory_sale_date = ? AND salehistory_user_id = ? AND salehistory_item_code = ?";
+			query = "SELECT salehistory_sale_code FROM salehistory WHERE salehistory_sale_date = ? AND salehistory_user_id = ? AND salehistory_item_code = ? ORDER BY salehistory_item_code ASC";
 		}
 		ResultSet set = null;
 		int code = 0;
@@ -279,9 +279,9 @@ public class OrderPaymentDAO
 		return dto;
 	}
 
-	public ArrayList<SalehistoryDTO> getSaleHistory(int orderCode, String userId) // index 1부터 판매 코드
+	public ArrayList<SalehistoryDTO> getSaleHistory(int orderCode, String userId)
 	{
-		String query = "SELECT * FROM salehistory WHERE salehistory_order_code = ? AND salehistory_user_id = ? ORDER BY salehistory_sale_date DESC";
+		String query = "SELECT * FROM salehistory WHERE salehistory_order_code = ? AND salehistory_user_id = ? ORDER BY salehistory_sale_date DESC, salehistory_item_code ASC";
 		ArrayList<SalehistoryDTO> list = null;
 		ResultSet set = null;
 

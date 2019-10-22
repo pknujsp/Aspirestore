@@ -88,7 +88,7 @@ public class ServletOrderPayment extends HttpServlet
 			// 수령자 정보, 배송지 정보, 주문자 정보, 배송 수단, 결제 수단 데이터
 			OrderhistoryDTO orderFormData = (OrderhistoryDTO) request.getAttribute("ORDER_FORM_DATA");
 
-			if (checkTotalPrice(orderFormData, itemsDAO.getBookSellingPrice(books)))
+			if (checkTotalPrice(orderFormData, itemsDAO.getBookSellingPrice(books), books))
 			{
 				// orderhistory, salehistory 테이블에 주문 정보 저장
 				orderPaymentDAO.requestOrderProcessing(orderFormData, books, userId);
@@ -136,12 +136,13 @@ public class ServletOrderPayment extends HttpServlet
 		return dao.getPublishers(codes);
 	}
 
-	private boolean checkTotalPrice(OrderhistoryDTO orderhistoryDTO, ArrayList<Integer> bookPriceList)
+	private boolean checkTotalPrice(OrderhistoryDTO orderhistoryDTO, ArrayList<Integer> bookPriceList,
+			ArrayList<OrderInformation> books)
 	{
 		int totalPrice = 0;
 		for (int i = 0; i < bookPriceList.size(); ++i)
 		{
-			totalPrice += bookPriceList.get(i).intValue();
+			totalPrice += (bookPriceList.get(i).intValue() * books.get(i).getOrder_quantity());
 		}
 
 		if (totalPrice == orderhistoryDTO.getTotal_price())

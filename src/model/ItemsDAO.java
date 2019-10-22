@@ -31,7 +31,7 @@ public class ItemsDAO
 
 		try
 		{
-			String query = "SELECT * FROM items WHERE item_code=? AND item_category_code=?";
+			String query = "SELECT * FROM items WHERE item_code=? AND item_category_code=? ORDER BY item_code ASC";
 			connection = ds.getConnection();
 			prstmt = connection.prepareStatement(query);
 
@@ -96,7 +96,7 @@ public class ItemsDAO
 				+ "i.item_selling_price " + "FROM items as i "
 				+ "INNER JOIN publishers p ON i.item_publisher_code = p.publisher_code "
 				+ "INNER JOIN authors a ON i.item_author_code = a.author_code "
-				+ "WHERE i.item_code = ? AND i.item_category_code = ?";
+				+ "WHERE i.item_code = ? AND i.item_category_code = ? ORDER BY i.item_code ASC";
 		ResultSet set = null;
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
@@ -145,7 +145,7 @@ public class ItemsDAO
 		ArrayList<ItemsDTO> bookList = new ArrayList<ItemsDTO>();
 		try
 		{
-			String query = "SELECT item_code, item_name, item_author_code, item_publisher_code, item_publication_date, item_selling_price, item_book_introduction FROM items WHERE item_category_code=?";
+			String query = "SELECT item_code, item_name, item_author_code, item_publisher_code, item_publication_date, item_selling_price, item_book_introduction FROM items WHERE item_category_code=? ORDER BY item_code ASC";
 			connection = ds.getConnection();
 			prstmt = connection.prepareStatement(query);
 
@@ -201,7 +201,7 @@ public class ItemsDAO
 
 	public ArrayList<ItemsDTO> getitemsForBasket(Map<Integer, String> codeMap)
 	{
-		String query = "SELECT item_name, item_code, item_category_code, item_author_code, item_publisher_code, item_selling_price FROM items WHERE item_code = ? AND item_category_code = ?";
+		String query = "SELECT item_name, item_code, item_category_code, item_author_code, item_publisher_code, item_selling_price FROM items WHERE item_code = ? AND item_category_code = ? ORDER BY item_code ASC";
 		ResultSet set = null;
 		ArrayList<ItemsDTO> list = null;
 
@@ -248,7 +248,7 @@ public class ItemsDAO
 
 	public ArrayList<Integer> getBookSellingPrice(ArrayList<OrderInformation> books)
 	{
-		String query = "SELECT item_selling_price FROM items WHERE item_code = ? AND item_category_code = ?";
+		String query = "SELECT item_selling_price FROM items WHERE item_code = ? AND item_category_code = ? ORDER BY item_code ASC";
 		ResultSet set = null;
 		ArrayList<Integer> prices = null;
 

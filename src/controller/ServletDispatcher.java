@@ -168,6 +168,11 @@ public class ServletDispatcher extends HttpServlet
 					switch (type)
 					{
 					case "BASKET_ORDER":
+						String[] itemCodes = request.getParameterValues("bookCodes[]");
+						String[] categoryCodes = request.getParameterValues("bookCategoryCodes[]");
+
+						request.setAttribute("BOOK_CODES", itemCodes);
+						request.setAttribute("CATEGORY_CODES", categoryCodes);
 						break;
 
 					case "ONE_ORDER":

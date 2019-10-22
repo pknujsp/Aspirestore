@@ -54,7 +54,11 @@ public class ServletCreateOrderForm extends HttpServlet
 			AuthorDAO authorDAO = (AuthorDAO) servletContext.getAttribute("authorDAO");
 			PublisherDAO publisherDAO = (PublisherDAO) servletContext.getAttribute("PUBLISHER_DAO");
 
-			ArrayList<BasketDTO> basket = basketDAO.getBasket(userId);
+			String[] bookCodes = (String[]) request.getAttribute("BOOK_CODES");
+			String[] bookCategoryCodes = (String[]) request.getAttribute("CATEGORY_CODES");
+
+			ArrayList<BasketDTO> basket = basketDAO.getBasket(userId, bookCodes, bookCategoryCodes);
+
 			ArrayList<ItemsDTO> items = orderPaymentDAO.getItemsInfoBasket(basket);
 
 			ArrayList<OrderInformation> orderInformations = new ArrayList<OrderInformation>(basket.size());
@@ -64,8 +68,7 @@ public class ServletCreateOrderForm extends HttpServlet
 				orderInformations.add(new OrderInformation().setItem_code(basket.get(i).getItem_code())
 						.setItem_category(basket.get(i).getCategory_code())
 						.setOrder_quantity(basket.get(i).getQuantity())
-						.setItem_price(items.get(i).getItem_selling_price())
-						.setTotal_price());
+						.setItem_price(items.get(i).getItem_selling_price()).setTotal_price());
 			}
 			UserDAO userDao = (UserDAO) servletContext.getAttribute("USER_DAO");
 			UserDTO userData = userDao.getUserInfo(userId);
@@ -86,7 +89,7 @@ public class ServletCreateOrderForm extends HttpServlet
 			{
 				request.getSession().setAttribute("USER_INFO_SESSION", userData);
 			}
-			
+
 			request.setAttribute("ITEMS", items);
 			request.setAttribute("AUTHORS", authors);
 			request.setAttribute("PUBLISHERS", publishers);
