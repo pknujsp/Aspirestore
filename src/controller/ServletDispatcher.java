@@ -34,7 +34,7 @@ public class ServletDispatcher extends HttpServlet
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
 		String servletPath = request.getServletPath();
-		
+
 		try
 		{
 			String pageControllerPath = null;
@@ -124,9 +124,23 @@ public class ServletDispatcher extends HttpServlet
 									.setDetail(request.getParameter("detail_address"))
 									.setPayment_method(request.getParameter("payment_method"))
 									.setDelivery_method(request.getParameter("delivery_method"))
-									.setRequested_term(request.getParameter("requested_term"))
-									.setUser_id(userId)
+									.setRequested_term(request.getParameter("requested_term")).setUser_id(userId)
 									.setTotal_price(Integer.parseInt(request.getParameter("total_price"))));
+
+					String[] itemCodes = request.getParameterValues("itemCode[]");
+					String[] categoryCodes = request.getParameterValues("categoryCode[]");
+					String[] quantity = request.getParameterValues("quantity[]");
+
+					ArrayList<OrderInformation> books = new ArrayList<OrderInformation>(itemCodes.length);
+
+					for (int idx = 0; idx < itemCodes.length; ++idx)
+					{
+						books.add(new OrderInformation().setItem_code(Integer.parseInt(itemCodes[idx]))
+								.setItem_category(categoryCodes[idx])
+								.setOrder_quantity(Integer.parseInt(quantity[idx])));
+					}
+
+					request.setAttribute("BOOKS", books);
 
 					if (request.getParameter("address_code").equals("")) // 신규 입력
 					{

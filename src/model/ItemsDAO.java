@@ -11,6 +11,8 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import etc.OrderInformation;
+
 public class ItemsDAO
 {
 	private DataSource ds;
@@ -87,9 +89,9 @@ public class ItemsDAO
 		return item;
 	}
 
-	public OrderedItemsDTO[] getSimpleOrderedItemData(Map<Integer, String> codeMap)
+	public ArrayList<OrderedItemsDTO> getItemAuthorPublisher(ArrayList<SalehistoryDTO> saleHistory)
 	{
-		OrderedItemsDTO[] items = new OrderedItemsDTO[codeMap.size()];
+		ArrayList<OrderedItemsDTO> list = null;
 		String query = "SELECT a.author_name, p.publisher_name, i.item_name, i.item_code, i.item_category_code, "
 				+ "i.item_selling_price " + "FROM items as i "
 				+ "INNER JOIN publishers p ON i.item_publisher_code = p.publisher_code "
@@ -99,23 +101,21 @@ public class ItemsDAO
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
 		{
-			Iterator<Integer> it = codeMap.keySet().iterator();
-			int i = 0;
-
-			while (it.hasNext())
+			list = new ArrayList<OrderedItemsDTO>(saleHistory.size());
+			for (int i = 0; i < saleHistory.size(); ++i)
 			{
-				int itemCode = it.next().intValue();
-				String categoryCode = codeMap.get(itemCode);
+				set = null;
+				int itemCode = saleHistory.get(i).getItem_code();
+				String categoryCode = saleHistory.get(i).getItem_category();
 
 				prstmt.setInt(1, itemCode);
 				prstmt.setString(2, categoryCode);
 				set = prstmt.executeQuery();
 
-				while (set.next())
+				if (set.next())
 				{
-					items[i] = new OrderedItemsDTO(set.getString(3), set.getString(1), set.getString(2), set.getInt(4),
-							set.getString(5), set.getInt(6));
-					++i;
+					list.add(new OrderedItemsDTO(set.getString(3), set.getString(1), set.getString(2), set.getInt(4),
+							set.getString(5), set.getInt(6)));
 				}
 			}
 		} catch (Exception e)
@@ -134,7 +134,7 @@ public class ItemsDAO
 				}
 			}
 		}
-		return items;
+		return list;
 	}
 
 	public ArrayList<ItemsDTO> getItemList(int ccode)
@@ -244,6 +244,47 @@ public class ItemsDAO
 			}
 		}
 		return list;
+	}
+
+	public ArrayList<Integer> getBookSellingPrice(ArrayList<OrderInformation> books)
+	{
+		String query = "SELECT item_selling_price FROM items WHERE item_code = ? AND item_category_code = ?";
+		ResultSet set = null;
+		ArrayList<Integer> prices = null;
+
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			prices = new ArrayList<Integer>(books.size());
+
+			for (int i = 0; i < books.size(); ++i)
+			{
+				set = null;
+
+				prstmt.setInt(1, books.get(i).getItem_code());
+				prstmt.setString(2, books.get(i).getItem_category());
+				set = prstmt.executeQuery();
+				if (set.next())
+				{
+					prices.add(set.getInt(1));
+				}
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return prices;
 	}
 
 	private String cutString(String str)

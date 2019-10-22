@@ -66,43 +66,50 @@
 <body>
 
 	<jsp:include page="/navbar.jsp"></jsp:include>
-
-	<div>
-		<h5>주문 도서 확인</h5>
+	<form method="post" id="orderForm" name="orderForm"
+		action="/AspireStore/orderpayment.aspire" onsubmit="return payment()">
 		<div>
-			<table class="table">
-				<thead>
-					<tr>
-						<th>도서 명/ 저자 / 출판사</th>
-						<th>금액</th>
-						<th>주문 수량</th>
-						<th>합계</th>
-					</tr>
-				</thead>
-				<tbody>
+			<h5>주문 도서 확인</h5>
+			<div>
+				<table class="table">
 
-					<c:forEach var="book" items="${pageScope.BOOKS }"
-						varStatus="status">
+					<thead>
 						<tr>
-							<td><b><a
-									href="/AspireStore/items/item.aspire?ccode=${book.item_category_code }&icode=${book.item_code }"
-									id="itemName"><c:out value="${ book.item_name}" /></a></b>&nbsp;<c:out
-									value="${ pageScope.AUTHORS[status.index].author_name}" />&nbsp;<c:out
-									value="${ pageScope.PUBLISHERS[status.index].publisher_name}" /></td>
-							<td><label><c:out
-										value="${ book.item_selling_price}" /></label></td>
-							<td><label><c:out value="${ pageScope.ORDER_INFORMATIONS[status.index].order_quantity}"/></label></td>
-							<td><label><c:out value="${ pageScope.ORDER_INFORMATIONS[status.index].total_price}"/></label></td>
+							<th>도서 명/ 저자 / 출판사</th>
+							<th>금액</th>
+							<th>주문 수량</th>
+							<th>합계</th>
 						</tr>
-					</c:forEach>
-				</tbody>
-			</table>
-		</div>
+					</thead>
+					<tbody>
+						<c:forEach var="book" items="${pageScope.BOOKS }"
+							varStatus="status">
+							<tr>
+								<td><b><a
+										href="/AspireStore/items/item.aspire?ccode=${book.item_category_code }&icode=${book.item_code }"
+										id="itemName"><c:out value="${ book.item_name}" /></a></b>&nbsp;<c:out
+										value="${ pageScope.AUTHORS[status.index].author_name}" />&nbsp;<c:out
+										value="${ pageScope.PUBLISHERS[status.index].publisher_name}" /></td>
+								<td><label><c:out
+											value="${ book.item_selling_price}" /></label></td>
+								<td><label><c:out
+											value="${ pageScope.ORDER_INFORMATIONS[status.index].order_quantity}" /></label></td>
+								<td><label><c:out
+											value="${ pageScope.ORDER_INFORMATIONS[status.index].total_price}" /></label>
+									<input type="hidden" id="itemCode[]" name="itemCode[]"
+									value="${book.item_code }"> <input type="hidden"
+									id="categoryCode[]" name="categoryCode[]"
+									value="${book.item_category_code }"> <input
+									type="hidden" id="quantity[]" name="quantity[]"
+									value="${pageScope.ORDER_INFORMATIONS[status.index].order_quantity }"></td>
+							</tr>
+						</c:forEach>
+					</tbody>
+				</table>
+			</div>
 
-		<hr>
+			<hr>
 
-		<form method="post" id="orderForm" name="orderForm"
-			action="/AspireStore/orderpayment.aspire" onsubmit="return payment()">
 			<div>
 				<h5>주문서 작성</h5>
 				<div>
@@ -365,8 +372,8 @@
 						value="결제하기" /> </span>
 				</div>
 			</div>
-		</form>
-	</div>
+		</div>
+	</form>
 
 	<%@ include file="/footer.html"%>
 	<!-- Bootstrap core JavaScript -->

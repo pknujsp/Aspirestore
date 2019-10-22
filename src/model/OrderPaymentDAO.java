@@ -28,10 +28,9 @@ public class OrderPaymentDAO
 		this.ds = ds;
 	}
 
-	public int[] requestOrderProcessing(OrderhistoryDTO orderFormData, ArrayList<OrderInformation> ordered_items,
+	public void requestOrderProcessing(OrderhistoryDTO orderFormData, ArrayList<OrderInformation> ordered_items,
 			String userId)
 	{
-		int[] codes = new int[ordered_items.size() + 1];
 		final String currentTime = Util.getCurrentDateTime();
 
 		try (Connection connection = ds.getConnection();)
@@ -68,7 +67,7 @@ public class OrderPaymentDAO
 			if (prstmt.executeUpdate() == 1)
 			{
 				connection.commit();
-				codes[0] = getOrderOrSaleCode(currentTime, orderFormData.getUser_id(), -1); // ordercode
+				int orderCode = getOrderOrSaleCode(currentTime, orderFormData.getUser_id(), -1); // ordercode
 				prstmt.clearBatch();
 
 				query = "INSERT INTO salehistory VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -76,8 +75,8 @@ public class OrderPaymentDAO
 
 				for (int i = 0; i < ordered_items.size(); ++i)
 				{
-					prstmt.setInt(1, codes[0]);
-					prstmt.setString(2, orderFormData.getUser_id());
+					prstmt.setInt(1, orderCode);
+					prstmt.setString(2, userId);
 					prstmt.setInt(3, ordered_items.get(i).getItem_code());
 					prstmt.setString(4, ordered_items.get(i).getItem_category());
 					prstmt.setString(5, currentTime);
@@ -88,19 +87,11 @@ public class OrderPaymentDAO
 					prstmt.addBatch();
 
 				}
-
 				if (prstmt.executeBatch().length == ordered_items.size())
 				{
 					connection.commit();
 				}
-
-				for (int i = 0; i < ordered_items.size(); ++i)
-				{
-					codes[i + 1] = getOrderOrSaleCode(currentTime, orderFormData.getUser_id(),
-							ordered_items.get(i).getItem_code()); // salecode
-				}
 			}
-
 			if (prstmt != null)
 			{
 				try
@@ -116,7 +107,6 @@ public class OrderPaymentDAO
 		{
 			e.printStackTrace();
 		}
-		return codes;
 	}
 
 	public ArrayList<ItemsDTO> getItemsInfo(ArrayList<OrderInformation> informations)
@@ -289,25 +279,26 @@ public class OrderPaymentDAO
 		return dto;
 	}
 
-	public SalehistoryDTO[] getSaleHistory(int[] codes) // index 1부터 판매 코드
+	public ArrayList<SalehistoryDTO> getSaleHistory(int orderCode, String userId) // index 1부터 판매 코드
 	{
-		String query = "SELECT * FROM salehistory WHERE salehistory_sale_code = ?";
-		SalehistoryDTO[] data = new SalehistoryDTO[codes.length - 1];
+		String query = "SELECT * FROM salehistory WHERE salehistory_order_code = ? AND salehistory_user_id = ? ORDER BY salehistory_sale_date DESC";
+		ArrayList<SalehistoryDTO> list = null;
 		ResultSet set = null;
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
 		{
-			for (int i = 0; i < data.length; ++i)
+			prstmt.setInt(1, orderCode);
+			prstmt.setString(2, userId);
+			set = prstmt.executeQuery();
+
+			list = new ArrayList<SalehistoryDTO>();
+
+			while (set.next())
 			{
-				prstmt.setInt(1, codes[i + 1]);
-				set = prstmt.executeQuery();
-			}
-			for (int i = 0; set.next(); ++i)
-			{
-				data[i] = new SalehistoryDTO().setSale_code(set.getInt(1)).setOrder_code(set.getInt(2))
+				list.add(new SalehistoryDTO().setSale_code(set.getInt(1)).setOrder_code(set.getInt(2))
 						.setUser_id(set.getString(3)).setItem_code(set.getInt(4)).setItem_category(set.getString(5))
 						.setSale_date(set.getString(6)).setSale_quantity(set.getInt(7)).setTotal_price(set.getInt(8))
-						.setStatus(set.getString(9));
+						.setStatus(set.getString(9)));
 			}
 		} catch (Exception e)
 		{
@@ -325,7 +316,7 @@ public class OrderPaymentDAO
 				}
 			}
 		}
-		return data;
+		return list;
 	}
 
 	public String[] getOrderMethod(String delivery, String payment)
@@ -381,20 +372,50 @@ public class OrderPaymentDAO
 		return methods;
 	}
 
-	public Object[] getLatestOrderInfo(int[] codes, String userId, ServletContext sc)
+	public OrderhistoryDTO getLatestOrderInfo(String userId)
 	{
-		Object[] objects = new Object[3];
+		String query = "SELECT * FROM orderhistory WHERE orderhistory_user_id = ? ORDER BY orderhistory_order_date DESC LIMIT 1";
+		ResultSet set = null;
+		OrderhistoryDTO data = null;
 
-		objects[0] = getOrderHistory(codes[0], userId); // 주문 정보 (이름, 휴대전화, 주소 등) ordercode
-		objects[1] = getSaleHistory(codes); // salecodes
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			prstmt.setString(1, userId);
+			set = prstmt.executeQuery();
 
-		Map<Integer, String> codeMap = new HashMap<Integer, String>(codes.length - 1);
-		insertCodesToMap((SalehistoryDTO[]) objects[1], codeMap);
-
-		ItemsDAO itemsDao = (ItemsDAO) sc.getAttribute("itemsDAO");
-		objects[2] = itemsDao.getSimpleOrderedItemData(codeMap);
-
-		return objects;
+			if (set.next())
+			{
+				data = new OrderhistoryDTO().setOrder_code(set.getInt(1)).setUser_id(set.getString(2))
+						.setOrderer_name(set.getString(3)).setOrderer_mobile1(set.getString(4))
+						.setOrderer_mobile2(set.getString(5)).setOrderer_mobile3(set.getString(6))
+						.setOrderer_general1(set.getString(7)).setOrderer_general2(set.getString(8))
+						.setOrderer_general3(set.getString(9)).setOrderer_email(set.getString(10))
+						.setRecepient_name(set.getString(11)).setRecepient_mobile1(set.getString(12))
+						.setRecepient_mobile2(set.getString(13)).setRecepient_mobile3(set.getString(14))
+						.setRecepient_general1(set.getString(15)).setRecepient_general2(set.getString(16))
+						.setRecepient_general3(set.getString(17)).setPostal_code(set.getString(18))
+						.setRoad(set.getString(19)).setNumber(set.getString(20)).setDetail(set.getString(21))
+						.setRequested_term(set.getString(22)).setTotal_price(set.getInt(23))
+						.setPayment_method(set.getString(24)).setDelivery_method(set.getString(25))
+						.setOrder_date(set.getString(26));
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return data;
 	}
 
 	private void insertCodesToMap(SalehistoryDTO[] data, Map<Integer, String> map)

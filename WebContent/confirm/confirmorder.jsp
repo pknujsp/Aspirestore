@@ -1,3 +1,4 @@
+<%@page import="java.util.ArrayList"%>
 <%@page import="model.OrderPaymentDAO"%>
 <%@page import="model.OrderedItemsDTO"%>
 <%@page import="model.ItemsDTO"%>
@@ -9,19 +10,21 @@
 
 <%
 	String sessionKey = session.getAttribute("SESSIONKEY").toString();
-	ServletContext servletContext = this.getServletContext();
-	OrderPaymentDAO orderPaymentDAO = (OrderPaymentDAO) servletContext.getAttribute("ORDER_PAYMENT_DAO");
-	
-	int[] codes = (int[]) session.getAttribute("ORDER_SALE_CODES");
-	session.removeAttribute("ORDER_SALE_CODES");
 
-	Object[] data = orderPaymentDAO.getLatestOrderInfo(codes, sessionKey, this.getServletContext());
+	@SuppressWarnings("unchecked")
+	ArrayList<SalehistoryDTO> saleHistoryData = (ArrayList<SalehistoryDTO>) session
+			.getAttribute("SALE_HISTORY");
+	@SuppressWarnings("unchecked")
+	ArrayList<OrderedItemsDTO> orderedItemsData = (ArrayList<OrderedItemsDTO>) session
+			.getAttribute("BOOKS_AUTHORS_PUBLISHERS");
 
-	pageContext.setAttribute("orderHistoryData", (OrderhistoryDTO) data[0]);
-	pageContext.setAttribute("saleHistoryData", (SalehistoryDTO[]) data[1]);
-	pageContext.setAttribute("orderedItemsData", (OrderedItemsDTO[]) data[2]);
-	pageContext.setAttribute("paymentMethods", orderPaymentDAO.getOrderMethod(
-			((OrderhistoryDTO) data[0]).getDelivery_method(), ((OrderhistoryDTO) data[0]).getPayment_method()));
+	OrderhistoryDTO orderHistoryData = (OrderhistoryDTO) session.getAttribute("ORDER_HISTORY");
+	String[] paymentMethods = (String[]) session.getAttribute("METHODS");
+
+	pageContext.setAttribute("orderHistoryData", orderHistoryData);
+	pageContext.setAttribute("saleHistoryData", saleHistoryData);
+	pageContext.setAttribute("orderedItemsData", orderedItemsData);
+	pageContext.setAttribute("paymentMethods", paymentMethods);
 %>
 <!DOCTYPE html>
 <html>
