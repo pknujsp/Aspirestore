@@ -233,13 +233,6 @@ public class ServletDispatcher extends HttpServlet
 						request.setAttribute("BOOKS_TO_BE_DELETED", list);
 						break;
 
-					case "DELETE_ONE":
-						request.setAttribute("BOOK_TO_BE_DELETED",
-								new BasketDTO().setUser_id(request.getSession().getAttribute("SESSIONKEY").toString())
-										.setItem_code(Integer.parseInt(request.getParameter("itemCode")))
-										.setCategory_code(request.getParameter("itemCategory")));
-						break;
-
 					case "GET_BASKET":
 						break;
 					}

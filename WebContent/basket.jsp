@@ -43,8 +43,8 @@
 				<table class="table" id="tableBasketList">
 					<thead>
 						<tr>
-							<th><button type="button" onclick="checkAllCheckBox()">모두
-									선택</button></th>
+							<th><button type="button" id="btnCheck"
+									onclick="checkAllCheckBox()">모두 선택</button></th>
 							<th>도서 명/저자/출판사</th>
 							<th>판매가</th>
 							<th>수량</th>
@@ -80,29 +80,18 @@
 									<td><div>
 											<div>
 												<button type="button" id="btnOrderInstantly"
-													name="btnOrderInstantly" onclick="javascript:orderBooks()">주문</button>
+													name="btnOrderInstantly" onclick="javascript:orderBook('${book.item_code}','${book.item_category_code}')">주문</button>
 											</div>
 											<div>
 												<button type="button" id="btnRemoveBook"
-													name="btnRemoveBook" onclick="javascript:removeBooks()">삭제</button>
+													name="btnRemoveBook" onclick="javascript:removeBook('${book.item_code}','${book.item_category_code}','${status.index}')">삭제</button>
 											</div>
 										</div></td>
 								</tr>
 							</c:forEach>
 
-
 							<input type="hidden" id="type" name="type" value="BASKET_ORDER">
-
-							<!-- 
-						<form action="post" id="formBasket" action="/AspireStore/orderform.aspire">
-							
-							<input type="hidden" id="quantity[]" name="quantity[]" value="${pageScope.basketData[status.index].quantity}">
-							<input type="hidden" id="sellingPrice[]" name="sellingPrice[]" value="${book.item_selling_price}">
-						</form>
-						-->
-
 						</c:if>
-
 					</tbody>
 				</table>
 
@@ -223,6 +212,18 @@
 			for (var index = 0; index < checkBox.length; ++index) {
 				checkBox[index].checked = true;
 			}
+			var btn = document.getElementById('btnCheck');
+			btn.setAttribute('onclick', 'javascript:unCheckAllCheckBox()');
+		}
+
+		function unCheckAllCheckBox() {
+			var checkBox = document.getElementsByName('checkBoxCode');
+
+			for (var index = 0; index < checkBox.length; ++index) {
+				checkBox[index].checked = false;
+			}
+			var btn = document.getElementById('btnCheck');
+			btn.setAttribute('onclick', 'javascript:checkAllCheckBox()');
 		}
 
 		function orderBooks() {
@@ -245,6 +246,62 @@
 				}
 			}
 			form.submit();
+		}
+
+		function orderBook(bookCode, categoryCode) {
+			var form = document.getElementById('formBasket');
+
+			var checkBoxCode = document.getElementsByName('checkBoxCode');
+			var checkBoxCcode = document.getElementsByName('checkBoxCcode[]');
+
+			if (checkBoxCode.length == 1) {
+				checkBoxCode[0].checked = true;
+			} else {
+				for (var idx = 0; idx < checkBoxCode.length; ++idx) {
+					if ((form.elements['bookCodes[]'][idx].value == bookCode)
+							&& (form.elements['bookCategoryCodes[]'][idx].value == categoryCode)) {
+						checkBoxCode[idx].checked = true;
+					} else {
+						form.elements['bookCodes[]'][idx].disabled = true;
+						form.elements['bookCategoryCodes[]'][idx].disabled = true;
+						checkBoxCode[idx].checked = false;
+					}
+				}
+			}
+			form.submit();
+		}
+
+		function removeBook(bookCode, categoryCode, index) {
+			var xhttp = new XMLHttpRequest();
+
+			xhttp.onreadystatechange = function() {
+				if (xhttp.readyState == XMLHttpRequest.DONE
+						&& xhttp.status == 200) {
+					var data = document.getElementById('bookDataTBody');
+					data.deleteRow(index);
+				}
+			};
+			var checkBoxCode = document.getElementsByName('checkBoxCode');
+			var checkBoxCcode = document.getElementsByName('checkBoxCcode[]');
+
+			var itemCodes = new Array();
+			var categoryCodes = new Array();
+			var dataToBeSended = 'itemCodes=' + bookCode + '&categoryCodes='
+					+ categoryCode;
+
+			for (var idx = 0; idx < checkBoxCode.length; ++idx) {
+				if (checkBoxCode[idx].checked == true) {
+					checkBoxCode[idx].checked = false;
+				}
+			}
+			checkBoxCode[index].checked = true;
+			
+			dataToBeSended += '&type=DELETE';
+
+			xhttp.open('POST', '/AspireStore/basket.aspire', true);
+			xhttp.setRequestHeader('Content-type',
+					'application/x-www-form-urlencoded');
+			xhttp.send(dataToBeSended);
 		}
 	</script>
 </body>

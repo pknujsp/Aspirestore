@@ -56,32 +56,32 @@ public class BasketDAO
 
 	public ArrayList<BasketDTO> getBasket(String userId, String[] bookCodes, String[] categoryCodes)
 	{
-		String query = "SELECT basket_item_code, basket_item_category, basket_quantity FROM basket WHERE basket_user_id = ? ORDER BY basket_item_code ASC";
+		String query = "SELECT basket_item_code, basket_item_category, basket_quantity FROM basket WHERE basket_user_id = ? AND basket_item_code = ? AND basket_item_category = ?";
 
 		ResultSet set = null;
 		ArrayList<BasketDTO> list = null;
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
 		{
-			prstmt.setString(1, userId);
-			set = prstmt.executeQuery();
-
 			list = new ArrayList<BasketDTO>();
-
-			for (int i = 0; set.next(); ++i)
+			for (int index = 0; index < bookCodes.length; ++index)
 			{
-				int bookCodeSelected = Integer.parseInt(bookCodes[i]);
-				int bookCode = set.getInt(1);
-				String categoryCodeSelected = categoryCodes[i];
-				String categoryCode = set.getString(2);
+				set = null;
 
-				if ((bookCodeSelected == bookCode) && (categoryCodeSelected.equals(categoryCode)))
+				prstmt.setString(1, userId);
+				prstmt.setInt(2, Integer.parseInt(bookCodes[index]));
+				prstmt.setString(3, categoryCodes[index]);
+				set = prstmt.executeQuery();
+
+				if (set.next())
 				{
-					list.add(new BasketDTO().setItem_code(bookCode).setCategory_code(categoryCode)
+					list.add(new BasketDTO().setItem_code(set.getInt(1)).setCategory_code(set.getString(2))
 							.setQuantity(set.getInt(3)));
 				}
 			}
-		} catch (Exception e)
+		} catch (
+
+		Exception e)
 		{
 			e.printStackTrace();
 		} finally
@@ -176,10 +176,10 @@ public class BasketDAO
 
 				prstmt.addBatch();
 			}
-
 			if (prstmt.executeBatch().length == books.size())
 			{
 				flag = true;
+				connection.commit();
 			}
 		} catch (Exception e)
 		{
