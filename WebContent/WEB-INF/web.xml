@@ -24,6 +24,8 @@
 		<welcome-file>basket.jsp</welcome-file>
 		<welcome-file>management_navbar.jsp</welcome-file>
 		<welcome-file>main.jsp</welcome-file>
+		<welcome-file>bookmanagement.jsp</welcome-file>
+		<welcome-file>unprocessedorder.jsp</welcome-file>
 	</welcome-file-list>
 
 	<listener>
@@ -118,6 +120,16 @@
 	<servlet-mapping>
 		<servlet-name>basketservlet</servlet-name>
 		<url-pattern>/basket</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>ordersmanagementservlet</servlet-name>
+		<servlet-class>controller.ServletOrdersManagement</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>ordersmanagementservlet</servlet-name>
+		<url-pattern>/management/ordersmanagement</url-pattern>
 	</servlet-mapping>
 
 	<servlet>

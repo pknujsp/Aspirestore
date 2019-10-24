@@ -35,7 +35,7 @@ public class OrderPaymentDAO
 
 		try (Connection connection = ds.getConnection();)
 		{
-			String query = "INSERT INTO orderhistory VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			String query = "INSERT INTO orderhistory VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			PreparedStatement prstmt = connection.prepareStatement(query);
 
 			prstmt.setString(1, orderFormData.getUser_id());
@@ -63,6 +63,7 @@ public class OrderPaymentDAO
 			prstmt.setString(23, orderFormData.getPayment_method());
 			prstmt.setString(24, orderFormData.getDelivery_method());
 			prstmt.setString(25, currentTime);
+			prstmt.setString(26, "n");
 
 			if (prstmt.executeUpdate() == 1)
 			{
@@ -416,13 +417,5 @@ public class OrderPaymentDAO
 			}
 		}
 		return data;
-	}
-
-	private void insertCodesToMap(SalehistoryDTO[] data, Map<Integer, String> map)
-	{
-		for (int i = 0; i < data.length; ++i)
-		{
-			map.put(data[i].getItem_code(), data[i].getItem_category());
-		}
 	}
 }

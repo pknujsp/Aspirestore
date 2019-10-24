@@ -237,6 +237,26 @@ public class ServletDispatcher extends HttpServlet
 						break;
 					}
 				}
+
+			case "/management/ordersmanagement.aspire":
+				if (checkNullParameters())
+				{
+					pageControllerPath = "/management/ordersmanagement";
+
+					String type = request.getParameter("type");
+					request.setAttribute("TYPE", type);
+
+					switch (type)
+					{
+					case "GET_LIST":
+						request.setAttribute("START_INDEX", "0");
+						request.setAttribute("END_INDEX", "10");
+						break;
+					case "CONFIRM_SHIPMENT":
+						break;
+					}
+				}
+				break;
 			}
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher(pageControllerPath);
 			requestDispatcher.include(request, response);

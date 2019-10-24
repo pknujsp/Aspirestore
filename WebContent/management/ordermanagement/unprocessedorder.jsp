@@ -3,6 +3,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%
+/*
 	// 매니저의 아이디
 	final String managerId = session.getAttribute("SESSIONKEY").toString();
 
@@ -21,7 +22,7 @@
 	int listSize = 0; // 미 처리된 주문의 레코드 개수
 
 	ArrayList<OrderhistoryDTO> orderList = null; // 주문 목록
-
+	*/
 %>
 
 <!DOCTYPE html>
@@ -36,8 +37,6 @@
 
 </head>
 <body>
-
-
 	<div class="d-flex" id="wrapper">
 
 		<div class="bg-light border-right" id="sidebar-wrapper">
@@ -50,12 +49,11 @@
 			</div>
 		</div>
 
-
 		<div id="page-content-wrapper">
 			<jsp:include page="../management_navbar.jsp"></jsp:include>
+
 			<div class="container-fluid">
 				<table class="table">
-
 					<thead>
 						<tr>
 							<th>
@@ -82,14 +80,13 @@
 							<th>결제 수단</th>
 							<th>배송 방법</th>
 							<th>주문 날짜</th>
-							<th>주문 처리 상태</th>
 							<th>처리</th>
 						</tr>
 					</thead>
 					<tbody>
 						<c:if test="">
-							<form id="unprocessedOrderForm" name="unprocessedOrderForm" method="post">
-								<c:forEach var="" items="" varStatus="status">
+							
+								
 									<tr>
 										<td>
 											<input type="checkbox" id="orderCheckBox" name="orderCheckBox" value="">
@@ -130,9 +127,6 @@
 											<c:out value=""></c:out>
 										</td>
 										<td>
-											<c:out value=""></c:out>
-										</td>
-										<td>
 											<div>
 												<div>
 													<button type="button">발송 완료</button>
@@ -140,8 +134,8 @@
 											</div>
 										</td>
 									</tr>
-								</c:forEach>
-							</form>
+							
+						
 						</c:if>
 					</tbody>
 				</table>
@@ -152,6 +146,22 @@
 	<script src="/AspireStore/js/bootstrap.bundle.min.js"></script>
 
 	<script>
+		(function() {
+			var xhttp = new XMLHttpRequest();
+
+			xhttp.onreadystatechange = function() {
+				if (xhttp.readyState == XMLHttpRequest.DONE
+						&& xhttp.status == 200) {
+					console.log(xhttp.responseText);
+					// 도서 정보 JSON에 입려되어있지 않음.
+				}
+			};
+			
+			xhttp.open('POST','/AspireStore/management/ordersmanagement.aspire',true);
+			xhttp.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+			xhttp.send('type='+'GET_LIST');
+		})();
+
 		$("#menu-toggle").click(function(e) {
 			e.preventDefault();
 			$("#wrapper").toggleClass("toggled");
