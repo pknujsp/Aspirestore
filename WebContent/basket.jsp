@@ -3,8 +3,7 @@
 <%@page import="model.AuthorDTO"%>
 <%@page import="model.ItemsDTO"%>
 <%@page import="java.util.ArrayList"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8" session="true"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%
 	@SuppressWarnings("unchecked")
@@ -36,15 +35,15 @@
 	<jsp:include page="/navbar.jsp" />
 
 	<h5 style="text-align: center">장바구니</h5>
-	<form method="post" id="formBasket"
-		action="/AspireStore/orderform.aspire">
+	<form method="post" id="formBasket" action="/AspireStore/orderform.aspire">
 		<div>
 			<div>
 				<table class="table" id="tableBasketList">
 					<thead>
 						<tr>
-							<th><button type="button" id="btnCheck"
-									onclick="checkAllCheckBox()">모두 선택</button></th>
+							<th>
+								<button type="button" id="btnCheck" onclick="checkAllCheckBox()">모두 선택</button>
+							</th>
 							<th>도서 명/저자/출판사</th>
 							<th>판매가</th>
 							<th>수량</th>
@@ -56,37 +55,45 @@
 
 						<c:if test="${not empty pageScope.basketData}">
 
-							<c:forEach var="book" items="${pageScope.bookData}"
-								varStatus="status">
+							<c:forEach var="book" items="${pageScope.bookData}" varStatus="status">
 								<tr>
-									<td><input type="checkbox" id="checkBoxCode"
-										name="checkBoxCode" value="${book.item_code}"><input
-										type="hidden" id="checkBoxCcode[]" name="checkBoxCcode[]"
-										value="${book.item_category_code}"></td>
-									<td><span><img src="..." alt="이미지 없음"> </span><span><a
-											href="/AspireStore/items/item.aspire?ccode=${book.item_category_code}&icode=${book.item_code}"><c:out
-													value="${book.item_name}" /></a>&nbsp;<c:out
-												value="[${pageScope.authorData[status.index].author_name}]" />&nbsp;<c:out
-												value="[${pageScope.publisherData[status.index].publisher_name}]" /></span>
-										<input type="hidden" id="bookCategoryCodes[]"
-										name="bookCategoryCodes[]" value="${book.item_category_code}">
-										<input type="hidden" id="bookCodes[]" name="bookCodes[]"
-										value="${book.item_code}"></td>
-									<td><c:out value="${book.item_selling_price}" /></td>
-									<td><c:out
-											value="${pageScope.basketData[status.index].quantity}" /></td>
-									<td><c:out
-											value="${book.item_selling_price * pageScope.basketData[status.index].quantity}" /></td>
-									<td><div>
+									<td>
+										<input type="checkbox" id="checkBoxCode" name="checkBoxCode" value="${book.item_code}"><input type="hidden" id="checkBoxCcode[]" name="checkBoxCcode[]" value="${book.item_category_code}">
+									</td>
+									<td>
+										<span>
+											<img src="..." alt="이미지 없음">
+										</span>
+										<span>
+											<a href="/AspireStore/items/item.aspire?ccode=${book.item_category_code}&icode=${book.item_code}">
+												<c:out value="${book.item_name}" />
+											</a>
+											&nbsp;
+											<c:out value="[${pageScope.authorData[status.index].author_name}]" />
+											&nbsp;
+											<c:out value="[${pageScope.publisherData[status.index].publisher_name}]" />
+										</span>
+										<input type="hidden" id="bookCategoryCodes[]" name="bookCategoryCodes[]" value="${book.item_category_code}"> <input type="hidden" id="bookCodes[]" name="bookCodes[]" value="${book.item_code}">
+									</td>
+									<td>
+										<c:out value="${book.item_selling_price}" />
+									</td>
+									<td>
+										<c:out value="${pageScope.basketData[status.index].quantity}" />
+									</td>
+									<td>
+										<c:out value="${book.item_selling_price * pageScope.basketData[status.index].quantity}" />
+									</td>
+									<td>
+										<div>
 											<div>
-												<button type="button" id="btnOrderInstantly"
-													name="btnOrderInstantly" onclick="javascript:orderBook('${book.item_code}','${book.item_category_code}')">주문</button>
+												<button type="button" id="btnOrderInstantly" name="btnOrderInstantly" onclick="javascript:orderBook('${book.item_code}','${book.item_category_code}')">주문</button>
 											</div>
 											<div>
-												<button type="button" id="btnRemoveBook"
-													name="btnRemoveBook" onclick="javascript:removeBook('${book.item_code}','${book.item_category_code}','${status.index}')">삭제</button>
+												<button type="button" id="btnRemoveBook" name="btnRemoveBook" onclick="javascript:removeBook('${book.item_code}','${book.item_category_code}','${status.index}')">삭제</button>
 											</div>
-										</div></td>
+										</div>
+									</td>
 								</tr>
 							</c:forEach>
 
@@ -98,26 +105,34 @@
 			</div>
 
 			<div>
-				<span><button type="button" id="btnRemoveBooks"
-						name="btnRemoveBooks" onclick="javascript:removeBooks()">도서
-						삭제</button></span>
-			</div>
-
-			<hr>
-
-			<div>
-				<span> <b>총 도서 금액</b> : <b id="totalPrice"></b>
-
-				</span> | <span> <b>총 할인 금액</b> : <b id="totalDiscount"></b>
-				</span> | <span> <b>최종 결제 금액</b> : <b id="finalTotalPrice"></b>
+				<span>
+					<button type="button" id="btnRemoveBooks" name="btnRemoveBooks" onclick="javascript:removeBooks()">도서 삭제</button>
 				</span>
 			</div>
 
 			<hr>
 
 			<div>
-				<span><button type="button" id="btnOrder" name="btnOrder"
-						onclick="javascript:orderBooks()">주문</button></span>
+				<span>
+					<b>총 도서 금액</b> : <b id="totalPrice"></b>
+
+				</span>
+				|
+				<span>
+					<b>총 할인 금액</b> : <b id="totalDiscount"></b>
+				</span>
+				|
+				<span>
+					<b>최종 결제 금액</b> : <b id="finalTotalPrice"></b>
+				</span>
+			</div>
+
+			<hr>
+
+			<div>
+				<span>
+					<button type="button" id="btnOrder" name="btnOrder" onclick="javascript:orderBooks()">주문</button>
+				</span>
 			</div>
 
 		</div>
@@ -295,7 +310,7 @@
 				}
 			}
 			checkBoxCode[index].checked = true;
-			
+
 			dataToBeSended += '&type=DELETE';
 
 			xhttp.open('POST', '/AspireStore/basket.aspire', true);

@@ -22,6 +22,8 @@
 		<welcome-file>footer.html</welcome-file>
 		<welcome-file>confirmorder.jsp</welcome-file>
 		<welcome-file>basket.jsp</welcome-file>
+		<welcome-file>management_navbar.jsp</welcome-file>
+		<welcome-file>main.jsp</welcome-file>
 	</welcome-file-list>
 
 	<listener>
