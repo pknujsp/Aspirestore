@@ -2,8 +2,7 @@
 <%@page import="model.AuthorDTO"%>
 <%@page import="model.ItemsDTO"%>
 <%@page import="java.util.ArrayList"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8" session="true"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true"%>
 
 <%
 	request.setCharacterEncoding("UTF-8");
@@ -18,8 +17,7 @@
 <head>
 
 <meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="">
 <meta name="author" content="">
 
@@ -40,17 +38,25 @@
 
 	<div class="container border border-info">
 		<div>
-			<span> <img src="/AspireStore/images/ReactBookImage.jpg"
-				alt="No Image" border="0" style="width: 40%; height: auto;" /></span>
+			<span>
+				<img src="/AspireStore/images/ReactBookImage.jpg" alt="No Image" border="0" style="width: 40%; height: auto;" />
+			</span>
 
 		</div>
 		<div>
 			<h4><%=item.getItem_name()%></h4>
 		</div>
 		<hr />
-		<span> <span><a href="#" target="_blank"><%=author.getAuthor_name()%></a></span>
-			<em>|</em> <span><a href="#" target="_blank"><%=publisherName%></a></span>
-			<em>|</em> <span><%=item.getItem_publication_date()%></span>
+		<span>
+			<span>
+				<a href="#" target="_blank"><%=author.getAuthor_name()%></a>
+			</span>
+			<em>|</em>
+			<span>
+				<a href="#" target="_blank"><%=publisherName%></a>
+			</span>
+			<em>|</em>
+			<span><%=item.getItem_publication_date()%></span>
 		</span>
 
 
@@ -64,12 +70,20 @@
 				<tbody>
 					<tr>
 						<th scope="row">정가</th>
-						<td><span><em><%=item.getItem_fixed_price()%> 원</em></span></td>
+						<td>
+							<span>
+								<em><%=item.getItem_fixed_price()%> 원</em>
+							</span>
+						</td>
 					</tr>
 
 					<tr>
 						<th scope="row">판매가</th>
-						<td><span><em><%=item.getItem_selling_price()%> 원</em></span></td>
+						<td>
+							<span>
+								<em><%=item.getItem_selling_price()%> 원</em>
+							</span>
+						</td>
 					</tr>
 				</tbody>
 			</table>
@@ -80,24 +94,19 @@
 
 			<form method="post" id="itemInfoForm">
 
-				<span> 수량 <input type="number" name="quantity" id="quantity"
-					value="1" min="1" /> <input type="hidden" name="itemPrice"
-					id="itemPrice" value="<%=item.getItem_selling_price()%>" /> <input
-					type="hidden" name="itemCategory" id="itemCategory"
-					value="<%=item.getItem_category_code()%>" /> <input type="hidden"
-					name="itemCode" id="itemCode" value="<%=item.getItem_code()%>" />
-				</span> <span>
-					<button class="btn btn-primary" type="button"
-						onclick="javascript:addBookToTheBasket('/AspireStore/basket.aspire')">장바구니에
-						추가</button>
-				</span> <span> <input type="submit" class="btn btn-primary"
-					onclick="javascript:clickButton('/AspireStore/orderform.aspire')"
-					value="바로 구매" />
-				</span><input type="hidden" id="type" name="type" value="ONE_ORDER">
+				<span>
+					수량 <input type="number" name="quantity" id="quantity" value="1" min="1" /> <input type="hidden" name="itemPrice" id="itemPrice" value="<%=item.getItem_selling_price()%>" /> <input type="hidden" name="itemCategory" id="itemCategory" value="<%=item.getItem_category_code()%>" /> <input type="hidden" name="itemCode" id="itemCode" value="<%=item.getItem_code()%>" />
+				</span>
+				<span>
+					<button class="btn btn-primary" type="button" onclick="javascript:addBookToTheBasket('/AspireStore/basket.aspire')">장바구니에 추가</button>
+				</span>
+				<span>
+					<input type="submit" class="btn btn-primary" onclick="javascript:clickButton('/AspireStore/orderform.aspire')" value="바로 구매" />
+				</span>
+				<input type="hidden" id="type" name="type" value="ONE_ORDER">
 			</form>
 		</div>
 		<hr />
-
 
 		<div>
 			<div>
@@ -118,8 +127,11 @@
 							</tr>
 							<tr>
 								<th scope="row">쪽수, 무게, 크기</th>
-								<td><%=item.getItem_page_number()%> , <%=item.getItem_weight()%>
-									, <%=item.getItem_size()%></td>
+								<td><%=item.getItem_page_number()%>
+									,
+									<%=item.getItem_weight()%>
+									,
+									<%=item.getItem_size()%></td>
 							</tr>
 							<tr>
 								<th scope="row">ISBN13</th>
@@ -208,8 +220,7 @@
 		<hr />
 	</div>
 
-	<form action="/AspireStore/basket.aspire" id="basketForm"
-		name="basketForm" method="post">
+	<form action="/AspireStore/basket.aspire" id="basketForm" name="basketForm" method="post">
 		<input type="hidden" id="type" name="type" value="GET_BASKET">
 	</form>
 
@@ -226,8 +237,7 @@
 				if (xhttp.readyState == XMLHttpRequest.DONE
 						&& xhttp.status == 200) {
 					var responseArr = xhttp.response;
-					showDialog(responseArr[0].MESSAGE,
-							responseArr[0].RESULT);
+					showDialog(responseArr[0].MESSAGE, responseArr[0].RESULT);
 				}
 			};
 			xhttp.open('POST', url, true);

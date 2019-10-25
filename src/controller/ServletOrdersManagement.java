@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import model.ManagementOrdersDAO;
+import model.OrdersManagementDAO;
 import model.OrderhistoryDTO;
 
 public class ServletOrdersManagement extends HttpServlet
@@ -43,15 +43,15 @@ public class ServletOrdersManagement extends HttpServlet
 		{
 			ServletContext sc = this.getServletContext();
 
-			ManagementOrdersDAO managementOrdersDAO = (ManagementOrdersDAO) sc.getAttribute("MANAGEMENT_ORDERS_DAO");
+			OrdersManagementDAO ordersManagementDAO = (OrdersManagementDAO) sc.getAttribute("MANAGEMENT_ORDERS_DAO");
 
 			// 미 처리된 주문 목록을 가져옴(시간 오름차순)
-			ArrayList<OrderhistoryDTO> orderDataList = managementOrdersDAO.getUnprocessedOrderList(
+			ArrayList<OrderhistoryDTO> orderDataList = ordersManagementDAO.getUnprocessedOrderList(
 					Integer.parseInt(request.getAttribute("START_INDEX").toString()),
 					Integer.parseInt(request.getAttribute("END_INDEX").toString()));
 
 			// 주문 코드에 따른 주문한 도서 목록을 가져온다. (도서 명, 저자 , 출판사, 주문 수량, 판매가, 총 금액, 결제 수단, 배송 수단)
-			ArrayList<ArrayList<Map<String, String>>> bookList = managementOrdersDAO.getBookList(orderDataList);
+			ArrayList<ArrayList<Map<String, String>>> bookList = ordersManagementDAO.getBookList(orderDataList);
 			
 			JSONObject orderData = new JSONObject();
 			JSONArray rootArr = new JSONArray();
@@ -88,11 +88,9 @@ public class ServletOrdersManagement extends HttpServlet
 					String bookName = bookList.get(index).get(j).get("book_name");
 					String authorName = bookList.get(index).get(j).get("author_name");
 					String publisherName = bookList.get(index).get(j).get("publisher_name");
-					int saleQuantity = Integer.parseInt(bookList.get(index).get(j).get("sale_quantity"));
-					int sellingPrice = Integer.parseInt(bookList.get(index).get(j).get("selling_price"));
-					int totalPrice = Integer.parseInt(bookList.get(index).get(j).get("total_price"));
-					String paymentMethod = bookList.get(index).get(j).get("payment_method");
-					String deliveryMethod = bookList.get(index).get(j).get("delivery_method");
+					String saleQuantity = bookList.get(index).get(j).get("sale_quantity");
+					String sellingPrice = bookList.get(index).get(j).get("selling_price");
+					String totalPrice = bookList.get(index).get(j).get("total_price");
 
 					JSONObject bookData = new JSONObject();
 					bookData.put("BOOK_NAME", bookName);
@@ -101,8 +99,6 @@ public class ServletOrdersManagement extends HttpServlet
 					bookData.put("QUANTITY", saleQuantity);
 					bookData.put("SELLING_PRICE", sellingPrice);
 					bookData.put("TOTAL_PRICE", totalPrice);
-					bookData.put("PAYMENT_METHOD", paymentMethod);
-					bookData.put("DELIVERY_METHOD", deliveryMethod);
 
 					bookArr.put(bookData);
 				}
@@ -120,6 +116,13 @@ public class ServletOrdersManagement extends HttpServlet
 				jsonObject.put("KEY_DATA",bookArr);
 				jsonObject.put("REQUESTED_TERM",requestedData);
 				jsonObject.put("ADDRESS",addressData);
+				
+				jsonObject.put("ORDER_CODE",orderDataList.get(index).getOrder_code());
+				jsonObject.put("ORDERER_ID",orderDataList.get(index).getUser_id());
+				jsonObject.put("PAYMENT_METHOD",orderDataList.get(index).getPayment_method());
+				jsonObject.put("DELIVERY_METHOD",orderDataList.get(index).getDelivery_method());
+				jsonObject.put("FINAL_TOTAL_PRICE",orderDataList.get(index).getTotal_price());
+				jsonObject.put("ORDER_DATE",orderDataList.get(index).getOrder_date());
 
 				rootArr.put(jsonObject);
 			}

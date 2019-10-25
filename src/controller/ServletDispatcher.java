@@ -205,7 +205,7 @@ public class ServletDispatcher extends HttpServlet
 				if (checkNullParameters())
 				{
 					pageControllerPath = "/basket";
-					final String userId = request.getSession().getAttribute("SESSIONKEY").toString();
+					String userId = request.getSession().getAttribute("SESSIONKEY").toString();
 					String type = request.getParameter("type");
 					request.setAttribute("TYPE", type);
 
@@ -237,7 +237,7 @@ public class ServletDispatcher extends HttpServlet
 						break;
 					}
 				}
-
+				break;
 			case "/management/ordersmanagement.aspire":
 				if (checkNullParameters())
 				{
