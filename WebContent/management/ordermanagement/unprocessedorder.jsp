@@ -91,11 +91,11 @@
 								<input type="checkbox" id="orderCheckBox" name="orderCheckBox" value="">
 							</td>
 							<td>
-								<c:out value=""></c:out>
+								<a id="orderCode"></a>
 								<input type="hidden" id="orderCodeArr[]" name="orderCodeArr[]" value="">
 							</td>
 							<td>
-								<c:out value=""></c:out>
+								<a id="userId"></a>
 								<input type="hidden" id="userIdArr[]" name="userIdArr[]" value="">
 							</td>
 							<td>
@@ -114,16 +114,16 @@
 								<button type="button">요청 사항</button>
 							</td>
 							<td>
-								<c:out value=""></c:out>
+								<a id="finalTotalPrice"></a>
 							</td>
 							<td>
-								<c:out value=""></c:out>
+								<a id="paymentMethod"></a>
 							</td>
 							<td>
-								<c:out value=""></c:out>
+								<a id="deliveryMethod"></a>
 							</td>
 							<td>
-								<c:out value=""></c:out>
+								<a id="orderDate"></a>
 							</td>
 							<td>
 								<div>
@@ -135,7 +135,6 @@
 						</tr>
 
 
-
 					</tbody>
 				</table>
 			</div>
@@ -145,14 +144,19 @@
 	<script src="/AspireStore/js/bootstrap.bundle.min.js"></script>
 
 	<script>
+		const orderList = [];
+
 		(function() {
 			var xhttp = new XMLHttpRequest();
 
 			xhttp.onreadystatechange = function() {
 				if (xhttp.readyState == XMLHttpRequest.DONE
 						&& xhttp.status == 200) {
-					console.log(xhttp.responseText);
-					// 도서 정보 JSON에 입려되어있지 않음.
+					const orderDataList = JSON.parse(xhttp.responseText);
+					for(let index = 0;index < orderDataList.length; ++index){
+						
+					}
+					setData();
 				}
 			};
 
@@ -167,6 +171,10 @@
 			e.preventDefault();
 			$("#wrapper").toggleClass("toggled");
 		});
+
+		function setData(id, data) {
+			document.getElementById(id).value = data;
+		}
 	</script>
 </body>
 </html>

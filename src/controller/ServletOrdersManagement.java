@@ -52,19 +52,16 @@ public class ServletOrdersManagement extends HttpServlet
 
 			// 주문 코드에 따른 주문한 도서 목록을 가져온다. (도서 명, 저자 , 출판사, 주문 수량, 판매가, 총 금액, 결제 수단, 배송 수단)
 			ArrayList<ArrayList<Map<String, String>>> bookList = managementOrdersDAO.getBookList(orderDataList);
-
+			
+			JSONObject orderData = new JSONObject();
 			JSONArray rootArr = new JSONArray();
 
 			for (int index = 0; index < orderDataList.size(); ++index)
 			{
-				JSONArray jsonArr = new JSONArray();
+				JSONObject jsonObject = new JSONObject();
 				// 주문자 정보, 수령자 정보, 도서 정보, 요청 사항, 배송지 정보는 추가로 감싼다.
 
-				JSONArray ordererArr = new JSONArray(); // 주문자 정보 배열
-				JSONArray recepientArr = new JSONArray(); // 수령자 정보 배열
 				JSONArray bookArr = new JSONArray(); // 도서 정보 배열
-				JSONArray requestedTermArr = new JSONArray(); // 요청 사항 배열
-				JSONArray addressArr = new JSONArray(); // 배송지 정보 배열
 
 				JSONObject ordererData = new JSONObject();
 				ordererData.put("ORDERER_NAME", orderDataList.get(index).getOrderer_name());
@@ -88,7 +85,7 @@ public class ServletOrdersManagement extends HttpServlet
 				// Map에서 데이터 가져온다.
 				for (int j = 0; j < bookList.get(index).size(); ++j)
 				{
-					String bookName = bookList.get(index).get(j).get("item_name");
+					String bookName = bookList.get(index).get(j).get("book_name");
 					String authorName = bookList.get(index).get(j).get("author_name");
 					String publisherName = bookList.get(index).get(j).get("publisher_name");
 					int saleQuantity = Integer.parseInt(bookList.get(index).get(j).get("sale_quantity"));
@@ -118,21 +115,17 @@ public class ServletOrdersManagement extends HttpServlet
 				addressData.put("NUMBER", orderDataList.get(index).getNumber());
 				addressData.put("DETAIL", orderDataList.get(index).getDetail());
 
-				ordererArr.put(ordererData);
-				recepientArr.put(recepientData);
-				requestedTermArr.put(requestedData);
-				addressArr.put(addressData);
+				jsonObject.put("ORDERER",ordererData);
+				jsonObject.put("RECEPIENT",recepientData);
+				jsonObject.put("KEY_DATA",bookArr);
+				jsonObject.put("REQUESTED_TERM",requestedData);
+				jsonObject.put("ADDRESS",addressData);
 
-				jsonArr.put(ordererArr);
-				jsonArr.put(recepientArr);
-				jsonArr.put(bookArr);
-				jsonArr.put(requestedTermArr);
-				jsonArr.put(addressArr);
-
-				rootArr.put(jsonArr);
+				rootArr.put(jsonObject);
 			}
+			orderData.put("ORDER_DATA", rootArr);
 			response.setContentType("application/json");
-			response.getWriter().write(rootArr.toString());
+			response.getWriter().write(orderData.toString());
 			request.setAttribute("VIEWURL", "ajax:/");
 		} catch (Exception e)
 		{
