@@ -30,8 +30,11 @@ public class ServletOrdersManagement extends HttpServlet
 		case "GET_LIST":
 			getUnprocessedOrderList(request, response);
 			break;
-		case "CONFIRM_SHIPMENT":
-			confirmShipment(request, response);
+		case "PROCESS_SHIPMENT":
+			processShipment(request, response);
+			break;
+		case "GET_RECORDS_SIZE":
+			getUnprocessedOrderListSize(request, response);
 			break;
 		}
 	}
@@ -47,12 +50,12 @@ public class ServletOrdersManagement extends HttpServlet
 
 			// 미 처리된 주문 목록을 가져옴(시간 오름차순)
 			ArrayList<OrderhistoryDTO> orderDataList = ordersManagementDAO.getUnprocessedOrderList(
-					Integer.parseInt(request.getAttribute("START_INDEX").toString()),
+					Integer.parseInt(request.getAttribute("BEGIN_INDEX").toString()),
 					Integer.parseInt(request.getAttribute("END_INDEX").toString()));
 
 			// 주문 코드에 따른 주문한 도서 목록을 가져온다. (도서 명, 저자 , 출판사, 주문 수량, 판매가, 총 금액, 결제 수단, 배송 수단)
 			ArrayList<ArrayList<Map<String, String>>> bookList = ordersManagementDAO.getBookList(orderDataList);
-			
+
 			JSONObject orderData = new JSONObject();
 			JSONArray rootArr = new JSONArray();
 
@@ -111,18 +114,18 @@ public class ServletOrdersManagement extends HttpServlet
 				addressData.put("NUMBER", orderDataList.get(index).getNumber());
 				addressData.put("DETAIL", orderDataList.get(index).getDetail());
 
-				jsonObject.put("ORDERER",ordererData);
-				jsonObject.put("RECEPIENT",recepientData);
-				jsonObject.put("KEY_DATA",bookArr);
-				jsonObject.put("REQUESTED_TERM",requestedData);
-				jsonObject.put("ADDRESS",addressData);
-				
-				jsonObject.put("ORDER_CODE",orderDataList.get(index).getOrder_code());
-				jsonObject.put("ORDERER_ID",orderDataList.get(index).getUser_id());
-				jsonObject.put("PAYMENT_METHOD",orderDataList.get(index).getPayment_method());
-				jsonObject.put("DELIVERY_METHOD",orderDataList.get(index).getDelivery_method());
-				jsonObject.put("FINAL_TOTAL_PRICE",orderDataList.get(index).getTotal_price());
-				jsonObject.put("ORDER_DATE",orderDataList.get(index).getOrder_date());
+				jsonObject.put("ORDERER", ordererData);
+				jsonObject.put("RECEPIENT", recepientData);
+				jsonObject.put("KEY_DATA", bookArr);
+				jsonObject.put("REQUESTED_TERM", requestedData);
+				jsonObject.put("ADDRESS", addressData);
+
+				jsonObject.put("ORDER_CODE", orderDataList.get(index).getOrder_code());
+				jsonObject.put("ORDERER_ID", orderDataList.get(index).getUser_id());
+				jsonObject.put("PAYMENT_METHOD", orderDataList.get(index).getPayment_method());
+				jsonObject.put("DELIVERY_METHOD", orderDataList.get(index).getDelivery_method());
+				jsonObject.put("FINAL_TOTAL_PRICE", orderDataList.get(index).getTotal_price());
+				jsonObject.put("ORDER_DATE", orderDataList.get(index).getOrder_date());
 
 				rootArr.put(jsonObject);
 			}
@@ -136,8 +139,41 @@ public class ServletOrdersManagement extends HttpServlet
 		}
 	}
 
-	void confirmShipment(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	void processShipment(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
+		try
+		{
+			ServletContext sc = this.getServletContext();
 
+			String[] orderCodeList = (String[]) request.getAttribute("ORDER_CODE_LIST");
+			String[] userIdList = (String[]) request.getAttribute("USER_ID_LIST");
+
+			OrdersManagementDAO dao = (OrdersManagementDAO) sc.getAttribute("MANAGEMENT_ORDERS_DAO");
+			dao.processShipment(userIdList, orderCodeList);
+
+			request.setAttribute("VIEWURL", "ajax:/");
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	void getUnprocessedOrderListSize(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException
+	{
+		try
+		{
+			ServletContext sc = this.getServletContext();
+			OrdersManagementDAO dao = (OrdersManagementDAO) sc.getAttribute("MANAGEMENT_ORDERS_DAO");
+			int size = dao.getUnprocessedOrderListSize();
+
+			response.setContentType("text/plain");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(String.valueOf(size));
+			request.setAttribute("VIEWURL", "ajax:/");
+		} catch (Exception e)
+		{
+			throw new ServletException(e);
+		}
 	}
 }

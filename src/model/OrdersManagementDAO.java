@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.security.sasl.SaslException;
+import javax.servlet.ServletException;
 import javax.sql.DataSource;
 
 public class OrdersManagementDAO
@@ -133,5 +135,52 @@ public class OrdersManagementDAO
 			}
 		}
 		return list;
+	}
+
+	public int getUnprocessedOrderListSize()
+	{
+		String query = "SELECT count(orderhistory_order_code) FROM orderhistory WHERE orderhistory_status = \'n\'";
+		int size = 0;
+
+		try (Connection connection = ds.getConnection();
+				PreparedStatement prstmt = connection.prepareStatement(query);
+				ResultSet set = prstmt.executeQuery();)
+		{
+			if (set.next())
+			{
+				size = set.getInt(1);
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return size;
+	}
+
+	public boolean processShipment(String[] userIdList, String[] orderCodeList)
+	{
+		String query = "UPDATE orderhistory o " + "INNER JOIN salehistory s "
+				+ "ON s.salehistory_user_id = o.orderhistory_user_id AND o.orderhistory_order_code = s.salehistory_order_code "
+				+ "SET o.orderhistory_status = \'y\' , s.salehistory_status = \'y\' "
+				+ "WHERE o.orderhistory_user_id = ? AND o.orderhistory_order_code = ?";
+		boolean flag = false;
+
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			for (int i = 0; i < userIdList.length; ++i)
+			{
+				prstmt.setString(1, userIdList[i]);
+				prstmt.setInt(2, Integer.parseInt(orderCodeList[i]));
+				prstmt.addBatch();
+			}
+			if (prstmt.executeBatch().length == userIdList.length)
+			{
+				flag = true;
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return flag;
 	}
 }

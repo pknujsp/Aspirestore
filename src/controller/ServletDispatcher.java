@@ -249,10 +249,17 @@ public class ServletDispatcher extends HttpServlet
 					switch (type)
 					{
 					case "GET_LIST":
-						request.setAttribute("START_INDEX", "0");
-						request.setAttribute("END_INDEX", "10");
+						request.setAttribute("BEGIN_INDEX", request.getParameter("begin_index"));
+						request.setAttribute("END_INDEX", request.getParameter("end_index"));
 						break;
-					case "CONFIRM_SHIPMENT":
+					case "GET_RECORDS_SIZE":
+						break;
+					case "PROCESS_SHIPMENT":
+						String[] userIdArr = request.getParameterValues("userId");
+						String[] orderCodeArr = request.getParameterValues("orderCode");
+
+						request.setAttribute("USER_ID_LIST", userIdArr);
+						request.setAttribute("ORDER_CODE_LIST", orderCodeArr);
 						break;
 					}
 				}

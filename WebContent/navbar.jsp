@@ -1,15 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" session="true"%>
 <%
-	String sessionKey = (String) session.getAttribute("SESSIONKEY");
+	String sessionKey = (String)session.getAttribute("SESSIONKEY");
 %>
 
 <script>
-	function goToHome() {
+	function goToHome()
+	{
 		location.href = '/AspireStore/index.jsp';
 	}
 </script>
 <!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
 	<div class="container-fluid">
 
 		<strong><a class="navbar-brand" href="javascript:goToHome()">Aspire Store</a></strong>
@@ -486,7 +487,8 @@
 	</div>
 
 	<script type="text/javascript">
-		function moveToAnotherPage(type, action) {
+		function moveToAnotherPage(type, action)
+		{
 			var form = document.createElement('form');
 			form.setAttribute('action', action);
 			form.setAttribute('method', 'Get');
