@@ -88,13 +88,20 @@
 		<div class="modal-dialog modal-dialog-scrollable" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalScrollableTitle">Modal</h5>
+					<h5 class="modal-title" id="modal_title"></h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
 				<div class="modal-body">
-					<a id="modal_body_text"></a>
+					<table class="table" id='modal_table'>
+						<thead id="modal_thead">
+
+						</thead>
+						<tbody id="modal_tbody">
+
+						</tbody>
+					</table>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-primary" data-dismiss="modal">닫기</button>
@@ -161,13 +168,19 @@
 			paymentMethodCol.innerHTML = list.PAYMENT_METHOD;
 			deliveryMethodCol.innerHTML = list.DELIVERY_METHOD;
 			orderDateCol.innerHTML = list.ORDER_DATE;
+			
+			orderData['order_code'] = list.ORDER_CODE;
+			orderData['order_code'] = list.ORDER_CODE;
+			orderData['order_code'] = list.ORDER_CODE;
+			orderData['order_code'] = list.ORDER_CODE;
+			orderData['order_code'] = list.ORDER_CODE;
+			orderData['order_code'] = list.ORDER_CODE;
 
 			// 체크박스 생성
 			var newCheckBox = document.createElement('input');
 			newCheckBox.setAttribute('type', 'checkbox');
 			newCheckBox.setAttribute('id', 'orderCheckBox');
 			newCheckBox.setAttribute('value', index);
-			
 
 			checkBoxCol.appendChild(newCheckBox);
 
@@ -282,12 +295,31 @@
 		}
 
 		function getBookInfo(index) {
+			initializeModalTable();
+
 			let idx = Number(index);
+			let modalThead = document.getElementById('modal_thead');
+			let modalTbody = document.getElementById('modal_tbody');
 
-			for (let i = 0; i < tableDataList[idx].key_data.length; ++i) {
+			let newThead = modalThead.insertRow(0);
+			
+			document.getElementById('modal_title').innerHTML = '도서 정보 목록';
+			
+			newThead.insertCell(0).innerHTML = '도서 명'
+			newThead.insertCell(1).innerHTML = '주문 수량';
+			newThead.insertCell(2).innerHTML = '저자';
+			newThead.insertCell(3).innerHTML = '출판사';
+			newThead.insertCell(4).innerHTML = '판매가';
 
+			for (let j = 0; j < tableDataList[idx].key_data.length; ++j) {
+				let newTbody = modalTbody.insertRow(modalTbody.rows.length);
+
+				newTbody.insertCell(0).innerHTML = tableDataList[idx].key_data[j]['book_name'];
+				newTbody.insertCell(1).innerHTML = tableDataList[idx].key_data[j]['quantity'];
+				newTbody.insertCell(2).innerHTML = tableDataList[idx].key_data[j]['author_name'];
+				newTbody.insertCell(3).innerHTML = tableDataList[idx].key_data[j]['publisher_name'];
+				newTbody.insertCell(4).innerHTML = tableDataList[idx].key_data[j]['selling_price'];
 			}
-			document.getElementById('modal_body_text').innerHTML = tableDataList[idx].key_data[0]['book_name'];
 		}
 
 		function getOrdererInfo(index) {
@@ -304,6 +336,18 @@
 
 		function getRequestedTermInfo(index) {
 
+		}
+
+		function initializeModalTable() {
+			let modalTable = document.getElementById('modal_table');
+
+			// 테이블 행의 길이가 0이면 지우지 않음
+			if (modalTable.rows.length != 0) {
+
+				for (let index = modalTable.rows.length; index >= 0; --index) {
+					modalTable.deleteRow(index);
+				}
+			}
 		}
 	</script>
 </body>
