@@ -474,7 +474,7 @@
 
 
 				<li class="nav-item">
-					<a class="nav-link" href="#">고객센터</a>
+					<a class="nav-link" href="/AspireStore/csservice/csconsult.jsp">고객센터</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="#">상품 문의</a>

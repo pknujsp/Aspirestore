@@ -264,6 +264,31 @@ public class ServletDispatcher extends HttpServlet
 					}
 				}
 				break;
+
+			case "/csservice/qna.aspire":
+				if (checkNullParameters())
+				{
+					String type = request.getParameter("type").toString();
+					request.setAttribute("TYPE", type);
+					pageControllerPath = "/csservice/qna";
+					String userId = request.getSession().getAttribute("SESSIONKEY").toString();
+
+					switch (type)
+					{
+					case "GET_QUESTION_LIST": // 문의글 목록 가져오기
+						request.setAttribute("USER_ID", userId);
+
+						break;
+					case "GET_QUESTION_LIST_SIZE": // 문의글 목록 가져오기
+						request.setAttribute("USER_ID", userId);
+
+						break;
+					case "GET_QUESTION_POST": // 글 읽기
+						request.setAttribute("USER_ID", userId);
+						request.setAttribute("QUESTION_CODE", request.getParameter("question_code"));
+						break;
+					}
+				}
 			}
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher(pageControllerPath);
 			requestDispatcher.include(request, response);
@@ -278,6 +303,9 @@ public class ServletDispatcher extends HttpServlet
 				requestDispatcher = request.getRequestDispatcher(viewUrl.substring(8));
 				requestDispatcher.forward(request, response);
 			} else if (viewUrl.startsWith("ajax:"))
+			{
+
+			} else if (viewUrl.startsWith("return:"))
 			{
 
 			} else

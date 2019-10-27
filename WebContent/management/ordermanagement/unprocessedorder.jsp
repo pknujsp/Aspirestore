@@ -110,7 +110,8 @@
 					</table>
 				</div>
 				<div class="modal-footer" id="modal_footer">
-					<button type="button" class="btn btn-primary" data-dismiss="modal">닫기</button>&nbsp;
+					<button type="button" class="btn btn-primary" data-dismiss="modal">닫기</button>
+					&nbsp;
 				</div>
 			</div>
 		</div>
@@ -533,7 +534,7 @@
 				}
 				let btn = document.getElementById('checkBoxButton');
 				btn.setAttribute('onclick', 'unselectAllCheckBox()');
-		
+
 			}
 		}
 
@@ -547,7 +548,7 @@
 			}
 			let btn = document.getElementById('checkBoxButton');
 			btn.setAttribute('onclick', 'selectAllCheckBox()');
-	
+
 		}
 
 		function referData()
@@ -563,7 +564,10 @@
 
 					pageData['list_size'] = responseList.ORDER_DATA.length;
 					initializePageTable();
+
+					// 데이터 리스트 초기화
 					tableDataList = [];
+
 					let listSize = pageData['list_size'];
 					for (let index = 0; index < pageData['num_per_page']; ++index)
 					{

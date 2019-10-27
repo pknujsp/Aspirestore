@@ -26,6 +26,7 @@
 		<welcome-file>main.jsp</welcome-file>
 		<welcome-file>bookmanagement.jsp</welcome-file>
 		<welcome-file>unprocessedorder.jsp</welcome-file>
+		<welcome-file>csconsult.jsp</welcome-file>
 	</welcome-file-list>
 
 	<listener>
@@ -130,6 +131,16 @@
 	<servlet-mapping>
 		<servlet-name>ordersmanagementservlet</servlet-name>
 		<url-pattern>/management/ordersmanagement</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>qnaservlet</servlet-name>
+		<servlet-class>controller.ServletQna</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>qnaservlet</servlet-name>
+		<url-pattern>/csservice/qna</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
