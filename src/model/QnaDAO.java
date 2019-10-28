@@ -40,7 +40,7 @@ public class QnaDAO
 			while (set.next())
 			{
 				list.add(new QnaDTO().setQuestion_code(set.getInt(1)).setSubject(set.getString(2))
-						.setCategory_code(set.getInt(3)).setPost_date(set.getString(4)));
+						.setCategory_code(set.getInt(3)).setPost_date(set.getString(4)).setStatus(set.getString(5)));
 			}
 		} catch (Exception e)
 		{

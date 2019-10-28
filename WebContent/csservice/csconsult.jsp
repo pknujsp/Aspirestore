@@ -1,9 +1,18 @@
+<%@page import="java.util.HashMap"%>
+<%@page import="model.QnaDTO"%>
+<%@page import="java.util.ArrayList"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ include file="AspireStore/csservice/qna.aspire"%>
 
-<c:set var="QUESTION_LIST" value="requestScope.QUESTION_LIST" scope="page" />
-<c:set var="PAGE_DATA" value="requestScope.PAGE_DATA" scope="page" />
+<%
+	@SuppressWarnings("unchecked")
+	ArrayList<QnaDTO> questionList = (ArrayList<QnaDTO>) request.getAttribute("QUESTION_LIST");
+	@SuppressWarnings("unchecked")
+	HashMap<String, Integer> pageData = (HashMap<String, Integer>) request.getAttribute("PAGE_DATA");
+
+	pageContext.setAttribute("QUESTION_LIST", questionList);
+	pageContext.setAttribute("PAGE_DATA", pageData);
+%>
 
 <!DOCTYPE html>
 <html>
@@ -28,24 +37,26 @@
 					</tr>
 				</thead>
 				<tbody id="question_tbody">
-					<c:forEach var="post" items="pageScope.QUESTION_LIST">
-						<td>
-							<a href="/csservice/qna.aspire?QUESTION_CODE=${post.question_code }">${post.subject}</a>
-						</td>
-						<td>${post.post_date}</td>
-						<td>${post.status}</td>
+					<c:forEach var="postData" items="${pageScope.QUESTION_LIST}" varStatus="status">
+						<tr>
+							<td>
+								<a href="/csservice/qna.aspire?QUESTION_CODE=${postData.question_code }">${postData.subject}</a>
+							</td>
+							<td>${postData.post_date}</td>
+							<td>${postData.status}</td>
+						</tr>
 					</c:forEach>
 				</tbody>
 			</table>
 			<nav aria-label="PaginationBar">
 				<ul class="pagination justify-content-center" id="pagination_ul">
-					<c:set var="pageBegin" value="${((PAGE_DATA['current_block'] - 1) * PAGE_DATA['page_per_block']) + 1}" />
-					<c:set var="pageEnd" value="${((pageBegin + PAGE_DATA['page_per_block']) <= PAGE_DATA['total_page']) ? (pageBegin + PAGE_DATA['page_per_block'])
-					: PAGE_DATA['total_page'] + 1 }" />
-					<c:set var="totalPage" value="PAGE_DATA['total_page']" />
-					<c:set var="totalBlock" value="PAGE_DATA['total_block']" />
-					<c:set var="currentBlock" value="PAGE_DATA['current_block']" />
-					<c:set var="currentPage" value="PAGE_DATA['current_page']" />
+					<c:set var="pageBegin" value="${((pageScope.PAGE_DATA['current_block'] - 1) * pageScope.PAGE_DATA['page_per_block']) + 1}" />
+					<c:set var="pageEnd" value="${((pageBegin + pageScope.PAGE_DATA['page_per_block']) <= pageScope.PAGE_DATA['total_page']) ? (pageBegin + pageScope.PAGE_DATA['page_per_block'])
+					: pageScope.PAGE_DATA['total_page'] + 1 }" />
+					<c:set var="totalPage" value="${pageScope.PAGE_DATA['total_page']}" />
+					<c:set var="totalBlock" value="${pageScope.PAGE_DATA['total_block']}" />
+					<c:set var="currentBlock" value="${pageScope.PAGE_DATA['current_block']}" />
+					<c:set var="currentPage" value="${pageScope.PAGE_DATA['current_page']}" />
 
 					<c:if test="${totalPage != 0 }">
 						<c:if test="${currentBlock > 1 }">
@@ -54,24 +65,23 @@
 								<a class="page-link" href="javascript:moveBlock(\'${ currentBlock - 1}\')" tabindex="-1" aria-disabled="true">이전</a>
 							</li>
 						</c:if>
-						
-						// forEach 조건
+
 						<c:forEach begin="${pageBegin }" end="${pageEnd - 1 }" step="1" varStatus="status">
 							<c:choose>
 								<c:when test="${ pageBegin == currentpage }">
 									<li class="page-item active" aria-current="page">
-										<a class="page-link" href="javascript:paging(\'${ pageBegin }\')">
+										<a class="page-link" href="javascript:paging(\'${ pageBegin }\')">${ pageBegin }
 											<span class="sr-only">(현재 페이지)</span>
 										</a>
 									</li>
 								</c:when>
 								<c:otherwise>
 									<li class="page-item">
-										<a class="page-link" href="javascript:paging(\'${ pageBegin }\')"> </a>
+										<a class="page-link" href="javascript:paging(\'${ pageBegin }\')">${ pageBegin }</a>
 									</li>
 								</c:otherwise>
 							</c:choose>
-							<c:set var="pageBegin" value="{pageBegin+1} " />
+							<c:set var="pageBegin" value="${pageBegin+1} " />
 						</c:forEach>
 						<c:if test="${totalBlock > currentBlock }">
 							<li class="page-item">

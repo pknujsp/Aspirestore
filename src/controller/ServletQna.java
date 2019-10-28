@@ -22,7 +22,6 @@ public class ServletQna extends HttpServlet
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
-
 		switch (request.getAttribute("TYPE").toString())
 		{
 		case "GET_QUESTION_LIST": // 문의글 목록 가져오기
@@ -56,7 +55,7 @@ public class ServletQna extends HttpServlet
 
 			pageData.put("total_page", 0);
 			pageData.put("total_block", 0);
-			pageData.put("num_per_page", 10);
+			pageData.put("num_per_page", 2);
 			pageData.put("page_per_block", 5);
 			pageData.put("list_size", 0);
 			pageData.put("total_record", 0);
@@ -75,7 +74,7 @@ public class ServletQna extends HttpServlet
 
 			request.setAttribute("PAGE_DATA", pageData);
 			request.setAttribute("QUESTION_LIST", questionList);
-			request.setAttribute("VIEWURL", "forward/csservice/csconsult.jsp");
+			request.setAttribute("VIEWURL", "forward:/csservice/csconsult.jsp");
 
 		} catch (Exception e)
 		{
