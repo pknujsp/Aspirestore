@@ -1,27 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-
-<jsp:include page="/csservice/qna.aspire">
-	<jsp:param value="GET_QUESTION_LIST_SIZE" name="type" />
-</jsp:include>
-
-<c:set var="USER_ID" value="sessionScope.SESSIONKEY" scope="page" />
-<c:set var="TOTAL_PAGE" value="0" scope="page" />
-<c:set var="TOTAL_BLOCK" value="0" scope="page" />
-<c:set var="NUM_PER_PAGE" value="10" scope="page" />
-<c:set var="PAGE_PER_BLOCK" value="5" scope="page" />
-<c:set var="LIST_SIZE" value="0" scope="page" />
-<c:set var="TOTAL_RECORD" value="0" scope="page" />
-<c:set var="CURRENT_PAGE" value="1" scope="page" />
-<c:set var="CURRENT_BLOCK" value="1" scope="page" />
-<c:set var="BEGIN_INDEX" value="0" scope="page" />
-<c:set var="END_INDEX" value="10" scope="page" />
-
-<jsp:include page="/csservice/qna.aspire">
-	<jsp:param value="GET_QUESTION_LIST" name="type" />
-</jsp:include>
+<%@ include file="AspireStore/csservice/qna.aspire"%>
 
 <c:set var="QUESTION_LIST" value="requestScope.QUESTION_LIST" scope="page" />
+<c:set var="PAGE_DATA" value="requestScope.PAGE_DATA" scope="page" />
 
 <!DOCTYPE html>
 <html>
@@ -32,10 +14,6 @@
 <link href="/AspireStore/css/shop-homepage.css" rel="stylesheet">
 </head>
 <body>
-
-	<script>
-		alert('${pageScope.QUESTIONLIST[0].post_date}');
-	</script>
 	<jsp:include page="/navbar.jsp"></jsp:include>
 
 	<div class="container-fluid">
@@ -50,10 +28,57 @@
 					</tr>
 				</thead>
 				<tbody id="question_tbody">
+					<c:forEach var="post" items="pageScope.QUESTION_LIST">
+						<td>
+							<a href="/csservice/qna.aspire?QUESTION_CODE=${post.question_code }">${post.subject}</a>
+						</td>
+						<td>${post.post_date}</td>
+						<td>${post.status}</td>
+					</c:forEach>
 				</tbody>
 			</table>
 			<nav aria-label="PaginationBar">
 				<ul class="pagination justify-content-center" id="pagination_ul">
+					<c:set var="pageBegin" value="${((PAGE_DATA['current_block'] - 1) * PAGE_DATA['page_per_block']) + 1}" />
+					<c:set var="pageEnd" value="${((pageBegin + PAGE_DATA['page_per_block']) <= PAGE_DATA['total_page']) ? (pageBegin + PAGE_DATA['page_per_block'])
+					: PAGE_DATA['total_page'] + 1 }" />
+					<c:set var="totalPage" value="PAGE_DATA['total_page']" />
+					<c:set var="totalBlock" value="PAGE_DATA['total_block']" />
+					<c:set var="currentBlock" value="PAGE_DATA['current_block']" />
+					<c:set var="currentPage" value="PAGE_DATA['current_page']" />
+
+					<c:if test="${totalPage != 0 }">
+						<c:if test="${currentBlock > 1 }">
+							<%-- 이전버튼 --%>
+							<li class="page-item">
+								<a class="page-link" href="javascript:moveBlock(\'${ currentBlock - 1}\')" tabindex="-1" aria-disabled="true">이전</a>
+							</li>
+						</c:if>
+						
+						// forEach 조건
+						<c:forEach begin="${pageBegin }" end="${pageEnd - 1 }" step="1" varStatus="status">
+							<c:choose>
+								<c:when test="${ pageBegin == currentpage }">
+									<li class="page-item active" aria-current="page">
+										<a class="page-link" href="javascript:paging(\'${ pageBegin }\')">
+											<span class="sr-only">(현재 페이지)</span>
+										</a>
+									</li>
+								</c:when>
+								<c:otherwise>
+									<li class="page-item">
+										<a class="page-link" href="javascript:paging(\'${ pageBegin }\')"> </a>
+									</li>
+								</c:otherwise>
+							</c:choose>
+							<c:set var="pageBegin" value="{pageBegin+1} " />
+						</c:forEach>
+						<c:if test="${totalBlock > currentBlock }">
+							<li class="page-item">
+								<a class="page-link" href="javascript:moveBlock(\'${ currentBlock + 1}\')">다음</a>
+							</li>
+						</c:if>
+					</c:if>
 				</ul>
 			</nav>
 		</div>
@@ -80,11 +105,6 @@
 			'end_index' : 0
 		//시작번호로 부터 가져올 레코드 갯수
 		};
-
-		(function()
-		{
-			//	setQuestionTable();
-		})()
 
 		function setQuestionTable()
 		{

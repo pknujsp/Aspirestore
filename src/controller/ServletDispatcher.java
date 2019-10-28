@@ -22,11 +22,11 @@ import model.SalehistoryDTO;
 import model.SignupDTO;
 import model.UserDTO;
 
+@SuppressWarnings("serial")
 public class ServletDispatcher extends HttpServlet
 {
 	private HttpServletRequest request = null;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
@@ -38,7 +38,6 @@ public class ServletDispatcher extends HttpServlet
 		try
 		{
 			String pageControllerPath = null;
-
 			this.request = request;
 
 			switch (servletPath)
@@ -269,6 +268,7 @@ public class ServletDispatcher extends HttpServlet
 				if (checkNullParameters())
 				{
 					String type = request.getParameter("type").toString();
+
 					request.setAttribute("TYPE", type);
 					pageControllerPath = "/csservice/qna";
 					String userId = request.getSession().getAttribute("SESSIONKEY").toString();
@@ -277,11 +277,7 @@ public class ServletDispatcher extends HttpServlet
 					{
 					case "GET_QUESTION_LIST": // 문의글 목록 가져오기
 						request.setAttribute("USER_ID", userId);
-
-						break;
-					case "GET_QUESTION_LIST_SIZE": // 문의글 목록 가져오기
-						request.setAttribute("USER_ID", userId);
-
+						request.setAttribute("CURRENT_PAGE", request.getParameter("current_page"));
 						break;
 					case "GET_QUESTION_POST": // 글 읽기
 						request.setAttribute("USER_ID", userId);
@@ -305,11 +301,9 @@ public class ServletDispatcher extends HttpServlet
 			} else if (viewUrl.startsWith("ajax:"))
 			{
 
-			} else if (viewUrl.startsWith("return:"))
-			{
-
 			} else
 			{
+				// include인 경우
 				requestDispatcher = request.getRequestDispatcher(viewUrl);
 				requestDispatcher.include(request, response);
 			}

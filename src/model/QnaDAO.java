@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.sql.DataSource;
 
@@ -17,16 +18,21 @@ public class QnaDAO
 		this.ds = ds;
 	}
 
-	public ArrayList<QnaDTO> getQuestionList(String userId)
+	public ArrayList<QnaDTO> getQuestionList(String userId, HashMap<String, Integer> pageData)
 	{
 		String query = "SELECT questionslist_code, questionslist_subject, questionslist_category_code, questionslist_post_date, questionslist_status "
-				+ "FROM questionlist_table FROM questionslist_id = \'" + userId + "\'";
+				+ "FROM questionlist_table WHERE questionslist_id = ? ORDER BY questionslist_post_date DESC LIMIT ?, ?";
 		ArrayList<QnaDTO> list = null;
+		ResultSet set = null;
 
-		try (Connection connection = ds.getConnection();
-				Statement stmt = connection.createStatement();
-				ResultSet set = stmt.executeQuery(query);)
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
 		{
+			prstmt.setString(1, userId);
+			prstmt.setInt(2, pageData.get("begin_index"));
+			prstmt.setInt(3, pageData.get("end_index"));
+
+			set = prstmt.executeQuery();
+
 			if (set.next())
 			{
 				list = new ArrayList<QnaDTO>();
@@ -39,6 +45,18 @@ public class QnaDAO
 		} catch (Exception e)
 		{
 			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
 		}
 		return list;
 	}

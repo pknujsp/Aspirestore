@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -27,9 +28,6 @@ public class ServletQna extends HttpServlet
 		case "GET_QUESTION_LIST": // 문의글 목록 가져오기
 			getQuestionList(request, response);
 			break;
-		case "GET_QUESTION_LIST_SIZE": // 문의글 목록 가져오기
-			getQuestionListSize(request, response);
-			break;
 		case "GET_QUESTION_POST": // 글 읽기
 			getQuestionPost(request, response);
 			break;
@@ -44,38 +42,64 @@ public class ServletQna extends HttpServlet
 			ServletContext sc = this.getServletContext();
 
 			String userId = request.getAttribute("USER_ID").toString();
+			int currentPage = 1;
+
 			QnaDAO qnaDAO = (QnaDAO) sc.getAttribute("QNA_DAO");
 
-			ArrayList<QnaDTO> questionList = qnaDAO.getQuestionList(userId);
+			if (request.getAttribute("CURRENT_PAGE") != null)
+			{
+				currentPage = Integer.parseInt(request.getAttribute("CURRENT_PAGE").toString());
+			}
+			// 전체 레코드의 개수를 가져온다.
+			int listSize = qnaDAO.getQuestionListSize(userId);
+			HashMap<String, Integer> pageData = new HashMap<String, Integer>();
 
+			pageData.put("total_page", 0);
+			pageData.put("total_block", 0);
+			pageData.put("num_per_page", 10);
+			pageData.put("page_per_block", 5);
+			pageData.put("list_size", 0);
+			pageData.put("total_record", 0);
+			pageData.put("current_page", currentPage);
+			pageData.put("current_block", 1);
+			pageData.put("begin_index", 0);
+			pageData.put("end_index", 10);
+
+			// 문의글 목록을 불러오기 전 페이지 데이터를 처리한다.
+			calculatePageData(pageData, listSize);
+			// begin_index , end_index에 따라 문의글 목록을 가져온다. (시간 올림차순)
+			ArrayList<QnaDTO> questionList = qnaDAO.getQuestionList(userId, pageData);
+			
+			// 조건하에 가져온 문의글 목록의 레코드 개수를 저장한다.
+			pageData.put("list_size", questionList.size());
+
+			request.setAttribute("PAGE_DATA", pageData);
 			request.setAttribute("QUESTION_LIST", questionList);
-			request.setAttribute("VIEWURL", "return:/csservice/csconsult.jsp");
+			request.setAttribute("VIEWURL", "forward/csservice/csconsult.jsp");
 
 		} catch (Exception e)
 		{
 			throw new ServletException(e);
 		}
 	}
-	
-	private void getQuestionListSize(HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException
+
+	private void calculatePageData(HashMap<String, Integer> pageData, int total_records)
 	{
-		try
-		{
-			ServletContext sc = this.getServletContext();
+		pageData.put("total_record", total_records);
 
-			String userId = request.getAttribute("USER_ID").toString();
-			QnaDAO qnaDAO = (QnaDAO) sc.getAttribute("QNA_DAO");
+		int numPerPage = pageData.get("num_per_page");
+		int totalRecord = pageData.get("total_record");
+		int currentPage = pageData.get("current_page");
+		int pagePerBlock = pageData.get("page_per_block");
 
-			int listSize = qnaDAO.getQuestionListSize(userId);
+		pageData.put("begin_index", (currentPage * numPerPage) - numPerPage);
+		pageData.put("end_index", numPerPage);
+		pageData.put("total_page", (int) (Math.ceil((double) (totalRecord) / numPerPage)));
+		pageData.put("current_block", (int) (Math.ceil((double) (currentPage) / pagePerBlock)));
 
-			request.setAttribute("QUESTION_LIST_SIZE", listSize);
-			request.setAttribute("VIEWURL", "return:/csservice/csconsult.jsp");
+		int totalPage = pageData.get("total_page");
 
-		} catch (Exception e)
-		{
-			throw new ServletException(e);
-		}
+		pageData.put("total_block", (int) (Math.ceil((double) (totalPage) / pagePerBlock)));
 	}
 
 	private void getQuestionPost(HttpServletRequest request, HttpServletResponse response)

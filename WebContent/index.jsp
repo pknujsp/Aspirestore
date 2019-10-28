@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true"%>
 <%
 	request.setCharacterEncoding("UTF-8");
 	String sessionKey = (String) session.getAttribute("SESSIONKEY");
@@ -14,10 +14,7 @@
 
 <title>아스파이어 스토어</title>
 
-<!-- Bootstrap core CSS -->
 <link href="/AspireStore/css/bootstrap.css" rel="stylesheet">
-
-<!-- Custom styles for this template -->
 <link href="/AspireStore/css/shop-homepage.css" rel="stylesheet">
 
 </head>
