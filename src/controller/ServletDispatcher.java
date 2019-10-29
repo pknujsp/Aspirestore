@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.oreilly.servlet.MultipartRequest;
+
 import etc.OrderInformation;
 import model.AddressDTO;
 import model.BasketDTO;
@@ -284,6 +286,17 @@ public class ServletDispatcher extends HttpServlet
 						request.setAttribute("QUESTION_CODE", request.getParameter("question_code"));
 						request.setAttribute("CURRENT_PAGE", request.getParameter("current_page"));
 						break;
+					case "CREATE_ANSWER_FORM": // 답변 페이지 생성
+						request.setAttribute("CUSTOMER_ID", request.getParameter("customer_id"));
+						request.setAttribute("MANAGER_ID", userId); // 매니저의 ID
+						request.setAttribute("QUESTION_CODE", request.getParameter("question_code"));
+					case "APPLY_ANSWER": // 답변 등록
+						request.setAttribute("MANAGER_ID", userId); // 매니저의 ID
+						request.setAttribute("QUESTION_CODE", request.getParameter("question_code"));
+						request.setAttribute("SUBJECT", request.getParameter("inputSubject"));
+						request.setAttribute("CATEGORY_CODE", request.getParameter("inputCategory"));
+						request.setAttribute("CONTENT", request.getParameter("textareaContent"));
+						// 파일 정보는 QnaServlet에서 직접 처리
 					}
 				}
 			}

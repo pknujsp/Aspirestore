@@ -91,9 +91,7 @@
 		</div>
 		<hr />
 		<div>
-
 			<form method="post" id="itemInfoForm">
-
 				<span>
 					수량 <input type="number" name="quantity" id="quantity" value="1" min="1" /> <input type="hidden" name="itemPrice" id="itemPrice" value="<%=item.getItem_selling_price()%>" /> <input type="hidden" name="itemCategory" id="itemCategory" value="<%=item.getItem_category_code()%>" /> <input type="hidden" name="itemCode" id="itemCode" value="<%=item.getItem_code()%>" />
 				</span>
@@ -106,8 +104,7 @@
 				<input type="hidden" id="type" name="type" value="ONE_ORDER">
 			</form>
 		</div>
-		<hr />
-
+		<hr>
 		<div>
 			<div>
 				<h4>도서 기본 정보</h4>
@@ -230,12 +227,15 @@
 	<script src="/AspireStore/js/bootstrap.bundle.js"></script>
 
 	<script type="text/javascript">
-		function addBookToTheBasket(url) {
+		function addBookToTheBasket(url)
+		{
 			var xhttp = new XMLHttpRequest();
 
-			xhttp.onreadystatechange = function() {
+			xhttp.onreadystatechange = function()
+			{
 				if (xhttp.readyState == XMLHttpRequest.DONE
-						&& xhttp.status == 200) {
+						&& xhttp.status == 200)
+				{
 					var responseArr = xhttp.response;
 					showDialog(responseArr[0].MESSAGE, responseArr[0].RESULT);
 				}
@@ -253,22 +253,28 @@
 					+ '&type=' + 'ADD' + '&quantity=' + quantity);
 		}
 
-		function showDialog(message, result) {
-			if (result === 'true') {
+		function showDialog(message, result)
+		{
+			if (result === 'true')
+			{
 				var dialogMessage = confirm(message);
-				if (dialogMessage) {
+				if (dialogMessage)
+				{
 					var paging = document.basketForm;
 					paging.submit();
-				} else {
+				} else
+				{
 
 				}
-			} else {
+			} else
+			{
 				alert(message);
 			}
 		}
 	</script>
 	<script>
-		function clickButton(uri) {
+		function clickButton(uri)
+		{
 			var form = document.getElementById('itemInfoForm');
 			form.setAttribute('action', uri);
 			paymentForm.submit();

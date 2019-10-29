@@ -170,4 +170,66 @@ public class QnaDAO
 		return answerCode;
 	}
 
+	public boolean applyAnswer(QnaDTO answerData)
+	{
+		String query = "INSERT INTO answerlist_table VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?)";
+		boolean flag = false;
+		ResultSet set = null;
+
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			prstmt.setInt(1, answerData.getQuestion_code());
+			prstmt.setString(2, answerData.getUser_id());
+			prstmt.setString(3, answerData.getSubject());
+			prstmt.setInt(4, answerData.getCategory_code());
+			prstmt.setString(5, answerData.getContent());
+			prstmt.setString(6, answerData.getPost_date());
+			prstmt.setString(7, answerData.getModified_date());
+			prstmt.setString(8, answerData.getIp());
+
+			set = prstmt.executeQuery();
+
+			if (set.next())
+			{
+				flag = true;
+				connection.commit();
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return flag;
+	}
+
+	public boolean uploadFiles(ArrayList<ImageDTO> fileList)
+	{
+		String query = "INSERT INTO qnaimages_table VALUES (null, ?, ?, ?, ?, ?, ?, ?)";
+		boolean flag = false;
+
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			for (int index = 0; index < fileList.size(); ++index)
+			{
+				prstmt.setInt(1, fileList.get(index).getQuestion_post_code());
+				prstmt.setInt(2, fileList.get(index).getAnswer_post_code());
+				prstmt.setString(3, fileList.get(index).getUploader_id());
+				prstmt.setString(4, fileList.get(index).getFile_uri());
+				prstmt.setString(5, fileList.get(index).getFile_name());
+				prstmt.setInt(6, fileList.get(index).getFile_size());
+				prstmt.setString(7, fileList.get(index).getUploaded_date_time());
+
+				prstmt.addBatch();
+			}
+			if (prstmt.executeBatch().length == fileList.size())
+			{
+				flag = true;
+				connection.commit();
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return flag;
+	}
+
 }

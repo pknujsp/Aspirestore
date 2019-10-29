@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 
 import javax.servlet.ServletContext;
@@ -13,6 +14,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.oreilly.servlet.MultipartRequest;
+import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
+
+import model.ImageDTO;
 import model.QnaDAO;
 import model.QnaDTO;
 
@@ -30,7 +35,11 @@ public class ServletQna extends HttpServlet
 		case "GET_QUESTION_POST": // 글 읽기
 			getQuestionPost(request, response);
 			break;
-		case "GET_ANSWER_POST":
+		case "CREATE_ANSWER_FORM":
+			break;
+		case "APPLY_ANSWER":
+			applyAnswer(request, response);
+			break;
 		}
 	}
 
@@ -136,4 +145,49 @@ public class ServletQna extends HttpServlet
 			throw new ServletException(e);
 		}
 	}
+
+	private void applyAnswer(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException
+	{
+		final String SAVEFOLDER = "C:/programming/eclipseprojects/AspireStore/WebContent/qnaiImages";
+		final String ENCTYPE = "UTF-8";
+		final int MAXSIZE = 10 * 1024 * 1024;
+		try
+		{
+			ServletContext sc = this.getServletContext();
+			QnaDAO qnaDAO = (QnaDAO) sc.getAttribute("QNA_DAO");
+
+			MultipartRequest multipartRequest = new MultipartRequest(request, SAVEFOLDER, MAXSIZE, ENCTYPE,
+					new DefaultFileRenamePolicy());
+
+			@SuppressWarnings("rawtypes")
+			Enumeration files = multipartRequest.getFileNames();
+
+			ArrayList<ImageDTO> fileList = new ArrayList<ImageDTO>();
+			String currentTime = etc.Util.getCurrentDateTime();
+			String managerId = request.getAttribute("MANAGER_ID").toString();
+			int questionCode = Integer.parseInt(request.getAttribute("QUESTION_CODE").toString());
+			String subject = request.getAttribute("SUBJECT").toString();
+			int categoryCode = Integer.parseInt(request.getAttribute("CATEGORY_CODE").toString());
+			String content = request.getAttribute("CONTENT").toString();
+
+			int answerCode = 0;
+
+			while (files.hasMoreElements())
+			{
+				String file = files.nextElement().toString();
+
+				fileList.add(new ImageDTO().setFile_name(multipartRequest.getFilesystemName(file))
+						.setFile_size((int) multipartRequest.getFile(map.get("file_name").toString()).length())
+						.setFile_uri(SAVEFOLDER).setUploaded_date_time(currentTime).setUploader_id(managerId)
+						.setQuestion_post_code(questionCode).setAnswer_post_code(answerCode));
+			}
+			qnaDAO.uploadFiles(fileList);
+
+		} catch (Exception e)
+		{
+			throw new ServletException(e);
+		}
+	}
+
 }
