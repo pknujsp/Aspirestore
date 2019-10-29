@@ -30,6 +30,7 @@ public class ServletQna extends HttpServlet
 		case "GET_QUESTION_POST": // 글 읽기
 			getQuestionPost(request, response);
 			break;
+		case "GET_ANSWER_POST":
 		}
 	}
 
@@ -55,7 +56,7 @@ public class ServletQna extends HttpServlet
 
 			pageData.put("total_page", 0);
 			pageData.put("total_block", 0);
-			pageData.put("num_per_page", 2);
+			pageData.put("num_per_page", 1);
 			pageData.put("page_per_block", 5);
 			pageData.put("list_size", 0);
 			pageData.put("total_record", 0);
@@ -68,7 +69,7 @@ public class ServletQna extends HttpServlet
 			calculatePageData(pageData, listSize);
 			// begin_index , end_index에 따라 문의글 목록을 가져온다. (시간 올림차순)
 			ArrayList<QnaDTO> questionList = qnaDAO.getQuestionList(userId, pageData);
-			
+
 			// 조건하에 가져온 문의글 목록의 레코드 개수를 저장한다.
 			pageData.put("list_size", questionList.size());
 
@@ -110,11 +111,25 @@ public class ServletQna extends HttpServlet
 			QnaDAO qnaDAO = (QnaDAO) sc.getAttribute("QNA_DAO");
 			String userId = request.getAttribute("USER_ID").toString();
 			int questionCode = Integer.parseInt(request.getAttribute("QUESTION_CODE").toString());
+			int currentPage = Integer.parseInt(request.getAttribute("CURRENT_PAGE").toString());
 
+			// 문의 글 데이터
 			QnaDTO questionPostData = qnaDAO.getQuestionPost(userId, questionCode);
 
+			Integer answerCode = null;
+			// 답변 코드
+			if (questionPostData.getStatus().equals("답변 완료"))
+			{
+				answerCode = qnaDAO.getAnswerCode(questionPostData.getQuestion_code(), userId);
+			}
+
+			HashMap<String, Integer> pageData = new HashMap<String, Integer>();
+			pageData.put("answer_code", answerCode);
+			pageData.put("current_page", currentPage);
+
+			request.setAttribute("QUESTION_PAGE_DATA", pageData);
 			request.setAttribute("QUESTION_POST_DATA", questionPostData);
-			request.setAttribute("VIEWURL", "forward:/csservice/viewquestion.jsp");
+			request.setAttribute("VIEWURL", "forward:/csservice/questionpost.jsp");
 
 		} catch (Exception e)
 		{

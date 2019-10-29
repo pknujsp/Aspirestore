@@ -30,6 +30,7 @@
 			<table class="table table-sm table-hover">
 				<thead class="thead-light">
 					<tr>
+						<th scope="col">번호</th>
 						<th scope="col">제목</th>
 						<th scope="col">등록날짜</th>
 						<th scope="col">처리 상태</th>
@@ -40,14 +41,24 @@
 					<c:forEach var="postData" items="${pageScope.QUESTION_LIST}" varStatus="status">
 						<tr>
 							<td>
-								<a href="/csservice/qna.aspire?QUESTION_CODE=${postData.question_code }">${postData.subject}</a>
+								<c:out value="${pageScope.PAGE_DATA['total_record']-((pageScope.PAGE_DATA['current_page']-1)*pageScope.PAGE_DATA['num_per_page'])-status.index}" />
 							</td>
-							<td>${postData.post_date}</td>
-							<td>${postData.status}</td>
+							<td>
+								<a href="/AspireStore/csservice/qna.aspire?type=GET_QUESTION_POST&question_code=${postData.question_code }&current_page=${pageScope.PAGE_DATA['current_page']}">
+									<c:out value="${postData.subject}" />
+								</a>
+							</td>
+							<td>
+								<c:out value="${postData.post_date}" />
+							</td>
+							<td>
+								<c:out value="${postData.status}" />
+							</td>
 						</tr>
 					</c:forEach>
 				</tbody>
 			</table>
+
 			<nav aria-label="PaginationBar">
 				<ul class="pagination justify-content-center" id="pagination_ul">
 					<c:set var="pageBegin" value="${((pageScope.PAGE_DATA['current_block'] - 1) * pageScope.PAGE_DATA['page_per_block']) + 1}" />
@@ -62,35 +73,39 @@
 						<c:if test="${currentBlock > 1 }">
 							<%-- 이전버튼 --%>
 							<li class="page-item">
-								<a class="page-link" href="javascript:moveBlock(\'${ currentBlock - 1}\')" tabindex="-1" aria-disabled="true">이전</a>
+								<a class="page-link" href="javascript:moveBlock('${ currentBlock - 1}')" tabindex="-1" aria-disabled="true">이전</a>
 							</li>
 						</c:if>
 
 						<c:forEach begin="${pageBegin }" end="${pageEnd - 1 }" step="1" varStatus="status">
 							<c:choose>
-								<c:when test="${ pageBegin == currentpage }">
+								<c:when test="${ pageBegin == currentPage }">
 									<li class="page-item active" aria-current="page">
-										<a class="page-link" href="javascript:paging(\'${ pageBegin }\')">${ pageBegin }
+										<a class="page-link" href="javascript:paging('${ pageBegin }')">${ pageBegin }
 											<span class="sr-only">(현재 페이지)</span>
 										</a>
 									</li>
 								</c:when>
 								<c:otherwise>
 									<li class="page-item">
-										<a class="page-link" href="javascript:paging(\'${ pageBegin }\')">${ pageBegin }</a>
+										<a class="page-link" href="javascript:paging('${ pageBegin }')">${ pageBegin }</a>
 									</li>
 								</c:otherwise>
 							</c:choose>
-							<c:set var="pageBegin" value="${pageBegin+1} " />
+							<c:set var="pageBegin" value="${pageBegin+1}" />
 						</c:forEach>
 						<c:if test="${totalBlock > currentBlock }">
 							<li class="page-item">
-								<a class="page-link" href="javascript:moveBlock(\'${ currentBlock + 1}\')">다음</a>
+								<a class="page-link" href="javascript:moveBlock('${ currentBlock + 1}')">다음</a>
 							</li>
 						</c:if>
 					</c:if>
 				</ul>
 			</nav>
+
+			<form action="/AspireStore/csservice/qna.aspire" method="GET" id="pagination_form" name="pagination_form">
+				<input type="hidden" name="type" id="type" value="GET_QUESTION_LIST"> <input type="hidden" name="current_page" id="current_page" value="">
+			</form>
 		</div>
 	</div>
 
@@ -286,15 +301,14 @@
 
 		function paging(num)
 		{
-			pageData['current_page'] = Number(num);
-			setQuestionTable();
+			document.pagination_form.current_page.value = Number(num);
+			document.pagination_form.submit();
 		}
 
 		function moveBlock(num)
 		{
-			pageData['current_page'] = pageData['page_per_block']
-					* (Number(num) - 1) + 1;
-			setQuestionTable();
+			document.pagination_form.current_page.value =  ${pageScope.PAGE_DATA['page_per_block']} * (Number(num) - 1) + 1;
+			document.pagination_form.submit();
 		}
 	</script>
 </body>

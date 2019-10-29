@@ -6,6 +6,7 @@ public class QnaDTO
 	private String user_id;
 	private String subject;
 	private int category_code;
+	private String category_desc;
 	private String content;
 	private String post_date;
 	private String ip;
@@ -30,6 +31,11 @@ public class QnaDTO
 	public int getCategory_code()
 	{
 		return category_code;
+	}
+	
+	public String getCategory_desc()
+	{
+		return category_desc;
 	}
 
 	public String getContent()
@@ -78,6 +84,12 @@ public class QnaDTO
 	public QnaDTO setCategory_code(int category_code)
 	{
 		this.category_code = category_code;
+		return this;
+	}
+	
+	public QnaDTO setCategory_desc(String category_desc)
+	{
+		this.category_desc = category_desc;
 		return this;
 	}
 

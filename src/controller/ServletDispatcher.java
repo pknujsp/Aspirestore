@@ -282,6 +282,7 @@ public class ServletDispatcher extends HttpServlet
 					case "GET_QUESTION_POST": // 글 읽기
 						request.setAttribute("USER_ID", userId);
 						request.setAttribute("QUESTION_CODE", request.getParameter("question_code"));
+						request.setAttribute("CURRENT_PAGE", request.getParameter("current_page"));
 						break;
 					}
 				}

@@ -27,6 +27,7 @@
 		<welcome-file>bookmanagement.jsp</welcome-file>
 		<welcome-file>unprocessedorder.jsp</welcome-file>
 		<welcome-file>csconsult.jsp</welcome-file>
+		<welcome-file>questionpost.jsp</welcome-file>
 	</welcome-file-list>
 
 	<listener>

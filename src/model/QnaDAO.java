@@ -28,19 +28,24 @@ public class QnaDAO
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
 		{
 			prstmt.setString(1, userId);
-			prstmt.setInt(2, pageData.get("begin_index"));
-			prstmt.setInt(3, pageData.get("end_index"));
+			prstmt.setInt(2, pageData.get("begin_index").intValue());
+			prstmt.setInt(3, pageData.get("end_index").intValue());
 
 			set = prstmt.executeQuery();
+			list = new ArrayList<QnaDTO>();
 
-			if (set.next())
-			{
-				list = new ArrayList<QnaDTO>();
-			}
 			while (set.next())
 			{
+				String status = null;
+				if (set.getString(5).equals("y"))
+				{
+					status = "답변 완료";
+				} else
+				{
+					status = "미 답변";
+				}
 				list.add(new QnaDTO().setQuestion_code(set.getInt(1)).setSubject(set.getString(2))
-						.setCategory_code(set.getInt(3)).setPost_date(set.getString(4)).setStatus(set.getString(5)));
+						.setCategory_code(set.getInt(3)).setPost_date(set.getString(4)).setStatus(status));
 			}
 		} catch (Exception e)
 		{
@@ -83,7 +88,9 @@ public class QnaDAO
 
 	public QnaDTO getQuestionPost(String userId, int questionCode)
 	{
-		String query = "SELECT * FROM questionlist_table WHERE questionslist_code = ? AND questionslist_id = ?";
+		String query = "SELECT * FROM questionlist_table AS q " + " INNER JOIN question_category_table AS c "
+				+ "ON c.question_category_code = q.questionslist_category_code "
+				+ "WHERE q.questionslist_code = ? AND q.questionslist_id = ?";
 		ResultSet set = null;
 		QnaDTO postData = null;
 
@@ -95,10 +102,18 @@ public class QnaDAO
 
 			if (set.next())
 			{
+				String status = null;
+				if (set.getString(9).equals("y"))
+				{
+					status = "답변 완료";
+				} else
+				{
+					status = "미 답변";
+				}
 				postData = new QnaDTO().setQuestion_code(set.getInt(1)).setUser_id(set.getString(2))
 						.setSubject(set.getString(3)).setCategory_code(set.getInt(4)).setContent(set.getString(5))
 						.setPost_date(set.getString(6)).setIp(set.getString(7)).setImages_code(set.getInt(8))
-						.setStatus(set.getString(9));
+						.setStatus(status).setCategory_desc(set.getString(11));
 			}
 		} catch (Exception e)
 		{
@@ -118,4 +133,41 @@ public class QnaDAO
 		}
 		return postData;
 	}
+
+	public Integer getAnswerCode(int questionCode, String userId)
+	{
+		String query = "SELECT answerlist_table.answerlist_code FROM answerlist_table "
+				+ "WHERE answerlist_table.answerlist_question_code = ? AND answerlist_table.answerlist_id = ? ";
+		ResultSet set = null;
+		Integer answerCode = null;
+
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			prstmt.setInt(1, questionCode);
+			prstmt.setString(2, userId);
+			set = prstmt.executeQuery();
+
+			if (set.next())
+			{
+				answerCode = new Integer(set.getInt(1));
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return answerCode;
+	}
+
 }
