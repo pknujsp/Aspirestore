@@ -281,22 +281,32 @@ public class ServletDispatcher extends HttpServlet
 						request.setAttribute("USER_ID", userId);
 						request.setAttribute("CURRENT_PAGE", request.getParameter("current_page"));
 						break;
-					case "GET_QUESTION_POST": // 글 읽기
+					case "GET_ANSWER_LIST": // 답변글 목록 가져오기
+						request.setAttribute("MANAGER_ID", userId);
+						request.setAttribute("BEGIN_INDEX", request.getParameter("begin_index"));
+						request.setAttribute("END_INDEX", request.getParameter("end_index"));
+						break;
+					case "GET_RECORDS_SIZE": // 목록 레코드의 크기 가져오기
+						// answer, question를 class로 나눔
+						request.setAttribute("CLASS", request.getParameter("class"));
+						break;
+					case "GET_POST": // 글 읽기
 						request.setAttribute("USER_ID", userId);
 						request.setAttribute("QUESTION_CODE", request.getParameter("question_code"));
 						request.setAttribute("CURRENT_PAGE", request.getParameter("current_page"));
 						break;
 					case "CREATE_ANSWER_FORM": // 답변 페이지 생성
 						request.setAttribute("CUSTOMER_ID", request.getParameter("customer_id"));
-						request.setAttribute("MANAGER_ID", userId); // 매니저의 ID
 						request.setAttribute("QUESTION_CODE", request.getParameter("question_code"));
 					case "APPLY_ANSWER": // 답변 등록
 						request.setAttribute("MANAGER_ID", userId); // 매니저의 ID
+						// 요청 정보는 QnaServlet에서 직접 처리
+					case "GET_ANSWER_POST":
 						request.setAttribute("QUESTION_CODE", request.getParameter("question_code"));
-						request.setAttribute("SUBJECT", request.getParameter("inputSubject"));
-						request.setAttribute("CATEGORY_CODE", request.getParameter("inputCategory"));
-						request.setAttribute("CONTENT", request.getParameter("textareaContent"));
-						// 파일 정보는 QnaServlet에서 직접 처리
+						request.setAttribute("ANSWER_CODE", request.getParameter("answer_code"));
+						request.setAttribute("QUESTIONER_ID", request.getParameter("questioner_id"));
+						request.setAttribute("ANSWERER_ID", userId);
+						break;
 					}
 				}
 			}

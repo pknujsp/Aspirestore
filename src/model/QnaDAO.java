@@ -66,9 +66,62 @@ public class QnaDAO
 		return list;
 	}
 
-	public int getQuestionListSize(String userId)
+	public ArrayList<QnaDTO> getAnswerList(String managerId, int beginIndex, int endIndex)
 	{
-		String query = "SELECT count(*) " + "FROM questionlist_table WHERE questionslist_id = \'" + userId + "\'";
+		String query = "SELECT a.answerlist_code, a.answerlist_question_code, q.questionslist_id, a.answerlist_subject, qc.question_category_description, a.answerlist_post_date "
+				+ "FROM answerlist_table AS a "
+				+ "INNER JOIN questionlist_table AS q ON q.questionslist_code = a.answerlist_question_code "
+				+ "INNER JOIN question_category_table AS qc ON qc.question_category_code = a.answerlist_category_code "
+				+ "WHERE a.answerlist_id = ? ORDER BY a,answerlist_post_date DESC LIMIT ?, ?";
+		ArrayList<QnaDTO> list = null;
+		ResultSet set = null;
+
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			prstmt.setString(1, managerId);
+			prstmt.setInt(2, beginIndex);
+			prstmt.setInt(3, endIndex);
+
+			set = prstmt.executeQuery();
+			list = new ArrayList<QnaDTO>();
+
+			while (set.next())
+			{
+				list.add(new QnaDTO().setAnswer_code(set.getInt(1)).setQuestion_code(set.getInt(2))
+						.setUser_id(set.getString(3)).setSubject(set.getString(4)).setCategory_desc(set.getString(5))
+						.setPost_date(set.getString(6)));
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return list;
+	}
+
+	public int getListSize(String userId, String type)
+	{
+		String query = null;
+
+		if (type.equals("QUESTION"))
+		{
+			query = "SELECT count(*) FROM questionlist_table WHERE questionslist_id = \'" + userId + "\'";
+		} else
+		{
+			// ANSWER
+			query = "SELECT count(*) FROM answerlist_table";
+		}
 		int listSize = 0;
 
 		try (Connection connection = ds.getConnection();
@@ -112,7 +165,7 @@ public class QnaDAO
 				}
 				postData = new QnaDTO().setQuestion_code(set.getInt(1)).setUser_id(set.getString(2))
 						.setSubject(set.getString(3)).setCategory_code(set.getInt(4)).setContent(set.getString(5))
-						.setPost_date(set.getString(6)).setIp(set.getString(7)).setImages_code(set.getInt(8))
+						.setPost_date(set.getString(6)).setIp(set.getString(7)).setNumFiles(set.getInt(8))
 						.setStatus(status).setCategory_desc(set.getString(11));
 			}
 		} catch (Exception e)
@@ -170,13 +223,16 @@ public class QnaDAO
 		return answerCode;
 	}
 
-	public boolean applyAnswer(QnaDTO answerData)
+	public int applyAnswer(QnaDTO answerData)
 	{
-		String query = "INSERT INTO answerlist_table VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?)";
-		boolean flag = false;
+		String insertQuery = "INSERT INTO answerlist_table VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String selectQuery = "SELECT answerlist_code FROM answerlist_table WHERE answerlist_question_code = ? AND answerlist_id = ?";
 		ResultSet set = null;
+		int answerCode = 0;
 
-		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		try (Connection connection = ds.getConnection();
+				PreparedStatement prstmt = connection.prepareStatement(insertQuery);
+				PreparedStatement prstmt2 = connection.prepareStatement(selectQuery);)
 		{
 			prstmt.setInt(1, answerData.getQuestion_code());
 			prstmt.setString(2, answerData.getUser_id());
@@ -187,21 +243,23 @@ public class QnaDAO
 			prstmt.setString(7, answerData.getModified_date());
 			prstmt.setString(8, answerData.getIp());
 
-			set = prstmt.executeQuery();
-
-			if (set.next())
+			if (prstmt.executeUpdate() == 1)
 			{
-				flag = true;
-				connection.commit();
+				set = prstmt2.executeQuery();
+
+				if (set.next())
+				{
+					answerCode = set.getInt(1);
+				}
 			}
 		} catch (Exception e)
 		{
 			e.printStackTrace();
 		}
-		return flag;
+		return answerCode;
 	}
 
-	public boolean uploadFiles(ArrayList<ImageDTO> fileList)
+	public boolean uploadFiles(ArrayList<ImageDTO> fileList, int answerCode)
 	{
 		String query = "INSERT INTO qnaimages_table VALUES (null, ?, ?, ?, ?, ?, ?, ?)";
 		boolean flag = false;
@@ -211,7 +269,7 @@ public class QnaDAO
 			for (int index = 0; index < fileList.size(); ++index)
 			{
 				prstmt.setInt(1, fileList.get(index).getQuestion_post_code());
-				prstmt.setInt(2, fileList.get(index).getAnswer_post_code());
+				prstmt.setInt(2, answerCode);
 				prstmt.setString(3, fileList.get(index).getUploader_id());
 				prstmt.setString(4, fileList.get(index).getFile_uri());
 				prstmt.setString(5, fileList.get(index).getFile_name());

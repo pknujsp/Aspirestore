@@ -11,7 +11,7 @@ public class QnaDTO
 	private String content;
 	private String post_date;
 	private String ip;
-	private int images_code;
+	private int numFiles;
 	private String modified_date;
 	private String status;
 
@@ -34,7 +34,7 @@ public class QnaDTO
 	{
 		return subject;
 	}
-	
+
 	public String getModified_date()
 	{
 		return modified_date;
@@ -65,9 +65,9 @@ public class QnaDTO
 		return ip;
 	}
 
-	public int getImages_code()
+	public int getNumFiles()
 	{
-		return images_code;
+		return numFiles;
 	}
 
 	public String getStatus()
@@ -122,7 +122,7 @@ public class QnaDTO
 		this.post_date = post_date;
 		return this;
 	}
-	
+
 	public QnaDTO setModified_date(String modified_date)
 	{
 		this.modified_date = modified_date;
@@ -135,9 +135,9 @@ public class QnaDTO
 		return this;
 	}
 
-	public QnaDTO setImages_code(int images_code)
+	public QnaDTO setNumFiles(int numFiles)
 	{
-		this.images_code = images_code;
+		this.numFiles = numFiles;
 		return this;
 	}
 

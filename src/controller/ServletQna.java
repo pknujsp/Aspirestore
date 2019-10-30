@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
@@ -36,9 +39,19 @@ public class ServletQna extends HttpServlet
 			getQuestionPost(request, response);
 			break;
 		case "CREATE_ANSWER_FORM":
+			createAnswerForm(request, response);
 			break;
 		case "APPLY_ANSWER":
 			applyAnswer(request, response);
+			break;
+		case "APPLY_QUESTION":
+			// applyAnswer(request, response);
+			break;
+		case "GET_ANSWER_LIST":
+			getAnswerList(request, response);
+			break;
+		case "GET_RECORDS_SIZE":
+			getListSize(request, response);
 			break;
 		}
 	}
@@ -60,7 +73,7 @@ public class ServletQna extends HttpServlet
 				currentPage = Integer.parseInt(request.getAttribute("CURRENT_PAGE").toString());
 			}
 			// 전체 레코드의 개수를 가져온다.
-			int listSize = qnaDAO.getQuestionListSize(userId);
+			int listSize = qnaDAO.getListSize(userId, "QUESTION");
 			HashMap<String, Integer> pageData = new HashMap<String, Integer>();
 
 			pageData.put("total_page", 0);
@@ -164,30 +177,128 @@ public class ServletQna extends HttpServlet
 			Enumeration files = multipartRequest.getFileNames();
 
 			ArrayList<ImageDTO> fileList = new ArrayList<ImageDTO>();
+
 			String currentTime = etc.Util.getCurrentDateTime();
 			String managerId = request.getAttribute("MANAGER_ID").toString();
-			int questionCode = Integer.parseInt(request.getAttribute("QUESTION_CODE").toString());
-			String subject = request.getAttribute("SUBJECT").toString();
-			int categoryCode = Integer.parseInt(request.getAttribute("CATEGORY_CODE").toString());
-			String content = request.getAttribute("CONTENT").toString();
+			int questionCode = Integer.parseInt(multipartRequest.getParameter("question_code"));
+			String subject = multipartRequest.getParameter("inputSubject");
+			int categoryCode = Integer.parseInt(multipartRequest.getParameter("inputCategory"));
+			String content = multipartRequest.getParameter("textareaContent");
 
-			int answerCode = 0;
-
+			// 파일 첨부가 된 경우
 			while (files.hasMoreElements())
 			{
-				String file = files.nextElement().toString();
+				String file = (String) files.nextElement();
+				String fileName = multipartRequest.getFilesystemName(file);
 
-				fileList.add(new ImageDTO().setFile_name(multipartRequest.getFilesystemName(file))
-						.setFile_size((int) multipartRequest.getFile(map.get("file_name").toString()).length())
-						.setFile_uri(SAVEFOLDER).setUploaded_date_time(currentTime).setUploader_id(managerId)
-						.setQuestion_post_code(questionCode).setAnswer_post_code(answerCode));
+				fileList.add(new ImageDTO().setFile_name(fileName)
+						.setFile_size((int) multipartRequest.getFile(fileName).length()).setFile_uri(SAVEFOLDER)
+						.setUploaded_date_time(currentTime).setUploader_id(managerId)
+						.setQuestion_post_code(questionCode));
 			}
-			qnaDAO.uploadFiles(fileList);
 
+			QnaDTO answerData = new QnaDTO().setQuestion_code(questionCode).setUser_id(managerId).setSubject(subject)
+					.setCategory_code(categoryCode).setContent(content).setPost_date(currentTime)
+					.setModified_date(currentTime).setNumFiles(fileList.size());
+
+			int answerCode = qnaDAO.applyAnswer(answerData);
+
+			if (!fileList.isEmpty())
+			{
+				// 첨부 파일이 존재하는 경우 DB에 파일정보 저장
+				qnaDAO.uploadFiles(fileList, answerCode);
+			}
+
+			request.setAttribute("VIEWURL", "redirect:/management/qnamanagement/answerlist.jsp");
 		} catch (Exception e)
 		{
 			throw new ServletException(e);
 		}
 	}
 
+	private void createAnswerForm(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException
+	{
+		try
+		{
+			ServletContext sc = this.getServletContext();
+
+			QnaDAO qnaDAO = (QnaDAO) sc.getAttribute("QNA_DAO");
+
+			String customerId = request.getAttribute("CUSTOMER_ID").toString();
+			int questionCode = Integer.parseInt(request.getAttribute("QUESTION_CODE").toString());
+
+			// questionCode, customerId를 가지고 문의글 데이터를 가져온다.
+			QnaDTO questionData = qnaDAO.getQuestionPost(customerId, questionCode);
+
+			request.setAttribute("QUESTION_DATA", questionData);
+			request.setAttribute("VIEWURL", "forward:/management/qnamanagement/answerpost.jsp");
+		} catch (Exception e)
+		{
+			throw new ServletException(e);
+		}
+	}
+
+	private void getAnswerList(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException
+	{
+		try
+		{
+			ServletContext sc = this.getServletContext();
+			QnaDAO qnaDAO = (QnaDAO) sc.getAttribute("QNA_DAO");
+
+			String managerId = request.getAttribute("MANAGER_ID").toString();
+			int beginIndex = Integer.parseInt(request.getAttribute("BEGIN_INDEX").toString());
+			int endIndex = Integer.parseInt(request.getAttribute("BEGIN_INDEX").toString());
+			ArrayList<QnaDTO> list = qnaDAO.getAnswerList(managerId, beginIndex, endIndex);
+
+			JSONObject rootObj = new JSONObject();
+			JSONArray rootArr = new JSONArray();
+
+			for (int i = 0; i < list.size(); ++i)
+			{
+				JSONObject data = new JSONObject();
+				JSONObject answer = new JSONObject();
+				JSONObject question = new JSONObject();
+
+				question.put("question_code", list.get(i).getQuestion_code());
+				question.put("questioner_id", list.get(i).getUser_id());
+
+				answer.put("answer_code", list.get(i).getAnswer_code());
+				answer.put("subject", list.get(i).getSubject());
+				answer.put("category", list.get(i).getCategory_desc());
+				answer.put("post_date", list.get(i).getPost_date());
+
+				data.put("QUESTION", question);
+				data.put("ANSWER", answer);
+				rootArr.put(data);
+			}
+			rootObj.put("POST_DATA", rootArr);
+			response.setContentType("application/json");
+			response.getWriter().write(rootObj.toString());
+			request.setAttribute("VIEWURL", "ajax:/");
+		} catch (Exception e)
+		{
+			throw new ServletException(e);
+		}
+	}
+
+	private void getListSize(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException
+	{
+		try
+		{
+			ServletContext sc = this.getServletContext();
+			QnaDAO qnaDAO = (QnaDAO) sc.getAttribute("QNA_DAO");
+			int listSize = qnaDAO.getListSize(null, "ANSWER");
+
+			response.setContentType("text/plain");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(String.valueOf(listSize));
+			request.setAttribute("VIEWURL", "ajax:/");
+		} catch (Exception e)
+		{
+			throw new ServletException(e);
+		}
+	}
 }

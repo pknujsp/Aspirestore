@@ -26,7 +26,7 @@
 
 			<div class="container-fluid">
 				<form id="answer_form" name="answer_form" method="post" action="/AspireStore/csservice/qna.aspire" enctype="multipart/form-data">
-				<div class="form-group row">
+					<div class="form-group row">
 						<label for="userName" class="col-sm-2 col-form-label">고객 ID</label>
 						<div class="col-sm-10">
 							<input type="text" readonly class="form-control-plaintext" id="userName" name="userName" value="" readonly>
@@ -62,7 +62,8 @@
 						<div class="col-sm-10">
 							<input type="button" class="btn btn-primary" id="applyAnswerBtn" name="applyAnswerBtn" onclick="applyAnswer()" value="답변 등록">
 							&nbsp;
-							<input type="button" class="btn btn-secondary" id="showQuestionBtn" name="showQuestionBtn" onclick="showQuestionPost()" data-toggle="modal" data-target="#modal" value="문의 글 보기">&nbsp;
+							<input type="button" class="btn btn-secondary" id="showQuestionBtn" name="showQuestionBtn" onclick="showQuestionPost()" data-toggle="modal" data-target="#modal" value="문의 글 보기">
+							&nbsp;
 							<input type="button" class="btn btn-secondary" id="moveToListBtn" name="moveToListBtn" onclick="" value="목록">
 						</div>
 					</div>
@@ -97,6 +98,12 @@
 	<script src="/AspireStore/js/bootstrap.bundle.js"></script>
 
 	<script type="text/javascript">
+		$("#menu-toggle").click(function(e)
+		{
+			e.preventDefault();
+			$("#wrapper").toggleClass("toggled");
+		});
+
 		function applyAnswer()
 		{
 
