@@ -288,7 +288,7 @@ public class ServletDispatcher extends HttpServlet
 						break;
 					case "GET_RECORDS_SIZE": // 목록 레코드의 크기 가져오기
 						// answer, question를 class로 나눔
-						request.setAttribute("CLASS", request.getParameter("class"));
+						request.setAttribute("TABLE_TYPE", request.getParameter("table_type"));
 						break;
 					case "GET_POST": // 글 읽기
 						request.setAttribute("USER_ID", userId);

@@ -1,11 +1,6 @@
-<%@page import="model.OrderhistoryDTO"%>
 <%@page import="java.util.ArrayList"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%
-	// 매니저의 아이디를 page저장소에 저징하여 사용한다.
-	//pageContext.setAttribute("MANAGER_ID", (String)session.getAttribute("SESSIONKEY"));
-%>
 
 <!DOCTYPE html>
 <html>
@@ -36,13 +31,13 @@
 				<table class="table table-sm table-hover">
 					<thead class="thead-light">
 						<tr>
-							<th colspan="5">
+							<th colspan="2">
 								<h5>
 									답변 목록&nbsp;
-									<input type="button" id="viewButton" onclick="setDataTable()" value="새로고침">
+									<input type="button" id="refreshButton" onclick="setDataTable()" value="새로고침">
 								</h5>
 							</th>
-							<th colspan="8">
+							<th colspan="5">
 								표시할 데이터 개수 : <select class="custom-select custom-select-sm w-25" id="select_menu">
 									<option value="2">2</option>
 									<option value="5" selected>5</option>
@@ -134,7 +129,7 @@
 			let processingCol = newTableRow.insertCell(6); //처리
 
 			// 처리 버튼 생성
-			var Button = document.createElement('input');
+			var processingButton = document.createElement('input');
 			processingButton.setAttribute('type', 'button');
 			processingButton.setAttribute('onclick', 'javascript:getPost('
 					+ index + ')');
@@ -212,7 +207,6 @@
 							precessTagValues(responseList.POST_DATA[index]);
 						}
 					}
-
 					setPaginationBar();
 				}
 			};
@@ -334,7 +328,7 @@
 			xhrForSize.setRequestHeader('Content-type',
 					'application/x-www-form-urlencoded');
 			xhrForSize
-					.send('type=' + 'GET_RECORDS_SIZE' + '&class=' + 'ANSWER');
+					.send('type=' + 'GET_RECORDS_SIZE' + '&table_type=' + 'ANSWER');
 		}
 
 		function getPost(index)

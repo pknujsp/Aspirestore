@@ -30,7 +30,7 @@
 					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 주문 관리 </a>
 
 					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item" href="#">미 처리 주문</a>
+						<a class="dropdown-item" href="/AspireStore/management/ordermanagement/unprocessedorder.jsp">미 처리 주문</a>
 						<a class="dropdown-item" href="#">처리된 주문</a>
 						<a class="dropdown-item" href="#">주문 취소</a>
 						<a class="dropdown-item" href="#">배송</a>

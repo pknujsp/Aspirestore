@@ -249,7 +249,7 @@ public class ServletQna extends HttpServlet
 
 			String managerId = request.getAttribute("MANAGER_ID").toString();
 			int beginIndex = Integer.parseInt(request.getAttribute("BEGIN_INDEX").toString());
-			int endIndex = Integer.parseInt(request.getAttribute("BEGIN_INDEX").toString());
+			int endIndex = Integer.parseInt(request.getAttribute("END_INDEX").toString());
 			ArrayList<QnaDTO> list = qnaDAO.getAnswerList(managerId, beginIndex, endIndex);
 
 			JSONObject rootObj = new JSONObject();
@@ -273,6 +273,7 @@ public class ServletQna extends HttpServlet
 				data.put("ANSWER", answer);
 				rootArr.put(data);
 			}
+
 			rootObj.put("POST_DATA", rootArr);
 			response.setContentType("application/json");
 			response.getWriter().write(rootObj.toString());
@@ -290,7 +291,8 @@ public class ServletQna extends HttpServlet
 		{
 			ServletContext sc = this.getServletContext();
 			QnaDAO qnaDAO = (QnaDAO) sc.getAttribute("QNA_DAO");
-			int listSize = qnaDAO.getListSize(null, "ANSWER");
+			String tableType = request.getAttribute("TABLE_TYPE").toString();
+			int listSize = qnaDAO.getListSize(null, tableType);
 
 			response.setContentType("text/plain");
 			response.setCharacterEncoding("UTF-8");

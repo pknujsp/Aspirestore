@@ -72,7 +72,7 @@ public class QnaDAO
 				+ "FROM answerlist_table AS a "
 				+ "INNER JOIN questionlist_table AS q ON q.questionslist_code = a.answerlist_question_code "
 				+ "INNER JOIN question_category_table AS qc ON qc.question_category_code = a.answerlist_category_code "
-				+ "WHERE a.answerlist_id = ? ORDER BY a,answerlist_post_date DESC LIMIT ?, ?";
+				+ "WHERE a.answerlist_id = ? ORDER BY a.answerlist_post_date DESC LIMIT ?, ?";
 		ArrayList<QnaDTO> list = null;
 		ResultSet set = null;
 
@@ -110,11 +110,11 @@ public class QnaDAO
 		return list;
 	}
 
-	public int getListSize(String userId, String type)
+	public int getListSize(String userId, String tableType)
 	{
 		String query = null;
 
-		if (type.equals("QUESTION"))
+		if (tableType.equals("QUESTION"))
 		{
 			query = "SELECT count(*) FROM questionlist_table WHERE questionslist_id = \'" + userId + "\'";
 		} else
