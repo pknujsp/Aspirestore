@@ -60,7 +60,7 @@
 					</div>
 					<div class="form-group row">
 						<div class="col-sm-10">
-							<input type="button" class="btn btn-primary" id="applyAnswerBtn" name="applyAnswerBtn" onclick="applyAnswer()" value="답변 등록">
+							<input type="submit" class="btn btn-primary" id="applyAnswerBtn" name="applyAnswerBtn" value="답변 등록">
 							&nbsp;
 							<input type="button" class="btn btn-secondary" id="showQuestionBtn" name="showQuestionBtn" onclick="showQuestionPost()" data-toggle="modal" data-target="#modal" value="문의 글 보기">
 						</div>
@@ -101,11 +101,6 @@
 			e.preventDefault();
 			$("#wrapper").toggleClass("toggled");
 		});
-
-		function applyAnswer()
-		{
-
-		}
 
 		function showQuestionPost()
 		{

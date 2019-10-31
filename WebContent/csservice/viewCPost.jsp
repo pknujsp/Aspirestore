@@ -123,7 +123,6 @@
 			document.post_form.type.value = "GET_QUESTION_LIST";
 			document.post_form.submit();
 		}
-	
-			</script>
+	</script>
 </body>
 </html>

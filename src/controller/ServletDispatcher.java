@@ -312,6 +312,10 @@ public class ServletDispatcher extends HttpServlet
 						request.setAttribute("QUESTIONER_ID", request.getParameter("questioner_id"));
 						request.setAttribute("ANSWERER_ID", userId);
 						break;
+					case "APPLY_QUESTION":
+						request.setAttribute("QUESTIONER_ID", userId);
+						// 요청 정보는 QnaServlet에서 직접 처리
+						break;
 					}
 				}
 			}

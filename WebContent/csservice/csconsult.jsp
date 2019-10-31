@@ -30,6 +30,11 @@
 			<table class="table table-sm table-hover">
 				<thead class="thead-light">
 					<tr>
+						<th colspan="4">
+							<input type="button" id="NewQuestionBtn" name="NewQuestionBtn" onclick="writeQuestionPost()" value="문의하기">
+						</th>
+					</tr>
+					<tr>
 						<th scope="col">번호</th>
 						<th scope="col">제목</th>
 						<th scope="col">등록날짜</th>
@@ -104,7 +109,8 @@
 			</nav>
 
 			<form action="/AspireStore/csservice/qna.aspire" method="GET" id="pagination_form" name="pagination_form">
-				<input type="hidden" name="type" id="type" value="GET_QUESTION_LIST"> <input type="hidden" name="current_page" id="current_page" value="">
+				<input type="hidden" name="type" id="type" value="GET_QUESTION_LIST">
+				<input type="hidden" name="current_page" id="current_page" value="">
 			</form>
 		</div>
 	</div>
@@ -309,6 +315,11 @@
 		{
 			document.pagination_form.current_page.value =  ${pageScope.PAGE_DATA['page_per_block']} * (Number(num) - 1) + 1;
 			document.pagination_form.submit();
+		}
+		
+		function writeQuestionPost()
+		{
+			location.href='/AspireStore/csservice/writeQuestion.jsp';
 		}
 	</script>
 </body>
