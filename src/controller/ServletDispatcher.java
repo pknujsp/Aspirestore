@@ -224,7 +224,7 @@ public class ServletDispatcher extends HttpServlet
 						String[] checkedCodes = request.getParameterValues("itemCodes");
 						String[] checkedCcodes = request.getParameterValues("categoryCodes");
 
-						ArrayList<BasketDTO> list = new ArrayList<BasketDTO>(checkedCodes.length);
+						ArrayList<BasketDTO> list = new ArrayList<BasketDTO>();
 
 						for (int i = 0; i < checkedCodes.length; ++i)
 						{
@@ -280,6 +280,11 @@ public class ServletDispatcher extends HttpServlet
 					case "GET_QUESTION_LIST": // 문의글 목록 가져오기
 						request.setAttribute("USER_ID", userId);
 						request.setAttribute("CURRENT_PAGE", request.getParameter("current_page"));
+						break;
+					case "GET_QUESTION_POST":
+						request.setAttribute("USER_ID", userId);
+						request.setAttribute("CURRENT_PAGE", request.getParameter("current_page"));
+						request.setAttribute("QUESTION_CODE", request.getParameter("question_code"));
 						break;
 					case "GET_ANSWER_LIST": // 답변글 목록 가져오기
 						request.setAttribute("MANAGER_ID", userId);

@@ -46,8 +46,6 @@
 									<option value="50">50</option>
 								</select> &nbsp;
 								<input type="button" id="viewButton" onclick="setDataTable()" value="데이터 조회">
-								&nbsp;
-								<input type="button" id="processingButton" onclick="preProcessCheckedOrderShipment()" data-toggle="modal" data-target="#modal" value="처리">
 							</th>
 						</tr>
 						<tr>
@@ -66,6 +64,7 @@
 				</table>
 
 				<form id="data_form" name="data_form" action="/AspireStore/csservice/qna.aspire" method="post">
+					<input type="hidden" id="type" name="type" value="GET_ANSWER_POST">
 					<input type="hidden" id="questioner_id" name="questioner_id" value="">
 					<input type="hidden" id="question_code" name="question_code" value="">
 					<input type="hidden" id="answer_code" name="answer_code" value="">
@@ -327,8 +326,8 @@
 			xhrForSize.open('POST', '/AspireStore/csservice/qna.aspire', true);
 			xhrForSize.setRequestHeader('Content-type',
 					'application/x-www-form-urlencoded');
-			xhrForSize
-					.send('type=' + 'GET_RECORDS_SIZE' + '&table_type=' + 'ANSWER');
+			xhrForSize.send('type=' + 'GET_RECORDS_SIZE' + '&table_type='
+					+ 'ANSWER');
 		}
 
 		function getPost(index)

@@ -156,7 +156,7 @@ public class QnaDAO
 			if (set.next())
 			{
 				String status = null;
-				if (set.getString(9).equals("y"))
+				if (set.getString(8).equals("y"))
 				{
 					status = "답변 완료";
 				} else
@@ -165,7 +165,7 @@ public class QnaDAO
 				}
 				postData = new QnaDTO().setQuestion_code(set.getInt(1)).setUser_id(set.getString(2))
 						.setSubject(set.getString(3)).setCategory_code(set.getInt(4)).setContent(set.getString(5))
-						.setPost_date(set.getString(6)).setIp(set.getString(7)).setNumFiles(set.getInt(8))
+						.setPost_date(set.getString(6)).setIp(set.getString(7)).setNumFiles(set.getInt(9))
 						.setStatus(status).setCategory_desc(set.getString(11));
 			}
 		} catch (Exception e)
@@ -187,6 +187,85 @@ public class QnaDAO
 		return postData;
 	}
 
+	public QnaDTO getAnswerPost(String managerId, int answerCode)
+	{
+		String query = "SELECT * FROM answerlist_table AS a " + " INNER JOIN question_category_table AS c "
+				+ "ON c.question_category_code = a.answerlist_category_code "
+				+ "WHERE a.answerlist_code = ? AND a.answerlist_id = ?";
+		ResultSet set = null;
+		QnaDTO postData = null;
+
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			prstmt.setInt(1, answerCode);
+			prstmt.setString(2, managerId);
+			set = prstmt.executeQuery();
+
+			if (set.next())
+			{
+				postData = new QnaDTO().setAnswer_code(set.getInt(1)).setQuestion_code(set.getInt(2))
+						.setUser_id(set.getString(3)).setSubject(set.getString(4)).setCategory_code(set.getInt(5))
+						.setContent(set.getString(6)).setPost_date(set.getString(7)).setIp(set.getString(9))
+						.setNumFiles(set.getInt(8)).setCategory_desc(set.getString(11));
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return postData;
+	}
+
+	public QnaDTO getAnswerPost(int questionCode)
+	{
+		String query = "SELECT * FROM answerlist_table AS a " + " INNER JOIN question_category_table AS c "
+				+ "ON c.question_category_code = a.answerlist_category_code "
+				+ "WHERE a.answerlist_question_code = ?";
+		ResultSet set = null;
+		QnaDTO postData = null;
+
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			prstmt.setInt(1, questionCode);
+			set = prstmt.executeQuery();
+
+			if (set.next())
+			{
+				postData = new QnaDTO().setAnswer_code(set.getInt(1)).setQuestion_code(set.getInt(2))
+						.setUser_id(set.getString(3)).setSubject(set.getString(4)).setCategory_code(set.getInt(5))
+						.setContent(set.getString(6)).setPost_date(set.getString(7)).setIp(set.getString(9))
+						.setNumFiles(set.getInt(8)).setCategory_desc(set.getString(11));
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return postData;
+	}
+	
 	public Integer getAnswerCode(int questionCode, String userId)
 	{
 		String query = "SELECT answerlist_table.answerlist_code FROM answerlist_table "

@@ -63,8 +63,6 @@
 							<input type="button" class="btn btn-primary" id="applyAnswerBtn" name="applyAnswerBtn" onclick="applyAnswer()" value="답변 등록">
 							&nbsp;
 							<input type="button" class="btn btn-secondary" id="showQuestionBtn" name="showQuestionBtn" onclick="showQuestionPost()" data-toggle="modal" data-target="#modal" value="문의 글 보기">
-							&nbsp;
-							<input type="button" class="btn btn-secondary" id="moveToListBtn" name="moveToListBtn" onclick="" value="목록">
 						</div>
 					</div>
 				</form>

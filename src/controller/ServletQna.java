@@ -53,6 +53,9 @@ public class ServletQna extends HttpServlet
 		case "GET_RECORDS_SIZE":
 			getListSize(request, response);
 			break;
+		case "GET_ANSWER_POST":
+			getAnswerPost(request, response);
+			break;
 		}
 	}
 
@@ -78,7 +81,7 @@ public class ServletQna extends HttpServlet
 
 			pageData.put("total_page", 0);
 			pageData.put("total_block", 0);
-			pageData.put("num_per_page", 1);
+			pageData.put("num_per_page", 10);
 			pageData.put("page_per_block", 5);
 			pageData.put("list_size", 0);
 			pageData.put("total_record", 0);
@@ -137,21 +140,17 @@ public class ServletQna extends HttpServlet
 
 			// 문의 글 데이터
 			QnaDTO questionPostData = qnaDAO.getQuestionPost(userId, questionCode);
+			QnaDTO answerData = null;
 
-			Integer answerCode = null;
-			// 답변 코드
 			if (questionPostData.getStatus().equals("답변 완료"))
 			{
-				answerCode = qnaDAO.getAnswerCode(questionPostData.getQuestion_code(), userId);
+				answerData = qnaDAO.getAnswerPost(questionCode);
 			}
 
-			HashMap<String, Integer> pageData = new HashMap<String, Integer>();
-			pageData.put("answer_code", answerCode);
-			pageData.put("current_page", currentPage);
-
-			request.setAttribute("QUESTION_PAGE_DATA", pageData);
-			request.setAttribute("QUESTION_POST_DATA", questionPostData);
-			request.setAttribute("VIEWURL", "forward:/csservice/questionpost.jsp");
+			request.setAttribute("CURRENT_PAGE", currentPage);
+			request.setAttribute("QUESTION_DATA", questionPostData);
+			request.setAttribute("ANSWER_DATA", answerData);
+			request.setAttribute("VIEWURL", "forward:/csservice/viewCPost.jsp");
 
 		} catch (Exception e)
 		{
@@ -278,6 +277,31 @@ public class ServletQna extends HttpServlet
 			response.setContentType("application/json");
 			response.getWriter().write(rootObj.toString());
 			request.setAttribute("VIEWURL", "ajax:/");
+		} catch (Exception e)
+		{
+			throw new ServletException(e);
+		}
+	}
+
+	private void getAnswerPost(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException
+	{
+		try
+		{
+			ServletContext sc = this.getServletContext();
+			QnaDAO qnaDAO = (QnaDAO) sc.getAttribute("QNA_DAO");
+
+			int questionCode = Integer.parseInt(request.getAttribute("QUESTION_CODE").toString());
+			int answerCode = Integer.parseInt(request.getAttribute("ANSWER_CODE").toString());
+			String managerId = request.getAttribute("ANSWERER_ID").toString();
+			String questionerId = request.getAttribute("QUESTIONER_ID").toString();
+
+			QnaDTO questionData = qnaDAO.getQuestionPost(questionerId, questionCode);
+			QnaDTO answerData = qnaDAO.getAnswerPost(managerId, answerCode);
+
+			request.setAttribute("QUESTION_DATA", questionData);
+			request.setAttribute("ANSWER_DATA", answerData);
+			request.setAttribute("VIEWURL", "forward:/management/qnamanagement/viewPost.jsp");
 		} catch (Exception e)
 		{
 			throw new ServletException(e);
