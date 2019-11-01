@@ -42,9 +42,6 @@ public class ServletQna extends HttpServlet
 		case "CREATE_ANSWER_FORM":
 			createAnswerForm(request, response);
 			break;
-		case "APPLY_ANSWER":
-			applyAnswer(request, response);
-			break;
 		case "GET_ANSWER_LIST":
 			getAnswerList(request, response);
 			break;
@@ -53,9 +50,6 @@ public class ServletQna extends HttpServlet
 			break;
 		case "GET_ANSWER_POST":
 			getAnswerPost(request, response);
-			break;
-		case "APPLY_QUESTION":
-			applyQuestion(request, response);
 			break;
 		}
 	}
@@ -153,62 +147,6 @@ public class ServletQna extends HttpServlet
 			request.setAttribute("ANSWER_DATA", answerData);
 			request.setAttribute("VIEWURL", "forward:/csservice/viewCPost.jsp");
 
-		} catch (Exception e)
-		{
-			throw new ServletException(e);
-		}
-	}
-
-	private void applyAnswer(HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException
-	{
-		final String SAVEFOLDER = "C:/programming/eclipseprojects/AspireStore/WebContent/qnaiImages";
-		final String ENCTYPE = "UTF-8";
-		final int MAXSIZE = 10 * 1024 * 1024;
-		try
-		{
-			ServletContext sc = this.getServletContext();
-			QnaDAO qnaDAO = (QnaDAO) sc.getAttribute("QNA_DAO");
-
-			MultipartRequest multipartRequest = new MultipartRequest(request, SAVEFOLDER, MAXSIZE, ENCTYPE,
-					new DefaultFileRenamePolicy());
-
-			@SuppressWarnings("rawtypes")
-			Enumeration files = multipartRequest.getFileNames();
-
-			ArrayList<ImageDTO> fileList = new ArrayList<ImageDTO>();
-
-			String currentTime = etc.Util.getCurrentDateTime();
-			String managerId = request.getAttribute("MANAGER_ID").toString();
-			int questionCode = Integer.parseInt(multipartRequest.getParameter("question_code"));
-			String subject = multipartRequest.getParameter("inputSubject");
-			int categoryCode = Integer.parseInt(multipartRequest.getParameter("inputCategory"));
-			String content = multipartRequest.getParameter("textareaContent");
-
-			// 파일 첨부가 된 경우
-			while (files.hasMoreElements())
-			{
-				String file = (String) files.nextElement();
-				String fileName = multipartRequest.getFilesystemName(file);
-
-				fileList.add(new ImageDTO().setFile_name(fileName)
-						.setFile_size((int) multipartRequest.getFile(fileName).length()).setFile_uri(SAVEFOLDER)
-						.setUploaded_date_time(currentTime).setUploader_id(managerId));
-			}
-
-			QnaDTO answerData = new QnaDTO().setQuestion_code(questionCode).setUser_id(managerId).setSubject(subject)
-					.setCategory_code(categoryCode).setContent(content).setPost_date(currentTime)
-					.setNumFiles(fileList.size()).setIp("1111");
-
-			int answerCode = qnaDAO.applyAnswer(answerData, 'a');
-
-			if (!fileList.isEmpty())
-			{
-				// 첨부 파일이 존재하는 경우 DB에 파일정보 저장
-				qnaDAO.uploadFiles(fileList, answerCode);
-			}
-
-			request.setAttribute("VIEWURL", "redirect:/management/qnamanagement/answerlist.jsp");
 		} catch (Exception e)
 		{
 			throw new ServletException(e);
@@ -322,65 +260,6 @@ public class ServletQna extends HttpServlet
 			response.setCharacterEncoding("UTF-8");
 			response.getWriter().write(String.valueOf(listSize));
 			request.setAttribute("VIEWURL", "ajax:/");
-		} catch (Exception e)
-		{
-			throw new ServletException(e);
-		}
-	}
-
-	private void applyQuestion(HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException
-	{
-		final String SAVEFOLDER = "C:/programming/eclipseprojects/AspireStore/WebContent/qnaiImages";
-		final String ENCTYPE = "UTF-8";
-		final int MAXSIZE = 10 * 1024 * 1024;
-		try
-		{
-			ServletContext sc = this.getServletContext();
-			QnaDAO qnaDAO = (QnaDAO) sc.getAttribute("QNA_DAO");
-
-			MultipartRequest multipartRequest = new MultipartRequest(request, SAVEFOLDER, MAXSIZE, ENCTYPE,
-					new DefaultFileRenamePolicy());
-
-			@SuppressWarnings("rawtypes")
-			Enumeration files = multipartRequest.getFileNames();
-
-			ArrayList<ImageDTO> fileList = new ArrayList<ImageDTO>();
-
-			String currentTime = etc.Util.getCurrentDateTime();
-			String questionerId = request.getAttribute("QUESTIONER_ID").toString();
-			String subject = multipartRequest.getParameter("inputSubject");
-			String content = multipartRequest.getParameter("textareaContent");
-			int categoryCode = Integer.parseInt(multipartRequest.getParameter("selectCategory"));
-
-			// 파일 첨부가 된 경우
-			while (files.hasMoreElements())
-			{
-				String file = (String) files.nextElement();
-				String fileName = multipartRequest.getFilesystemName(file);
-
-				fileList.add(new ImageDTO().setFile_name(fileName)
-						.setFile_size((int) multipartRequest.getFile(fileName).length()).setFile_uri(SAVEFOLDER)
-						.setUploaded_date_time(currentTime).setUploader_id(questionerId));
-			}
-
-			QnaDTO questionData = new QnaDTO().setUser_id(questionerId).setSubject(subject)
-					.setCategory_code(categoryCode).setContent(content).setPost_date(currentTime).setIp("1111")
-					.setStatus("n").setNumFiles(fileList.size());
-
-			int questionCode = qnaDAO.applyAnswer(questionData, 'q');
-
-			if (!fileList.isEmpty())
-			{
-				// 첨부 파일이 존재하는 경우 DB에 파일정보 저장
-				qnaDAO.uploadFiles(fileList, questionCode);
-			}
-
-			HttpSession session = request.getSession();
-			session.setAttribute("TYPE", "GET_QUESTION_POST");
-			session.setAttribute("CURRENT_PAGE", 1);
-			session.setAttribute("QUESTION_CODE", questionCode);
-			request.setAttribute("VIEWURL", "redirect:/csservice/qna.aspire?");
 		} catch (Exception e)
 		{
 			throw new ServletException(e);

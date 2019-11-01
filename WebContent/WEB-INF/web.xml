@@ -144,6 +144,16 @@
 		<servlet-name>qnaservlet</servlet-name>
 		<url-pattern>/csservice/qna</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>applypostservlet</servlet-name>
+		<servlet-class>controller.ServletApplyPost</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>applypostservlet</servlet-name>
+		<url-pattern>/csservice/applyPost</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<servlet-name>frontcontroller</servlet-name>

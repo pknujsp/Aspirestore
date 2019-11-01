@@ -11,14 +11,13 @@
 	<jsp:include page="../navbar.jsp" />
 
 	<div class="container-fluid">
-		<form id="question_form" name="question_form" method="post" action="/AspireStore/csservice/qna.aspire" enctype="multipart/form-data">
+		<form id="question_form" name="question_form" method="post" action="/AspireStore/csservice/applyPost.aspire" enctype="multipart/form-data">
 			<div class="form-group row">
 				<label for="inputSubject" class="col-sm-2 col-form-label">제목</label>
 				<div class="col-sm-10">
 					<input type="text" class="form-control" id="inputSubject" name="inputSubject">
 				</div>
 			</div>
-
 			<div class="form-group row">
 				<label for="selectCategory" class="col-sm-2 col-form-label">카테고리</label>
 				<div class="col-sm-10">
@@ -51,13 +50,13 @@
 					<input type="button" onclick="addInputFile()" value="파일 첨부버튼 추가">
 				</div>
 				<div class="col-sm-10" id="input_file_row">
-					<input type="file" class="form-control-file" id="inputFile[]" name="inputFile[]">
+					<input multiple="multiple" type="file" class="form-control-file" id="inputFile" name="inputFile">
 				</div>
 			</div>
 			<div class="form-group row">
 				<div class="col-sm-10">
 					<input type="submit" class="btn btn-primary" id="applyAnswerBtn" name="applyAnswerBtn" value="답변 등록">
-					<input type="hidden" name="type" id="type" value="APPLY_QUESTION">
+					<input type="hidden" name="type" id="type" value="QUESTION">
 				</div>
 			</div>
 		</form>
@@ -73,9 +72,10 @@
 			let newRow = document.createElement('input');
 
 			newRow.setAttribute('type', 'file');
+			newRow.setAttribute('multiple', 'multiple');
 			newRow.setAttribute('class', 'form-control-file');
-			newRow.setAttribute('id', 'inputFile[]');
-			newRow.setAttribute('name', 'inputFile[]');
+			newRow.setAttribute('id', 'inputFile');
+			newRow.setAttribute('name', 'inputFile');
 
 			divFileRow.appendChild(newRow);
 		}

@@ -1,6 +1,7 @@
 package model;
 
 import java.sql.Statement;
+import java.sql.Types;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -301,7 +302,7 @@ public class QnaDAO
 		return answerCode;
 	}
 
-	public int applyAnswer(QnaDTO postData, char tableType)
+	public int applyPost(QnaDTO postData, char tableType)
 	{
 		String insertQuery = null;
 		String selectQuery = null;
@@ -314,7 +315,7 @@ public class QnaDAO
 		{
 			// QUESTION
 			insertQuery = "INSERT INTO questionlist_table VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?)";
-			selectQuery = "SELECT questionslist_code FROM questionlist_table WHERE answerlist_id = ? ORDER BY questionslist_post_date DESC";
+			selectQuery = "SELECT questionslist_code FROM questionlist_table WHERE questionslist_id = ? ORDER BY questionslist_post_date DESC";
 		}
 
 		ResultSet set = null;
@@ -367,7 +368,7 @@ public class QnaDAO
 		return tableCode;
 	}
 
-	public boolean uploadFiles(ArrayList<ImageDTO> fileList, int answerCode)
+	public boolean uploadFiles(ArrayList<ImageDTO> fileList, int code)
 	{
 		String query = "INSERT INTO qnaimages_table VALUES (null, ?, ?, ?, ?, ?, ?, ?)";
 		boolean flag = false;
@@ -376,8 +377,18 @@ public class QnaDAO
 		{
 			for (int index = 0; index < fileList.size(); ++index)
 			{
-				prstmt.setInt(1, fileList.get(index).getQuestion_post_code());
-				prstmt.setInt(2, answerCode);
+				if (fileList.get(index).getAnswer_post_code() != 0)
+				{
+					// 답변 글의 첨부 파일인 경우
+					prstmt.setInt(1, fileList.get(index).getQuestion_post_code());
+					prstmt.setInt(2, code);
+				}else
+				{
+					// 문의 글인 경우
+					prstmt.setInt(1, code);
+					prstmt.setNull(2, Types.INTEGER);
+				}
+				
 				prstmt.setString(3, fileList.get(index).getUploader_id());
 				prstmt.setString(4, fileList.get(index).getFile_uri());
 				prstmt.setString(5, fileList.get(index).getFile_name());

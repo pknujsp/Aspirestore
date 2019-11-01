@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.oreilly.servlet.MultipartRequest;
+import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
 import etc.OrderInformation;
 import model.AddressDTO;
@@ -269,9 +270,8 @@ public class ServletDispatcher extends HttpServlet
 			case "/csservice/qna.aspire":
 				if (checkNullParameters())
 				{
-					String type = request.getParameter("type").toString();
+					String type = null;
 
-					request.setAttribute("TYPE", type);
 					pageControllerPath = "/csservice/qna";
 					String userId = request.getSession().getAttribute("SESSIONKEY").toString();
 
@@ -287,7 +287,13 @@ public class ServletDispatcher extends HttpServlet
 						session.removeAttribute("CURRENT_PAGE");
 						session.removeAttribute("QUESTION_CODE");
 						session.removeAttribute("TYPE");
+					} else
+					{
+						// 글 작성이 아닌 경우
+						type = request.getParameter("type").toString();
 					}
+					
+					request.setAttribute("TYPE", type);
 
 					switch (type)
 					{
@@ -338,8 +344,40 @@ public class ServletDispatcher extends HttpServlet
 					}
 				}
 				break;
-			case "/csservice/applyPost":
+			case "/csservice/applyPost.aspire":
 				// 질문, 답변 글 등록 서블릿
+				pageControllerPath = "/csservice/applyPost";
+
+				final String SAVEFOLDER = "C:/programming/eclipseprojects/AspireStore/WebContent/qnaImages";
+				final String ENCTYPE = "UTF-8";
+				final int MAXSIZE = 10 * 1024 * 1024;
+
+				MultipartRequest multipartRequest = new MultipartRequest(request, SAVEFOLDER, MAXSIZE, ENCTYPE,
+						new DefaultFileRenamePolicy());
+
+				String type = multipartRequest.getParameter("type");
+				request.setAttribute("TYPE", type);
+				request.setAttribute("MULTI_REQUEST", multipartRequest);
+
+				switch (type)
+				{
+				case "QUESTION":
+					request.setAttribute("QUESTIONER_ID", request.getSession().getAttribute("SESSIONKEY").toString());
+					request.setAttribute("SUBJECT", multipartRequest.getParameter("inputSubject"));
+					request.setAttribute("CONTENT", multipartRequest.getParameter("textareaContent"));
+					request.setAttribute("CATEGORY", Integer.parseInt(multipartRequest.getParameter("selectCategory")));
+
+					break;
+				case "ANSWER":
+					request.setAttribute("ANSWERER_ID", request.getSession().getAttribute("SESSIONKEY").toString());
+					request.setAttribute("QUESTION_CODE",
+							Integer.parseInt(multipartRequest.getParameter("question_code")));
+					request.setAttribute("SUBJECT", multipartRequest.getParameter("inputSubject"));
+					request.setAttribute("CATEGORY", Integer.parseInt(multipartRequest.getParameter("inputCategory")));
+					request.setAttribute("CONTENT", multipartRequest.getParameter("textareaContent"));
+					break;
+				}
+
 				break;
 			}
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher(pageControllerPath);

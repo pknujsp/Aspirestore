@@ -33,7 +33,7 @@ public class ImageDTO
 
 	public String getFile_uri()
 	{
-		return file_uri + "/" + this.getFile_name();
+		return file_uri;
 	}
 
 	public String getFile_name()
@@ -77,7 +77,7 @@ public class ImageDTO
 
 	public ImageDTO setFile_uri(String file_uri)
 	{
-		this.file_uri = file_uri;
+		this.file_uri = file_uri + "/" + this.getFile_name();
 		return this;
 	}
 
