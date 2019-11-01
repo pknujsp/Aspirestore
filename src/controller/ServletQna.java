@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -375,10 +376,11 @@ public class ServletQna extends HttpServlet
 				qnaDAO.uploadFiles(fileList, questionCode);
 			}
 
-			request.setAttribute("type", "GET_QUESTION_POST");
-			request.setAttribute("current_page", "1");
-			request.setAttribute("question_code", String.valueOf(questionCode));
-			request.setAttribute("VIEWURL", "forward:/csservice/qna.aspire");
+			HttpSession session = request.getSession();
+			session.setAttribute("TYPE", "GET_QUESTION_POST");
+			session.setAttribute("CURRENT_PAGE", 1);
+			session.setAttribute("QUESTION_CODE", questionCode);
+			request.setAttribute("VIEWURL", "redirect:/csservice/qna.aspire?");
 		} catch (Exception e)
 		{
 			throw new ServletException(e);

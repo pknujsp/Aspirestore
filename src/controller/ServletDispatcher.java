@@ -275,6 +275,20 @@ public class ServletDispatcher extends HttpServlet
 					pageControllerPath = "/csservice/qna";
 					String userId = request.getSession().getAttribute("SESSIONKEY").toString();
 
+					// 글 작성후 이동할 페이지에서 받을 sessionData
+					if (request.getSession().getAttribute("TYPE") != null)
+					{
+						HttpSession session = request.getSession();
+
+						type = session.getAttribute("TYPE").toString();
+						request.setAttribute("CURRENT_PAGE", (int) session.getAttribute("CURRENT_PAGE"));
+						request.setAttribute("QUESTION_CODE", (int) session.getAttribute("QUESTION_CODE"));
+
+						session.removeAttribute("CURRENT_PAGE");
+						session.removeAttribute("QUESTION_CODE");
+						session.removeAttribute("TYPE");
+					}
+
 					switch (type)
 					{
 					case "GET_QUESTION_LIST": // 문의글 목록 가져오기
@@ -283,8 +297,13 @@ public class ServletDispatcher extends HttpServlet
 						break;
 					case "GET_QUESTION_POST":
 						request.setAttribute("USER_ID", userId);
-						request.setAttribute("CURRENT_PAGE", request.getParameter("current_page"));
-						request.setAttribute("QUESTION_CODE", request.getParameter("question_code"));
+
+						if (request.getAttribute("CURRENT_PAGE") == null)
+						{
+							// 글 등록 후 이동하는 상황이 아닌 경우
+							request.setAttribute("CURRENT_PAGE", request.getParameter("current_page"));
+							request.setAttribute("QUESTION_CODE", request.getParameter("question_code"));
+						}
 						break;
 					case "GET_ANSWER_LIST": // 답변글 목록 가져오기
 						request.setAttribute("MANAGER_ID", userId);
@@ -318,6 +337,10 @@ public class ServletDispatcher extends HttpServlet
 						break;
 					}
 				}
+				break;
+			case "/csservice/applyPost":
+				// 질문, 답변 글 등록 서블릿
+				break;
 			}
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher(pageControllerPath);
 			requestDispatcher.include(request, response);
