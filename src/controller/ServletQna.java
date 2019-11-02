@@ -21,7 +21,7 @@ import org.json.JSONObject;
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
-import model.ImageDTO;
+import model.fileDTO;
 import model.QnaDAO;
 import model.QnaDTO;
 

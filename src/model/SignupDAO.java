@@ -6,8 +6,6 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import util.DBConnectionMgr;
-
 public class SignupDAO
 {
 	private DataSource ds;

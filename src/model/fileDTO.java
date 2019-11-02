@@ -1,6 +1,6 @@
 package model;
 
-public class ImageDTO
+public class fileDTO
 {
 	private int image_code;
 	private int question_post_code;
@@ -51,49 +51,49 @@ public class ImageDTO
 		return uploaded_date_time;
 	}
 
-	public ImageDTO setImage_code(int image_code)
+	public fileDTO setImage_code(int image_code)
 	{
 		this.image_code = image_code;
 		return this;
 	}
 
-	public ImageDTO setQuestion_post_code(int question_post_code)
+	public fileDTO setQuestion_post_code(int question_post_code)
 	{
 		this.question_post_code = question_post_code;
 		return this;
 	}
 
-	public ImageDTO setAnswer_post_code(int answer_post_code)
+	public fileDTO setAnswer_post_code(int answer_post_code)
 	{
 		this.answer_post_code = answer_post_code;
 		return this;
 	}
 
-	public ImageDTO setUploader_id(String uploader_id)
+	public fileDTO setUploader_id(String uploader_id)
 	{
 		this.uploader_id = uploader_id;
 		return this;
 	}
 
-	public ImageDTO setFile_uri(String file_uri)
+	public fileDTO setFile_uri(String file_uri)
 	{
 		this.file_uri = file_uri;
 		return this;
 	}
 
-	public ImageDTO setFile_name(String file_name)
+	public fileDTO setFile_name(String file_name)
 	{
 		this.file_name = file_name;
 		return this;
 	}
 
-	public ImageDTO setFile_size(int file_size)
+	public fileDTO setFile_size(int file_size)
 	{
 		this.file_size = file_size;
 		return this;
 	}
 
-	public ImageDTO setUploaded_date_time(String uploaded_date_time)
+	public fileDTO setUploaded_date_time(String uploaded_date_time)
 	{
 		this.uploaded_date_time = uploaded_date_time;
 		return this;

@@ -154,6 +154,16 @@
 		<servlet-name>applypostservlet</servlet-name>
 		<url-pattern>/csservice/applyPost</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>filemanagementservlet</servlet-name>
+		<servlet-class>controller.ServletFileManagement</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>filemanagementservlet</servlet-name>
+		<url-pattern>/files/fileManagement</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<servlet-name>frontcontroller</servlet-name>

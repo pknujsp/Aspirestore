@@ -16,8 +16,9 @@ import javax.servlet.http.HttpSession;
 
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
+import com.oreilly.servlet.multipart.FileRenamePolicy;
 
-import model.ImageDTO;
+import model.fileDTO;
 import model.QnaDAO;
 import model.QnaDTO;
 
@@ -53,7 +54,7 @@ public class ServletApplyPost extends HttpServlet
 			@SuppressWarnings("rawtypes")
 			Enumeration files = multipartRequest.getFileNames();
 
-			ArrayList<ImageDTO> fileList = new ArrayList<ImageDTO>();
+			ArrayList<fileDTO> fileList = new ArrayList<fileDTO>();
 
 			String currentTime = etc.Util.getCurrentDateTime();
 			String questionerId = request.getAttribute("QUESTIONER_ID").toString();
@@ -72,14 +73,11 @@ public class ServletApplyPost extends HttpServlet
 					break;
 				} else
 				{
-					fileList.add(new ImageDTO().setFile_name(fileName)
+					fileList.add(new fileDTO().setFile_name(fileName)
 							.setFile_size((int) multipartRequest.getFile(file).length()).setFile_uri(SAVEFOLDER)
 							.setUploaded_date_time(currentTime).setUploader_id(questionerId));
 				}
 			}
-
-			// 파일 명 수정
-			modifyFilesName(fileList);
 
 			QnaDTO questionData = new QnaDTO().setUser_id(questionerId).setSubject(subject)
 					.setCategory_code(categoryCode).setContent(content).setPost_date(currentTime).setIp("1111")
@@ -118,7 +116,7 @@ public class ServletApplyPost extends HttpServlet
 			@SuppressWarnings("rawtypes")
 			Enumeration files = multipartRequest.getFileNames();
 
-			ArrayList<ImageDTO> fileList = new ArrayList<ImageDTO>();
+			ArrayList<fileDTO> fileList = new ArrayList<fileDTO>();
 
 			String currentTime = etc.Util.getCurrentDateTime();
 			String managerId = request.getAttribute("ANSWERER_ID").toString();
@@ -133,12 +131,10 @@ public class ServletApplyPost extends HttpServlet
 				String file = (String) files.nextElement();
 				String fileName = multipartRequest.getFilesystemName(file);
 
-				fileList.add(new ImageDTO().setFile_name(fileName)
+				fileList.add(new fileDTO().setFile_name(fileName)
 						.setFile_size((int) multipartRequest.getFile(file).length()).setFile_uri(SAVEFOLDER)
 						.setUploaded_date_time(currentTime).setUploader_id(managerId));
 			}
-
-			modifyFilesName(fileList);
 
 			QnaDTO answerData = new QnaDTO().setQuestion_code(questionCode).setUser_id(managerId).setSubject(subject)
 					.setCategory_code(categoryCode).setContent(content).setPost_date(currentTime)
@@ -158,22 +154,5 @@ public class ServletApplyPost extends HttpServlet
 			throw new ServletException(e);
 		}
 	}
-
-	private void modifyFilesName(ArrayList<ImageDTO> fileList)
-	{
-		int randomInt = new Random().nextInt();
-
-		for (int index = 0; index < fileList.size(); ++index)
-		{
-			String newFileName = fileList.get(index).getFile_name() + String.valueOf(randomInt) + "_"
-					+ fileList.get(index).getUploaded_date_time();
-
-			File existingFile = new File(fileList.get(index).getFile_uri() + "/" + fileList.get(index).getFile_name());
-			File newFile = new File(fileList.get(index).getFile_uri() + "/" + newFileName);
-
-			existingFile.renameTo(newFile);
-
-			fileList.get(index).setFile_name(newFileName);
-		}
-	}
 }
+

@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
+import etc.ImageFileRenamePolicy;
 import etc.OrderInformation;
 import model.AddressDTO;
 import model.BasketDTO;
@@ -292,7 +293,7 @@ public class ServletDispatcher extends HttpServlet
 						// 글 작성이 아닌 경우
 						type = request.getParameter("type").toString();
 					}
-					
+
 					request.setAttribute("TYPE", type);
 
 					switch (type)
@@ -353,7 +354,7 @@ public class ServletDispatcher extends HttpServlet
 				final int MAXSIZE = 10 * 1024 * 1024;
 
 				MultipartRequest multipartRequest = new MultipartRequest(request, SAVEFOLDER, MAXSIZE, ENCTYPE,
-						new DefaultFileRenamePolicy());
+						new ImageFileRenamePolicy());
 
 				String type = multipartRequest.getParameter("type");
 				request.setAttribute("TYPE", type);
@@ -378,6 +379,15 @@ public class ServletDispatcher extends HttpServlet
 					break;
 				}
 
+				break;
+
+			case "/files/fileManagement.aspire":
+				if (checkNullParameters())
+				{
+					// 파일 다운로드
+					pageControllerPath = "/files/fileManagement";
+					request.setAttribute("FILE_URI", request.getParameter("file_uri"));
+				}
 				break;
 			}
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher(pageControllerPath);
