@@ -77,7 +77,7 @@ public class ImageDTO
 
 	public ImageDTO setFile_uri(String file_uri)
 	{
-		this.file_uri = file_uri + "/" + this.getFile_name();
+		this.file_uri = file_uri;
 		return this;
 	}
 

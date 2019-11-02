@@ -34,7 +34,6 @@
 					</select>
 				</div>
 			</div>
-
 			<div class="form-group row">
 				<label for="textareaContent" class="col-sm-2 col-form-label">내용</label>
 				<div class="col-sm-10">
@@ -47,10 +46,10 @@
 					<label for="inputFile" class="col-sm-2 col-form-label">파일 첨부</label>
 				</div>
 				<div>
-					<input type="button" onclick="addInputFile()" value="파일 첨부버튼 추가">
+					<input type="button" onclick="addInputFile()" value="버튼 추가">
 				</div>
 				<div class="col-sm-10" id="input_file_row">
-					<input multiple="multiple" type="file" class="form-control-file" id="inputFile" name="inputFile">
+					<input multiple="multiple" type="file" class="form-control-file" id="inputFile" name="inputFile1">
 				</div>
 			</div>
 			<div class="form-group row">
@@ -75,7 +74,8 @@
 			newRow.setAttribute('multiple', 'multiple');
 			newRow.setAttribute('class', 'form-control-file');
 			newRow.setAttribute('id', 'inputFile');
-			newRow.setAttribute('name', 'inputFile');
+			newRow.setAttribute('name', 'inputFile'
+					+ String(divFileRow.childElementCount + 1));
 
 			divFileRow.appendChild(newRow);
 		}

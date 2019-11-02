@@ -1,8 +1,10 @@
 package controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Random;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -76,6 +78,9 @@ public class ServletApplyPost extends HttpServlet
 				}
 			}
 
+			// 파일 명 수정
+			modifyFilesName(fileList);
+
 			QnaDTO questionData = new QnaDTO().setUser_id(questionerId).setSubject(subject)
 					.setCategory_code(categoryCode).setContent(content).setPost_date(currentTime).setIp("1111")
 					.setStatus("n").setNumFiles(fileList.size());
@@ -129,9 +134,11 @@ public class ServletApplyPost extends HttpServlet
 				String fileName = multipartRequest.getFilesystemName(file);
 
 				fileList.add(new ImageDTO().setFile_name(fileName)
-						.setFile_size((int) multipartRequest.getFile(fileName).length()).setFile_uri(SAVEFOLDER)
+						.setFile_size((int) multipartRequest.getFile(file).length()).setFile_uri(SAVEFOLDER)
 						.setUploaded_date_time(currentTime).setUploader_id(managerId));
 			}
+
+			modifyFilesName(fileList);
 
 			QnaDTO answerData = new QnaDTO().setQuestion_code(questionCode).setUser_id(managerId).setSubject(subject)
 					.setCategory_code(categoryCode).setContent(content).setPost_date(currentTime)
@@ -149,6 +156,24 @@ public class ServletApplyPost extends HttpServlet
 		} catch (Exception e)
 		{
 			throw new ServletException(e);
+		}
+	}
+
+	private void modifyFilesName(ArrayList<ImageDTO> fileList)
+	{
+		int randomInt = new Random().nextInt();
+
+		for (int index = 0; index < fileList.size(); ++index)
+		{
+			String newFileName = fileList.get(index).getFile_name() + String.valueOf(randomInt) + "_"
+					+ fileList.get(index).getUploaded_date_time();
+
+			File existingFile = new File(fileList.get(index).getFile_uri() + "/" + fileList.get(index).getFile_name());
+			File newFile = new File(fileList.get(index).getFile_uri() + "/" + newFileName);
+
+			existingFile.renameTo(newFile);
+
+			fileList.get(index).setFile_name(newFileName);
 		}
 	}
 }
