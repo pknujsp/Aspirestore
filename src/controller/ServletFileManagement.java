@@ -21,7 +21,7 @@ public class ServletFileManagement extends HttpServlet
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		downloadFile(request, response, jspWriter, this.get);
+		downloadFile(request, response, , this.get);
 
 	}
 
