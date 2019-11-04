@@ -306,6 +306,7 @@ public class QnaDAO
 	{
 		String insertQuery = null;
 		String selectQuery = null;
+		String changeStatusQuery = null;
 		if (tableType == 'a')
 		{
 			// ANSWER
@@ -333,7 +334,7 @@ public class QnaDAO
 				prstmt.setInt(4, postData.getCategory_code());
 				prstmt.setString(5, postData.getContent());
 				prstmt.setString(6, postData.getPost_date());
-				prstmt.setString(7, postData.getModified_date());
+				prstmt.setInt(7, postData.getNumFiles());
 				prstmt.setString(8, postData.getIp());
 
 				prstmt2.setInt(1, postData.getQuestion_code());
@@ -368,6 +369,29 @@ public class QnaDAO
 		return tableCode;
 	}
 
+	public boolean changeAnswerStatus(String questionerId, int questionCode)
+	{
+		String changeStatusQuery = "UPDATE questionlist_table SET questionslist_status = ? WHERE questionslist_user_id = ? AND questionslist_code = ?";
+		boolean flag = false;
+
+		try (Connection connection = ds.getConnection();
+				PreparedStatement prstmt = connection.prepareStatement(changeStatusQuery);)
+		{
+			prstmt.setString(1, "y");
+			prstmt.setString(2, questionerId);
+			prstmt.setInt(3, questionCode);
+
+			if (prstmt.executeUpdate() == 1)
+			{
+				flag = true;
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return flag;
+	}
+
 	public boolean uploadFiles(ArrayList<fileDTO> fileList, int code)
 	{
 		String query = "INSERT INTO qnaimages_table VALUES (null, ?, ?, ?, ?, ?, ?, ?)";
@@ -382,13 +406,13 @@ public class QnaDAO
 					// 답변 글의 첨부 파일인 경우
 					prstmt.setInt(1, fileList.get(index).getQuestion_post_code());
 					prstmt.setInt(2, code);
-				}else
+				} else
 				{
 					// 문의 글인 경우
 					prstmt.setInt(1, code);
 					prstmt.setNull(2, Types.INTEGER);
 				}
-				
+
 				prstmt.setString(3, fileList.get(index).getUploader_id());
 				prstmt.setString(4, fileList.get(index).getFile_uri());
 				prstmt.setString(5, fileList.get(index).getFile_name());

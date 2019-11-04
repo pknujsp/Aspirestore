@@ -371,6 +371,7 @@ public class ServletDispatcher extends HttpServlet
 					break;
 				case "ANSWER":
 					request.setAttribute("ANSWERER_ID", request.getSession().getAttribute("SESSIONKEY").toString());
+					request.setAttribute("QUESTIONER_ID", multipartRequest.getParameter("questionerId"));
 					request.setAttribute("QUESTION_CODE",
 							Integer.parseInt(multipartRequest.getParameter("question_code")));
 					request.setAttribute("SUBJECT", multipartRequest.getParameter("inputSubject"));

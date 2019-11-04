@@ -54,7 +54,7 @@
 			</div>
 			<div class="form-group row">
 				<div class="col-sm-10">
-					<input type="submit" class="btn btn-primary" id="applyAnswerBtn" name="applyAnswerBtn" value="답변 등록">
+					<input type="submit" class="btn btn-primary" id="applyQuestionBtn" name="applyQuestionBtn" value="질문 등록">
 					<input type="hidden" name="type" id="type" value="QUESTION">
 				</div>
 			</div>

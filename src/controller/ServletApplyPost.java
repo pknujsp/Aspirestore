@@ -119,6 +119,7 @@ public class ServletApplyPost extends HttpServlet
 			ArrayList<fileDTO> fileList = new ArrayList<fileDTO>();
 
 			String currentTime = etc.Util.getCurrentDateTime();
+			String questionerId = request.getAttribute("QUESTIONER_ID").toString();
 			String managerId = request.getAttribute("ANSWERER_ID").toString();
 			int questionCode = (int) request.getAttribute("QUESTION_CODE");
 			String subject = request.getAttribute("SUBJECT").toString();
@@ -131,9 +132,16 @@ public class ServletApplyPost extends HttpServlet
 				String file = (String) files.nextElement();
 				String fileName = multipartRequest.getFilesystemName(file);
 
-				fileList.add(new fileDTO().setFile_name(fileName)
-						.setFile_size((int) multipartRequest.getFile(file).length()).setFile_uri(SAVEFOLDER)
-						.setUploaded_date_time(currentTime).setUploader_id(managerId));
+				if (fileName == null)
+				{
+					// 파일 미 첨부 인 경우
+					break;
+				} else
+				{
+					fileList.add(new fileDTO().setFile_name(fileName)
+							.setFile_size((int) multipartRequest.getFile(file).length()).setFile_uri(SAVEFOLDER)
+							.setUploaded_date_time(currentTime).setUploader_id(managerId));
+				}
 			}
 
 			QnaDTO answerData = new QnaDTO().setQuestion_code(questionCode).setUser_id(managerId).setSubject(subject)
@@ -141,6 +149,8 @@ public class ServletApplyPost extends HttpServlet
 					.setNumFiles(fileList.size()).setIp("1111");
 
 			int answerCode = qnaDAO.applyPost(answerData, 'a');
+			// 문의글 답변상태 변경(답변완료)
+			qnaDAO.changeAnswerStatus(questionerId, questionCode);
 
 			if (!fileList.isEmpty())
 			{
@@ -155,4 +165,3 @@ public class ServletApplyPost extends HttpServlet
 		}
 	}
 }
-

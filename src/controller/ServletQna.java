@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,6 +23,7 @@ import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
 import model.fileDTO;
+import model.FileDAO;
 import model.QnaDAO;
 import model.QnaDTO;
 
@@ -137,14 +139,32 @@ public class ServletQna extends HttpServlet
 			QnaDTO questionPostData = qnaDAO.getQuestionPost(userId, questionCode);
 			QnaDTO answerData = null;
 
+			// 첨부파일 가져오기
+			FileDAO fileDAO = (FileDAO) sc.getAttribute("FILE_DAO");
+			ArrayList<fileDTO> questionFiles = null;
+			ArrayList<fileDTO> answerFiles = null;
+
+			if (questionPostData.getNumFiles() > 0)
+			{
+				questionFiles = fileDAO.getFiles(questionPostData.getQuestion_code(), questionPostData.getUser_id(),
+						"QUESTION");
+			}
+
 			if (questionPostData.getStatus().equals("답변 완료"))
 			{
 				answerData = qnaDAO.getAnswerPost(questionCode);
+
+				if (answerData.getNumFiles() > 0)
+				{
+					answerFiles = fileDAO.getFiles(answerData.getAnswer_code(), answerData.getUser_id(), "ANSWER");
+				}
 			}
 
 			request.setAttribute("CURRENT_PAGE", currentPage);
 			request.setAttribute("QUESTION_DATA", questionPostData);
 			request.setAttribute("ANSWER_DATA", answerData);
+			request.setAttribute("QUESTION_FILES", questionFiles);
+			request.setAttribute("ANSWER_FILES", answerFiles);
 			request.setAttribute("VIEWURL", "forward:/csservice/viewCPost.jsp");
 
 		} catch (Exception e)
@@ -159,17 +179,25 @@ public class ServletQna extends HttpServlet
 		try
 		{
 			ServletContext sc = this.getServletContext();
-
 			QnaDAO qnaDAO = (QnaDAO) sc.getAttribute("QNA_DAO");
+			FileDAO fileDAO = (FileDAO) sc.getAttribute("FILE_DAO");
 
-			String customerId = request.getAttribute("CUSTOMER_ID").toString();
+			String questionerId = request.getAttribute("CUSTOMER_ID").toString();
 			int questionCode = Integer.parseInt(request.getAttribute("QUESTION_CODE").toString());
 
 			// questionCode, customerId를 가지고 문의글 데이터를 가져온다.
-			QnaDTO questionData = qnaDAO.getQuestionPost(customerId, questionCode);
+			QnaDTO questionData = qnaDAO.getQuestionPost(questionerId, questionCode);
+
+			ArrayList<fileDTO> questionFiles = null;
+			if (questionData.getNumFiles() > 0)
+			{
+				questionFiles = fileDAO.getFiles(questionData.getQuestion_code(), questionData.getUser_id(),
+						"QUESTION");
+			}
 
 			request.setAttribute("QUESTION_DATA", questionData);
-			request.setAttribute("VIEWURL", "forward:/management/qnamanagement/answerpost.jsp");
+			request.setAttribute("QUESTION_FILES", questionFiles);
+			request.setAttribute("VIEWURL", "forward:/management/qnamanagement/writeAnswer.jsp");
 		} catch (Exception e)
 		{
 			throw new ServletException(e);

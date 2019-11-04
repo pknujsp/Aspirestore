@@ -9,6 +9,7 @@ import javax.sql.DataSource;
 import model.AddressDAO;
 import model.AuthorDAO;
 import model.BasketDAO;
+import model.FileDAO;
 import model.ItemsDAO;
 import model.OrdersManagementDAO;
 import model.OrderPaymentDAO;
@@ -41,6 +42,7 @@ public class ServletContextLoaderListener implements ServletContextListener
 			BasketDAO basketDAO = new BasketDAO();
 			OrdersManagementDAO ordersManagementDAO = new OrdersManagementDAO();
 			QnaDAO qnaDAO = new QnaDAO();
+			FileDAO fileDAO = new FileDAO();
 
 			signinDAO.setDataSource(ds);
 			signupDAO.setDataSource(ds);
@@ -53,6 +55,7 @@ public class ServletContextLoaderListener implements ServletContextListener
 			basketDAO.setDataSource(ds);
 			ordersManagementDAO.setDataSource(ds);
 			qnaDAO.setDataSource(ds);
+			fileDAO.setDataSource(ds);
 
 			servletContext.setAttribute("signinDAO", signinDAO);
 			servletContext.setAttribute("signupDAO", signupDAO);
@@ -65,6 +68,7 @@ public class ServletContextLoaderListener implements ServletContextListener
 			servletContext.setAttribute("BASKET_DAO", basketDAO);
 			servletContext.setAttribute("MANAGEMENT_ORDERS_DAO", ordersManagementDAO);
 			servletContext.setAttribute("QNA_DAO", qnaDAO);
+			servletContext.setAttribute("FILE_DAO", fileDAO);
 		} catch (Exception e)
 		{
 			e.printStackTrace();
