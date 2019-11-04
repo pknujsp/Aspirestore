@@ -41,7 +41,7 @@
 					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 문의/답변 </a>
 
 					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item" href="#">문의 목록</a>
+						<a class="dropdown-item" href="/AspireStore/management/qnamanagement/questionlist.jsp">문의 목록</a>
 						<a class="dropdown-item" href="/AspireStore/management/qnamanagement/answerlist.jsp">답변 목록</a>
 						<a class="dropdown-item" href="#">문의 통계</a>
 					</div>

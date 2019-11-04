@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>답변 목록</title>
+<title>문의 목록</title>
 
 <link href="/AspireStore/css/bootstrap.css" rel="stylesheet">
 <link href="/AspireStore/css/shop-homepage.css" rel="stylesheet">
@@ -33,12 +33,13 @@
 						<tr>
 							<th colspan="2">
 								<h5>
-									답변 목록&nbsp;
+									문의 목록&nbsp;
 									<input type="button" id="refreshButton" onclick="setDataTable()" value="새로고침">
 								</h5>
 							</th>
 							<th colspan="5">
-								표시할 데이터 개수 : <select class="custom-select custom-select-sm w-25" id="select_menu">
+								<input type="checkbox" id="status_checkBox" name="status_checkBox" class="custom-control-input">
+								<label class="custom-control-label" for="status_checkBox">미 답변만 보기</label> 표시할 데이터 개수 : <select class="custom-select custom-select-sm w-25" id="select_menu">
 									<option value="2">2</option>
 									<option value="5" selected>5</option>
 									<option value="10">10</option>
@@ -49,12 +50,12 @@
 							</th>
 						</tr>
 						<tr>
-							<th scope="col">답변글 코드</th>
 							<th scope="col">문의글 코드</th>
 							<th scope="col">문의자(고객) ID</th>
-							<th scope="col">답변글 제목</th>
+							<th scope="col">문의글 제목</th>
 							<th scope="col">카테고리</th>
-							<th scope="col">답변 날짜</th>
+							<th scope="col">문의 날짜</th>
+							<th scope="col">답변 상태</th>
 							<th scope="col">처리</th>
 						</tr>
 					</thead>
@@ -63,16 +64,14 @@
 					</tbody>
 				</table>
 
-				<form id="data_form" name="data_form" action="/AspireStore/csservice/qna.aspire" method="GET">
-					<input type="hidden" id="type" name="type" value="GET_ANSWER_POST">
+				<form id="data_form" name="data_form" action="/AspireStore/csservice/qna.aspire" method="post">
+					<input type="hidden" id="type" name="type" value="CREATE_ANSWER_FORM">
 					<input type="hidden" id="questioner_id" name="questioner_id" value="">
 					<input type="hidden" id="question_code" name="question_code" value="">
-					<input type="hidden" id="answer_code" name="answer_code" value="">
 				</form>
 
 				<nav aria-label="PaginationBar">
 					<ul class="pagination justify-content-center" id="pagination_ul">
-
 					</ul>
 				</nav>
 			</div>
@@ -118,49 +117,44 @@
 			let index = tBody.rows.length;
 			let newTableRow = tBody.insertRow(index);
 
-			let answerCodeCol = newTableRow.insertCell(0); // 답변글 코드
-			let questionCodeCol = newTableRow.insertCell(1); // 문의글 코드
-			let questionerIdCol = newTableRow.insertCell(2); // 질문자 ID
-			let subjectCol = newTableRow.insertCell(3); // 제목
-			let categoryCol = newTableRow.insertCell(4); // 카테고리
-			let postDateCol = newTableRow.insertCell(5); // 답변 날짜 
+			let questionCodeCol = newTableRow.insertCell(0); // 문의글 코드
+			let questionerIdCol = newTableRow.insertCell(1); // 질문자 ID
+			let subjectCol = newTableRow.insertCell(2); // 제목
+			let categoryCol = newTableRow.insertCell(3); // 카테고리
+			let postDateCol = newTableRow.insertCell(4); // 문의 날짜 
+			let statusCol = newTableRow.insertCell(5); // 답변 상태 
 			let processingCol = newTableRow.insertCell(6); //처리
 
 			// 처리 버튼 생성
 			var processingButton = document.createElement('input');
 			processingButton.setAttribute('type', 'button');
-			processingButton.setAttribute('onclick', 'javascript:getPost('
-					+ index + ')');
-			processingButton.setAttribute('value', '문의/답변 보기');
+			processingButton.setAttribute('class', 'btn btn-primary');
+			processingButton.setAttribute('onclick',
+					'javascript:createAnswerPage(' + index + ')');
+			processingButton.setAttribute('value', '답변하기');
 
 			processingCol.appendChild(processingButton);
+
+			questionCodeCol.innerHTML = Number(list.QUESTION['question_code']);
+			questionerIdCol.innerHTML = list.QUESTION['questioner_id'];
+			subjectCol.innerHTML = list.QUESTION['question_subject'];
+			categoryCol.innerHTML = list.QUESTION['question_category_desc'];
+			postDateCol.innerHTML = list.QUESTION['question_post_date'];
+			statusCol.innerHTML = String(list.QUESTION['question_status']);
 
 			var questionData =
 			{
 				'questioner_id' : list.QUESTION['questioner_id'],
-				'question_code' : list.QUESTION['question_code']
+				'question_code' : list.QUESTION['question_code'],
+				'question_subject' : list.QUESTION['question_subject'],
+				'question_category_desc' : list.QUESTION['question_category_desc'],
+				'question_post_date' : list.QUESTION['question_post_date'],
+				'question_status' : list.QUESTION['question_status'],
 			};
+			var question_data = new Object();
+			question_data['question_data'] = questionData;
 
-			questionerIdCol.innerHTML = list.QUESTION['questioner_id'];
-			questionCodeCol.innerHTML = list.QUESTION['question_code'];
-			postData['question_data'] = questionData;
-
-			// 요청사항 정보를 tableDataList에 객체로 저장한다.
-			var answerData =
-			{
-				'subject' : list.ANSWER['subject'],
-				'category' : list.ANSWER['category'],
-				'post_date' : list.ANSWER['post_date'],
-				'answer_code' : list.ANSWER['answer_code']
-			};
-			subjectCol.innerHTML = list.ANSWER['subject'];
-			categoryCol.innerHTML = list.ANSWER['category'];
-			postDateCol.innerHTML = list.ANSWER['post_date'];
-			answerCodeCol.innerHTML = list.ANSWER['answer_code'];
-
-			postData['answer_data'] = answerData;
-
-			tableDataList.push(postData);
+			tableDataList.push(question_data);
 		}
 
 		function initializePageTable()
@@ -208,12 +202,21 @@
 					setPaginationBar();
 				}
 			};
+			// 표시 조건
+			let viewCondition = '';
+			let radioCheck = document.getElementsByName('status_checkBox');
+			if (radioCheck[0].checked == true)
+			{
+				viewCondition = 'no_answer';
+			}
+
 			xhr.open('POST', '/AspireStore/csservice/qna.aspire', true);
 			xhr.setRequestHeader('Content-type',
 					'application/x-www-form-urlencoded');
-			xhr.send('type=' + 'GET_ANSWER_LIST' + '&begin_index='
+			xhr.send('type=' + 'GET_QUESTION_LIST_MANAGEMENT' + '&begin_index='
 					+ pageData['begin_index'] + '&end_index='
-					+ pageData['end_index']);
+					+ pageData['end_index'] + '&view_condition='
+					+ viewCondition);
 		}
 
 		function calcPageData()
@@ -322,19 +325,24 @@
 					referData();
 				}
 			};
+			let radioCheck = document.getElementsByName('status_checkBox');
+			let status = '';
+			if (radioCheck[0].checked == true)
+			{
+				status = 'n';
+			}
+
 			xhrForSize.open('POST', '/AspireStore/csservice/qna.aspire', true);
 			xhrForSize.setRequestHeader('Content-type',
 					'application/x-www-form-urlencoded');
 			xhrForSize.send('type=' + 'GET_RECORDS_SIZE' + '&table_type='
-					+ 'ANSWER');
+					+ 'QUESTION' + '&question_status=' + status);
 		}
 
-		function getPost(index)
+		function createAnswerPage(index)
 		{
 			document.data_form.questioner_id.value = tableDataList[index].question_data['questioner_id'];
 			document.data_form.question_code.value = tableDataList[index].question_data['question_code'];
-			document.data_form.answer_code.value = tableDataList[index].answer_data['answer_code'];
-
 			document.data_form.submit();
 		}
 	</script>

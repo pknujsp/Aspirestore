@@ -53,6 +53,8 @@ public class ServletQna extends HttpServlet
 		case "GET_ANSWER_POST":
 			getAnswerPost(request, response);
 			break;
+		case "GET_QUESTION_LIST_MANAGEMENT":
+			getQuestionListM(request, response);
 		}
 	}
 
@@ -265,9 +267,72 @@ public class ServletQna extends HttpServlet
 			QnaDTO questionData = qnaDAO.getQuestionPost(questionerId, questionCode);
 			QnaDTO answerData = qnaDAO.getAnswerPost(managerId, answerCode);
 
+			// 첨부파일 가져오기
+			FileDAO fileDAO = (FileDAO) sc.getAttribute("FILE_DAO");
+			ArrayList<fileDTO> questionFiles = null;
+			ArrayList<fileDTO> answerFiles = null;
+
+			if (questionData.getNumFiles() > 0)
+			{
+				questionFiles = fileDAO.getFiles(questionData.getQuestion_code(), questionData.getUser_id(),
+						"QUESTION");
+			}
+
+			if (questionData.getStatus().equals("답변 완료"))
+			{
+				if (answerData.getNumFiles() > 0)
+				{
+					answerFiles = fileDAO.getFiles(answerData.getAnswer_code(), answerData.getUser_id(), "ANSWER");
+				}
+			}
+			request.setAttribute("QUESTION_FILES", questionFiles);
+			request.setAttribute("ANSWER_FILES", answerFiles);
 			request.setAttribute("QUESTION_DATA", questionData);
 			request.setAttribute("ANSWER_DATA", answerData);
 			request.setAttribute("VIEWURL", "forward:/management/qnamanagement/viewPost.jsp");
+		} catch (Exception e)
+		{
+			throw new ServletException(e);
+		}
+	}
+
+	private void getQuestionListM(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException
+	{
+		try
+		{
+			ServletContext sc = this.getServletContext();
+			QnaDAO qnaDAO = (QnaDAO) sc.getAttribute("QNA_DAO");
+
+			int beginIndex = Integer.parseInt(request.getAttribute("BEGIN_INDEX").toString());
+			int endIndex = Integer.parseInt(request.getAttribute("END_INDEX").toString());
+			String viewCondition = request.getAttribute("VIEW_CONDITION").toString();
+
+			ArrayList<QnaDTO> list = qnaDAO.getQuestionList(beginIndex, endIndex, viewCondition);
+
+			JSONObject rootObj = new JSONObject();
+			JSONArray rootArr = new JSONArray();
+
+			for (int i = 0; i < list.size(); ++i)
+			{
+				JSONObject data = new JSONObject();
+				JSONObject question = new JSONObject();
+
+				question.put("question_code", list.get(i).getQuestion_code());
+				question.put("questioner_id", list.get(i).getUser_id());
+				question.put("question_subject", list.get(i).getSubject());
+				question.put("question_category_desc", list.get(i).getCategory_desc());
+				question.put("question_post_date", list.get(i).getPost_date());
+				question.put("question_status", list.get(i).getStatus());
+
+				data.put("QUESTION", question);
+				rootArr.put(data);
+			}
+
+			rootObj.put("POST_DATA", rootArr);
+			response.setContentType("application/json");
+			response.getWriter().write(rootObj.toString());
+			request.setAttribute("VIEWURL", "ajax:/");
 		} catch (Exception e)
 		{
 			throw new ServletException(e);
@@ -282,7 +347,13 @@ public class ServletQna extends HttpServlet
 			ServletContext sc = this.getServletContext();
 			QnaDAO qnaDAO = (QnaDAO) sc.getAttribute("QNA_DAO");
 			String tableType = request.getAttribute("TABLE_TYPE").toString();
-			int listSize = qnaDAO.getListSize(null, tableType);
+			String questionStatus = null;
+
+			if (request.getAttribute("STATUS") != null)
+			{
+				questionStatus = request.getAttribute("STATUS").toString();
+			}
+			int listSize = qnaDAO.getListSize(tableType, questionStatus);
 
 			response.setContentType("text/plain");
 			response.setCharacterEncoding("UTF-8");

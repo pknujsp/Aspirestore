@@ -67,6 +67,75 @@ public class QnaDAO
 		return list;
 	}
 
+	public ArrayList<QnaDTO> getQuestionList(int beginIndex, int endIndex, String viewCondition)
+	{
+		String query = null;
+
+		if (viewCondition.equals("no_answer"))
+		{
+			query = "SELECT q.questionslist_code, q.questionslist_subject, q.questionslist_category_code, q.questionslist_post_date, q.questionslist_status, qc.question_category_description, q.questionslist_id "
+					+ "FROM questionlist_table AS q " 
+					+ "INNER JOIN question_category_table AS qc ON qc.question_category_code = q.questionslist_category_code "
+					+ "WHERE q.questionslist_status = ? ORDER BY questionslist_post_date DESC LIMIT ?, ?";
+		} else
+		{
+			query = "SELECT q.questionslist_code, q.questionslist_subject, q.questionslist_category_code, q.questionslist_post_date, q.questionslist_status, qc.question_category_description, q.questionslist_id "
+					+ "FROM questionlist_table AS q " 
+					+ "INNER JOIN question_category_table AS qc ON qc.question_category_code = q.questionslist_category_code "
+					+ "ORDER BY questionslist_post_date DESC LIMIT ?, ?";
+		}
+		ArrayList<QnaDTO> list = null;
+		ResultSet set = null;
+
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			if (viewCondition.equals("no_answer"))
+			{
+				prstmt.setString(1, "n");
+				prstmt.setInt(2, beginIndex);
+				prstmt.setInt(3, endIndex);
+			} else
+			{
+				prstmt.setInt(1, beginIndex);
+				prstmt.setInt(2, endIndex);
+			}
+
+			set = prstmt.executeQuery();
+			list = new ArrayList<QnaDTO>();
+
+			while (set.next())
+			{
+				String status = null;
+				if (set.getString(5).equals("y"))
+				{
+					status = "답변 완료";
+				} else
+				{
+					status = "미 답변";
+				}
+				list.add(new QnaDTO().setQuestion_code(set.getInt(1)).setSubject(set.getString(2))
+						.setCategory_code(set.getInt(3)).setPost_date(set.getString(4)).setStatus(status)
+						.setCategory_desc(set.getString(6)).setUser_id(set.getString(7)));
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return list;
+	}
+
 	public ArrayList<QnaDTO> getAnswerList(String managerId, int beginIndex, int endIndex)
 	{
 		String query = "SELECT a.answerlist_code, a.answerlist_question_code, q.questionslist_id, a.answerlist_subject, qc.question_category_description, a.answerlist_post_date "
@@ -111,13 +180,20 @@ public class QnaDAO
 		return list;
 	}
 
-	public int getListSize(String userId, String tableType)
+	public int getListSize(String tableType, String questionStatus)
 	{
 		String query = null;
 
 		if (tableType.equals("QUESTION"))
 		{
-			query = "SELECT count(*) FROM questionlist_table WHERE questionslist_id = \'" + userId + "\'";
+			if (questionStatus.equals("n"))
+			{
+				query = "SELECT count(*) FROM questionlist_table WHERE questionslist_status = \'" + questionStatus
+						+ "\'";
+			} else
+			{
+				query = "SELECT count(*) FROM questionlist_table";
+			}
 		} else
 		{
 			// ANSWER
@@ -306,7 +382,6 @@ public class QnaDAO
 	{
 		String insertQuery = null;
 		String selectQuery = null;
-		String changeStatusQuery = null;
 		if (tableType == 'a')
 		{
 			// ANSWER
@@ -371,7 +446,7 @@ public class QnaDAO
 
 	public boolean changeAnswerStatus(String questionerId, int questionCode)
 	{
-		String changeStatusQuery = "UPDATE questionlist_table SET questionslist_status = ? WHERE questionslist_user_id = ? AND questionslist_code = ?";
+		String changeStatusQuery = "UPDATE questionlist_table SET questionslist_status = ? WHERE questionslist_id = ? AND questionslist_code = ?";
 		boolean flag = false;
 
 		try (Connection connection = ds.getConnection();
@@ -392,7 +467,7 @@ public class QnaDAO
 		return flag;
 	}
 
-	public boolean uploadFiles(ArrayList<fileDTO> fileList, int code)
+	public boolean uploadFiles(ArrayList<fileDTO> fileList, int code, char tableType)
 	{
 		String query = "INSERT INTO qnaimages_table VALUES (null, ?, ?, ?, ?, ?, ?, ?)";
 		boolean flag = false;
@@ -401,14 +476,14 @@ public class QnaDAO
 		{
 			for (int index = 0; index < fileList.size(); ++index)
 			{
-				if (fileList.get(index).getAnswer_post_code() != 0)
+				if (tableType == 'a')
 				{
-					// 답변 글의 첨부 파일인 경우
-					prstmt.setInt(1, fileList.get(index).getQuestion_post_code());
+					// 답변 글
+					prstmt.setNull(1, Types.INTEGER);
 					prstmt.setInt(2, code);
 				} else
 				{
-					// 문의 글인 경우
+					// 문의 글
 					prstmt.setInt(1, code);
 					prstmt.setNull(2, Types.INTEGER);
 				}

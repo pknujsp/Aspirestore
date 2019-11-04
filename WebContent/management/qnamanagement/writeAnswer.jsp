@@ -47,7 +47,8 @@
 					<div class="form-group row">
 						<label for="selectCategory" class="col-sm-2 col-form-label">카테고리</label>
 						<div class="col-sm-10">
-							<input type="text" readonly class="form-control-plaintext" id="inputCategory" name="inputCategory" value="${pageScope.QUESTION_DATA.category_desc }" readonly>
+							<input type="text" readonly class="form-control-plaintext" id="category" name="category" value="${pageScope.QUESTION_DATA.category_desc }" readonly>
+							<input type="hidden" id="inputCategory" name="inputCategory" value="${pageScope.QUESTION_DATA.category_code}">
 						</div>
 					</div>
 					<div class="form-group row">
@@ -71,9 +72,10 @@
 					<div class="form-group row">
 						<div class="col-sm-10">
 							<input type="submit" class="btn btn-primary" id="applyAnswerBtn" name="applyAnswerBtn" value="답변 등록">
-							<input type="button" class="btn btn-secondary" id="showQuestionBtn" name="showQuestionBtn" onclick="showQuestionPost()" value="문의 내용 보기">
+							<input type="button" class="btn btn-secondary" id="showQuestionBtn" name="showQuestionBtn" onclick="showQuestionPost()" data-toggle="modal" data-target="#modal" value="문의 내용 보기">
 							<input type="hidden" name="type" id="type" value="ANSWER">
 							<input type="hidden" name="questionerId" id="questionerId" value="${pageScope.QUESTION_DATA.user_id }">
+							<input type="hidden" name="question_code" id="question_code" value="${pageScope.QUESTION_DATA.question_code }">
 						</div>
 					</div>
 				</form>
@@ -151,66 +153,6 @@
 	<script src="/AspireStore/js/bootstrap.bundle.js"></script>
 
 	<script type="text/javascript">
-		var questionData =
-		{
-			question_code : 0,
-			questioner_id : '',
-			subject : '',
-			category_desc : '',
-			content : '',
-			post_date : '',
-			ip : ''
-		};
-
-		(function()
-		{
-			setQuestionObject();
-		})()
-
-		function setQuestionObject()
-		{
-			questionData['question_code'] = $
-			{
-				pageScope.QUESTION_DATA['question_code']
-			}
-			;
-			questionData['questioner_id'] = $
-			{
-				pageScope.QUESTION_DATA['user_id']
-			}
-			;
-			questionData['subject'] = $
-			{
-				pageScope.QUESTION_DATA['subject']
-			}
-			;
-			questionData['category_desc'] = $
-			{
-				pageScope.QUESTION_DATA['category_desc']
-			}
-			;
-			questionData['category_code'] = $
-			{
-				pageScope.QUESTION_DATA['category_code']
-			}
-			;
-			questionData['content'] = $
-			{
-				pageScope.QUESTION_DATA['content']
-			}
-			;
-			questionData['post_date'] = $
-			{
-				pageScope.QUESTION_DATA['post_date']
-			}
-			;
-			questionData['ip'] = $
-			{
-				pageScope.QUESTION_DATA['ip']
-			}
-			;
-		}
-
 		$("#menu-toggle").click(function(e)
 		{
 			e.preventDefault();

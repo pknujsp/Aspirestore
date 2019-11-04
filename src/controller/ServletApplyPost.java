@@ -88,7 +88,7 @@ public class ServletApplyPost extends HttpServlet
 			if (!fileList.isEmpty())
 			{
 				// 첨부 파일이 존재하는 경우 DB에 파일정보 저장
-				qnaDAO.uploadFiles(fileList, questionCode);
+				qnaDAO.uploadFiles(fileList, questionCode, 'q');
 			}
 
 			HttpSession session = request.getSession();
@@ -155,7 +155,7 @@ public class ServletApplyPost extends HttpServlet
 			if (!fileList.isEmpty())
 			{
 				// 첨부 파일이 존재하는 경우 DB에 파일정보 저장
-				qnaDAO.uploadFiles(fileList, answerCode);
+				qnaDAO.uploadFiles(fileList, answerCode, 'a');
 			}
 
 			request.setAttribute("VIEWURL", "redirect:/AspireStore/management/qnamanagement/answerlist.jsp");

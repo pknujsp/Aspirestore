@@ -317,9 +317,15 @@ public class ServletDispatcher extends HttpServlet
 						request.setAttribute("BEGIN_INDEX", request.getParameter("begin_index"));
 						request.setAttribute("END_INDEX", request.getParameter("end_index"));
 						break;
+					case "GET_QUESTION_LIST_MANAGEMENT": // 답변글 목록 가져오기
+						request.setAttribute("BEGIN_INDEX", request.getParameter("begin_index"));
+						request.setAttribute("END_INDEX", request.getParameter("end_index"));
+						request.setAttribute("VIEW_CONDITION", request.getParameter("view_condition"));
+						break;
 					case "GET_RECORDS_SIZE": // 목록 레코드의 크기 가져오기
 						// answer, question를 class로 나눔
 						request.setAttribute("TABLE_TYPE", request.getParameter("table_type"));
+						request.setAttribute("STATUS", request.getParameter("question_status"));
 						break;
 					case "GET_POST": // 글 읽기
 						request.setAttribute("USER_ID", userId);
@@ -327,7 +333,7 @@ public class ServletDispatcher extends HttpServlet
 						request.setAttribute("CURRENT_PAGE", request.getParameter("current_page"));
 						break;
 					case "CREATE_ANSWER_FORM": // 답변 페이지 생성
-						request.setAttribute("CUSTOMER_ID", request.getParameter("customer_id"));
+						request.setAttribute("CUSTOMER_ID", request.getParameter("questioner_id"));
 						request.setAttribute("QUESTION_CODE", request.getParameter("question_code"));
 					case "APPLY_ANSWER": // 답변 등록
 						request.setAttribute("MANAGER_ID", userId); // 매니저의 ID

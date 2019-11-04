@@ -1,3 +1,5 @@
+<%@page import="model.fileDTO"%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="model.QnaDTO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -5,9 +7,15 @@
 <%
 	QnaDTO questionData = (QnaDTO) request.getAttribute("QUESTION_DATA");
 	QnaDTO answerData = (QnaDTO) request.getAttribute("ANSWER_DATA");
+	@SuppressWarnings("unchecked")
+	ArrayList<fileDTO> questionFiles = (ArrayList<fileDTO>) request.getAttribute("QUESTION_FILES");
+	@SuppressWarnings("unchecked")
+	ArrayList<fileDTO> answerFiles = (ArrayList<fileDTO>) request.getAttribute("ANSWER_FILES");
 
 	pageContext.setAttribute("QUESTION_DATA", questionData);
 	pageContext.setAttribute("ANSWER_DATA", answerData);
+	pageContext.setAttribute("QUESTION_FILES", questionFiles);
+	pageContext.setAttribute("ANSWER_FILES", answerFiles);
 %>
 
 <!DOCTYPE html>
@@ -17,6 +25,7 @@
 <title>답변/문의 보기</title>
 <link href="/AspireStore/css/bootstrap.css" rel="stylesheet">
 <link href="/AspireStore/css/shop-homepage.css" rel="stylesheet">
+<link href="/AspireStore/css/sidebar.css" rel="stylesheet">
 </head>
 <body>
 	<div class="d-flex" id="wrapper">
@@ -60,9 +69,16 @@
 				</div>
 				<div class="form-group row">
 					<label for="questionAttachedFiles" class="col-sm-2 col-form-label">첨부된 파일</label>
-					<div class="col-sm-10">
-						<input type="file" class="form-control-file" id="questionAttachedFiles" name="questionAttachedFiles">
-					</div>
+					<c:if test="${pageScope.QUESTION_FILES != null }">
+						<div class="col-sm-10">
+							<c:forEach var="file" items="${pageScope.QUESTION_FILES }" varStatus="status">
+								<div>
+									<input type="button" class="btn btn-secondary" id="questionAttachedFile[]" name="questionAttachedFile[]" onclick="downLoadFile('${file.file_uri}','${file.file_name }')" value="${file.file_name }">
+								</div>
+								<br>
+							</c:forEach>
+						</div>
+					</c:if>
 				</div>
 				<div class="form-group row">
 					<label for="questionPostDate" class="col-sm-2 col-form-label">등록 날짜</label>
@@ -96,7 +112,12 @@
 				<div class="form-group row">
 					<label for="answerAttachedFiles" class="col-sm-2 col-form-label">첨부된 파일</label>
 					<div class="col-sm-10">
-						<input type="file" class="form-control-file" id="answerAttachedFiles" name="answerAttachedFiles">
+						<c:forEach var="file" items="${pageScope.ANSWER_FILES }" varStatus="status">
+							<div>
+								<input type="button" class="btn btn-secondary" id="answerAttachedFile[]" name="answerAttachedFile[]" onclick="downLoadFile('${file.file_uri}','${file.file_name }')" value="${file.file_name }">
+							</div>
+							<br>
+						</c:forEach>
 					</div>
 				</div>
 				<div class="form-group row">
@@ -113,6 +134,12 @@
 			</div>
 		</div>
 	</div>
+
+	<form id="downloadForm" name="downloadForm" action="/AspireStore/filemanagement/fileDownload.jsp" method="get">
+		<input type="hidden" id="fileUri" name="fileUri" value="">
+		<input type="hidden" id="fileName" name="fileName" value="">
+	</form>
+
 	<script src="/AspireStore/jquery/jquery.js"></script>
 	<script src="/AspireStore/js/bootstrap.bundle.js"></script>
 
@@ -126,6 +153,13 @@
 		function moveToAnswerList()
 		{
 			location.href = "/AspireStore/management/qnamanagement/answerlist.jsp";
+		}
+
+		function downLoadFile(pFileUri, pFileName)
+		{
+			document.downloadForm.fileUri.value = pFileUri;
+			document.downloadForm.fileName.value = pFileName;
+			document.downloadForm.submit();
 		}
 	</script>
 </body>

@@ -477,9 +477,6 @@
 					<a class="nav-link" href="/AspireStore/csservice/qna.aspire?type=GET_QUESTION_LIST">고객센터</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="#">상품 문의</a>
-				</li>
-				<li class="nav-item">
 					<a class="nav-link" href="javascript:moveToAnotherPage('GET_BASKET','/AspireStore/basket.aspire')">장바구니</a>
 				</li>
 			</ul>
