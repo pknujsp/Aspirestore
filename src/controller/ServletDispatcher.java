@@ -385,7 +385,6 @@ public class ServletDispatcher extends HttpServlet
 					request.setAttribute("CONTENT", multipartRequest.getParameter("textareaContent"));
 					break;
 				}
-
 				break;
 
 			case "/files/fileManagement.aspire":
@@ -396,7 +395,42 @@ public class ServletDispatcher extends HttpServlet
 					request.setAttribute("FILE_URI", request.getParameter("file_uri"));
 				}
 				break;
+				
+			case "/items/review.aspire":
+				if (checkNullParameters())
+				{
+					String rtype = request.getParameter("type");
+					request.setAttribute("TYPE", rtype);
+					
+					pageControllerPath = "/items/review";
+
+					switch (rtype)
+					{
+					case "GET_S_REVIEW_SIZE":
+						request.setAttribute("ICODE", request.getParameter("icode"));
+						request.setAttribute("CCODE", request.getParameter("ccode"));
+						break;
+					case "GET_D_REVIEW_SIZE":
+						request.setAttribute("ICODE", request.getParameter("icode"));
+						request.setAttribute("CCODE", request.getParameter("ccode"));
+						break;
+					case "GET_S_REVIEW_JSON":
+						request.setAttribute("ICODE", request.getParameter("icode"));
+						request.setAttribute("CCODE", request.getParameter("ccode"));
+						request.setAttribute("BEGIN_INDEX", request.getParameter("begin_index"));
+						request.setAttribute("END_INDEX", request.getParameter("end_index"));
+						break;
+					case "GET_D_REVIEW_JSON":
+						request.setAttribute("ICODE", request.getParameter("icode"));
+						request.setAttribute("CCODE", request.getParameter("ccode"));
+						request.setAttribute("BEGIN_INDEX", request.getParameter("begin_index"));
+						request.setAttribute("END_INDEX", request.getParameter("end_index"));
+						break;
+					}
+				}
+				break;
 			}
+
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher(pageControllerPath);
 			requestDispatcher.include(request, response);
 			String viewUrl = request.getAttribute("VIEWURL").toString();

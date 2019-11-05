@@ -15,6 +15,7 @@ import model.OrdersManagementDAO;
 import model.OrderPaymentDAO;
 import model.PublisherDAO;
 import model.QnaDAO;
+import model.ReviewDAO;
 import model.SigninDAO;
 import model.SignupDAO;
 import model.UserDAO;
@@ -43,6 +44,7 @@ public class ServletContextLoaderListener implements ServletContextListener
 			OrdersManagementDAO ordersManagementDAO = new OrdersManagementDAO();
 			QnaDAO qnaDAO = new QnaDAO();
 			FileDAO fileDAO = new FileDAO();
+			ReviewDAO reviewDAO = new ReviewDAO();
 
 			signinDAO.setDataSource(ds);
 			signupDAO.setDataSource(ds);
@@ -56,6 +58,7 @@ public class ServletContextLoaderListener implements ServletContextListener
 			ordersManagementDAO.setDataSource(ds);
 			qnaDAO.setDataSource(ds);
 			fileDAO.setDataSource(ds);
+			reviewDAO.setDataSource(ds);
 
 			servletContext.setAttribute("signinDAO", signinDAO);
 			servletContext.setAttribute("signupDAO", signupDAO);
@@ -69,6 +72,7 @@ public class ServletContextLoaderListener implements ServletContextListener
 			servletContext.setAttribute("MANAGEMENT_ORDERS_DAO", ordersManagementDAO);
 			servletContext.setAttribute("QNA_DAO", qnaDAO);
 			servletContext.setAttribute("FILE_DAO", fileDAO);
+			servletContext.setAttribute("REVIEW_DAO", reviewDAO);
 		} catch (Exception e)
 		{
 			e.printStackTrace();

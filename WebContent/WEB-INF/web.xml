@@ -164,6 +164,16 @@
 		<servlet-name>filemanagementservlet</servlet-name>
 		<url-pattern>/files/fileManagement</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>reviewservlet</servlet-name>
+		<servlet-class>controller.ServletItemReview</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>reviewservlet</servlet-name>
+		<url-pattern>/items/review</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<servlet-name>frontcontroller</servlet-name>

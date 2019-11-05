@@ -3,6 +3,7 @@
 <%@page import="model.ItemsDTO"%>
 <%@page import="java.util.ArrayList"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <%
 	request.setCharacterEncoding("UTF-8");
@@ -23,15 +24,11 @@
 
 <title><%=item.getItem_name()%></title>
 
-<!-- Bootstrap core CSS -->
 <link href="/AspireStore/css/bootstrap.css" rel="stylesheet">
-
-<!-- Custom styles for this template -->
 <link href="/AspireStore/css/shop-homepage.css" rel="stylesheet">
 
 </head>
 <body>
-
 
 	<jsp:include page="/navbar.jsp"></jsp:include>
 	<br>
@@ -91,9 +88,13 @@
 		</div>
 		<hr />
 		<div>
-			<form method="post" id="itemInfoForm">
+			<form method="post" id="itemInfoForm" name="itemInfoForm">
 				<span>
-					수량 <input type="number" name="quantity" id="quantity" value="1" min="1" /> <input type="hidden" name="itemPrice" id="itemPrice" value="<%=item.getItem_selling_price()%>" /> <input type="hidden" name="itemCategory" id="itemCategory" value="<%=item.getItem_category_code()%>" /> <input type="hidden" name="itemCode" id="itemCode" value="<%=item.getItem_code()%>" />
+					수량
+					<input type="number" name="quantity" id="quantity" value="1" min="1" />
+					<input type="hidden" name="itemPrice" id="itemPrice" value="<%=item.getItem_selling_price()%>" />
+					<input type="hidden" name="itemCategory" id="itemCategory" value="<%=item.getItem_category_code()%>" />
+					<input type="hidden" name="itemCode" id="itemCode" value="<%=item.getItem_code()%>" />
 				</span>
 				<span>
 					<button class="btn btn-primary" type="button" onclick="javascript:addBookToTheBasket('/AspireStore/basket.aspire')">장바구니에 추가</button>
@@ -214,7 +215,64 @@
 				</div>
 			</div>
 		</div>
-		<hr />
+
+		<hr>
+
+		<div>
+			<h6>간단 리뷰</h6>
+			<input type="button" id="sort_Srating_desc_btn" value="평점 순">
+			<input type="button" id="sort_Spostdate_desc_btn" value="최신 순">
+
+			<ul class="style-unstyled" id="simple_review_list">
+
+			</ul>
+			<nav aria-label="PaginationBar">
+				<ul class="pagination justify-content-center" id="pagination_ul_simple">
+
+				</ul>
+			</nav>
+			<br>
+			<h6>간단 리뷰 작성</h6>
+			<div class="form-group">
+				<div class="col-sm-10">
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" id="simple_review_rating1" name="simple_review_rating" type="radio" value="1">
+						<label class="form-check-label" for="simple_review_rating1">매우 비 추천</label>
+						<input class="form-check-input" id="simple_review_rating2" name="simple_review_rating" type="radio" value="2">
+						<label class="form-check-label" for="simple_review_rating2">비 추천</label>
+						<input class="form-check-input" id="simple_review_rating3" name="simple_review_rating" type="radio" value="3">
+						<label class="form-check-label" for="simple_review_rating3">보통</label>
+						<input class="form-check-input" id="simple_review_rating4" name="simple_review_rating" type="radio" value="4">
+						<label class="form-check-label" for="simple_review_rating4">추천</label>
+						<input class="form-check-input" id="simple_review_rating5" name="simple_review_rating" type="radio" value="5">
+						<label class="form-check-label" for="simple_review_rating5">매우 추천</label>
+					</div>
+				</div>
+				<div class="col-sm-10">
+					<textarea style="resize: none;" autocomplete="off" onkeyup="checkTextBytes(this)" class="form-control" id="simple_review_content" name="simple_review_content" rows="3" placeholder="내용">
+							</textarea>
+					<em id="currentTextSize">0</em>/50자
+					<input type="button" class="btn btn-primary" value="등록">
+				</div>
+			</div>
+		</div>
+
+		<hr>
+
+		<div>
+			<h6>상세 리뷰</h6>
+			<input type="button" id="sort_Drating_desc_btn" value="평점 순">
+			<input type="button" id="sort_Dpostdate_desc_btn" value="최신 순">
+			<input type="button" id="write_detail_review_btn" onclick="createDRForm()" value="리뷰 작성">
+			<ul class="style-unstyled" id="detail_review_list">
+
+			</ul>
+			<nav aria-label="PaginationBar">
+				<ul class="pagination justify-content-center" id="pagination_ul_detail">
+
+				</ul>
+			</nav>
+		</div>
 	</div>
 
 	<form action="/AspireStore/basket.aspire" id="basketForm" name="basketForm" method="post">
@@ -280,6 +338,535 @@
 			paymentForm.submit();
 		}
 	</script>
-</body>
 
+	<script>
+		var simpleReviewPageData =
+		{
+			'total_record' : 0, //전체 레코드 수
+			'num_per_page' : 5, // 페이지당 레코드 수 
+			'page_per_block' : 5, //블럭당 페이지 수 
+			'total_page' : 0, //전체 페이지 수
+			'total_block' : 0, //전체 블럭수 
+			'current_page' : 1, // 현재 페이지
+			'current_block' : 1, //현재 블럭
+			'begin_index' : 0, //QUERY select 시작번호
+			'end_index' : 5, //시작번호로 부터 가져올 레코드 갯수
+			'list_size' : 0
+		//현재 읽어온 데이터의 수
+		};
+
+		var detailReviewPageData =
+		{
+			'total_record' : 0, //전체 레코드 수
+			'num_per_page' : 5, // 페이지당 레코드 수 
+			'page_per_block' : 5, //블럭당 페이지 수 
+			'total_page' : 0, //전체 페이지 수
+			'total_block' : 0, //전체 블럭수 
+			'current_page' : 1, // 현재 페이지
+			'current_block' : 1, //현재 블럭
+			'begin_index' : 0, //QUERY select 시작번호
+			'end_index' : 5, //시작번호로 부터 가져올 레코드 갯수
+			'list_size' : 0
+		//현재 읽어온 데이터의 수
+		};
+		const detailReviewList = [];
+
+		(function()
+		{
+			getSimpleReviewJSON();
+			getDetailReviewJSON();
+		})()
+
+		function getBookCode()
+		{
+			return document.itemInfoForm.itemCode.value;
+		}
+
+		function getCategoryCode()
+		{
+			return document.itemInfoForm.itemCategory.value;
+		}
+
+		function setEmptyUL(id)
+		{
+			let ul = document.getElementById(id);
+			let newLi = document.createElement('li');
+			newLi.innerText = '아직 등록되지 않았습니다';
+			ul.appendChild(newLi);
+		}
+
+		function getSimpleReviewJSON()
+		{
+			var xhrS = new XMLHttpRequest();
+
+			xhrS.onreadystatechange = function()
+			{
+				if (xhrS.status == 200
+						&& xhrS.readyState == XMLHttpRequest.DONE)
+				{
+					var recordSize = Number(xhrS.responseText.toString());
+
+					if (recordSize == 0)
+					{
+						setEmptyUL('simple_review_list');
+					} else
+					{
+						simpleReviewPageData['total_record'] = recordSize;
+						calcPageDataS();
+						referSimpleReviewData();
+					}
+				}
+			};
+
+			xhrS.open('POST', '/AspireStore/items/review.aspire', true);
+			xhrS.setRequestHeader('Content-type',
+					'application/x-www-form-urlencoded');
+			xhrS.send('type=' + 'GET_S_REVIEW_SIZE' + '&icode=' + getBookCode()
+					+ '&ccode=' + getCategoryCode());
+		}
+
+		function referSimpleReviewData()
+		{
+			var xhrRS = new XMLHttpRequest();
+
+			xhrRS.onreadystatechange = function()
+			{
+				if (xhrRS.status == 200
+						&& xhrRS.readyState == XMLHttpRequest.DONE)
+				{
+					const responseList = JSON.parse(xhrRS.responseText);
+
+					simpleReviewPageData['list_size'] = responseList.SIMPLE_REVIEW.length;
+					initializeUL('simple_review_list');
+
+					let listSize = simpleReviewPageData['list_size'];
+					for (let index = 0; index < simpleReviewPageData['num_per_page']; ++index)
+					{
+						if (index == listSize)
+						{
+							break;
+						} else
+						{
+							setSimpleReviewTable(responseList.SIMPLE_REVIEW[index]);
+						}
+					}
+					setPaginationBarS();
+				}
+			};
+
+			xhrRS.open('POST', '/AspireStore/items/review.aspire', true);
+			xhrRS.setRequestHeader('Content-type',
+					'application/x-www-form-urlencoded');
+			xhrRS.responseType = 'json';
+			xhrRS.send('type=' + 'GET_S_REVIEW_JSON' + '&icode='
+					+ getBookCode() + '&ccode=' + getCategoryCode()
+					+ '&begin_index=' + simpleReviewPageData['begin_index']
+					+ '&end_index=' + simpleReviewPageData['end_index']);
+		}
+
+		function setSimpleReviewTable(dataList)
+		{
+			let reviewList = document.getElementById('simple_review_list');
+			let newRow = document.createElement('li');
+
+			let nickName = dataList.S_REVIEW['nick_name'];
+			let postDate = dataList.S_REVIEW['post_date'];
+			let rating = dataList.S_REVIEW['rating'];
+			let content = dataList.S_REVIEW['content'];
+
+			newRow.innerHTML = '<div class=\'media\'><div class=\'media-body\'>'
+					+ '<b class=\'mt-0 font-weight-bold\'>'
+					+ nickName
+					+ '</b>'
+					+ ' &ensp;'
+					+ postDate
+					+ ' &ensp;'
+					+ rating
+					+ '<p class=\'card-text\'>'
+					+ content
+					+ '</p>'
+					+ '</div></div>';
+
+			reviewList.appendChild(newRow);
+		}
+
+		function getDetailReviewJSON()
+		{
+			var xhrD = new XMLHttpRequest();
+
+			xhrD.onreadystatechange = function()
+			{
+				if (xhrD.status == 200
+						&& xhrD.readyState == XMLHttpRequest.DONE)
+				{
+					var recordSize = Number(xhrD.responseText.toString());
+
+					if (recordSize == 0)
+					{
+						setEmptyUL('detail_review_list');
+					} else
+					{
+						detailReviewPageData['total_record'] = recordSize;
+						calcPageDataD();
+						referDetailReviewData();
+					}
+				}
+			};
+
+			xhrD.open('POST', '/AspireStore/items/review.aspire', true);
+			xhrD.setRequestHeader('Content-type',
+					'application/x-www-form-urlencoded');
+			xhrD.send('type=' + 'GET_D_REVIEW_SIZE' + '&icode=' + getBookCode()
+					+ '&ccode=' + getCategoryCode());
+		}
+
+		function referDetailReviewData()
+		{
+			var xhrRD = new XMLHttpRequest();
+
+			xhrRD.onreadystatechange = function()
+			{
+				if (xhrRD.status == 200
+						&& xhrRD.readyState == XMLHttpRequest.DONE)
+				{
+					const responseList = JSON.parse(xhrRD.responseText);
+
+					detailReviewPageData['list_size'] = responseList.DETAIL_REVIEW.length;
+					initializeUL('detail_review_list');
+
+					let listSize = detailReviewPageData['list_size'];
+					for (let index = 0; index < detailReviewPageData['num_per_page']; ++index)
+					{
+						if (index == listSize)
+						{
+							break;
+						} else
+						{
+							setDetailReviewTable(responseList.DETAIL_REVIEW[index]);
+						}
+					}
+					setPaginationBarD();
+				}
+			};
+
+			xhrRD.open('POST', '/AspireStore/items/review.aspire', true);
+			xhrRD.setRequestHeader('Content-type',
+					'application/x-www-form-urlencoded');
+			xhrRD.responseType = 'json';
+			xhrRD.send('type=' + 'GET_D_REVIEW_JSON' + '&icode='
+					+ getBookCode() + '&ccode=' + getCategoryCode()
+					+ '&begin_index=' + detailReviewPageData['begin_index']
+					+ '&end_index=' + detailReviewPageData['end_index']);
+		}
+
+		function calcPageDataS()
+		{
+			let beginIndex = simpleReviewPageData['begin_index'];
+			let endIndex = simpleReviewPageData['end_index'];
+			let numPerPage = simpleReviewPageData['num_per_page'];
+			let totalRecord = simpleReviewPageData['total_record'];
+			let currentPage = simpleReviewPageData['current_page'];
+			let pagePerBlock = simpleReviewPageData['page_per_block'];
+
+			simpleReviewPageData['begin_index'] = (currentPage * numPerPage)
+					- numPerPage;
+			simpleReviewPageData['end_index'] = numPerPage;
+			simpleReviewPageData['total_page'] = parseInt(Math
+					.ceil(parseFloat(totalRecord) / numPerPage));
+			simpleReviewPageData['current_block'] = parseInt(Math
+					.ceil(parseFloat(currentPage) / pagePerBlock));
+
+			let totalPage = simpleReviewPageData['total_page'];
+
+			simpleReviewPageData['total_block'] = parseInt(Math
+					.ceil(parseFloat(totalPage) / pagePerBlock));
+		}
+
+		function pagingS(num)
+		{
+			simpleReviewPageData['current_page'] = Number(num);
+			getSimpleReviewJSON();
+		}
+
+		function moveBlockS(num)
+		{
+			simpleReviewPageData['current_page'] = simpleReviewPageData['page_per_block']
+					* (Number(num) - 1) + 1;
+			getSimpleReviewJSON();
+		}
+
+		function setPaginationBarS()
+		{
+			let pageBegin = ((simpleReviewPageData['current_block'] - 1) * simpleReviewPageData['page_per_block']) + 1;
+			let pageEnd = ((pageBegin + simpleReviewPageData['page_per_block']) <= simpleReviewPageData['total_page']) ? (pageBegin + simpleReviewPageData['page_per_block'])
+					: simpleReviewPageData['total_page'] + 1;
+
+			const totalPage = simpleReviewPageData['total_page'];
+			const totalBlock = simpleReviewPageData['total_block'];
+			const currentBlock = simpleReviewPageData['current_block'];
+			const currentPage = simpleReviewPageData['current_page'];
+
+			let newElement = '';
+
+			if (totalPage != 0)
+			{
+				if (currentBlock > 1)
+				{
+					// 이전 버튼
+					newElement += '<li class =\"page-item\"><a class=\"page-link\" href=\"javascript:moveBlockS(\''
+							+ String(currentBlock - 1)
+							+ '\')\" tabindex=\"-1\" aria-disabled=\"true\">이전</a></li>';
+				}
+				while (pageBegin < pageEnd)
+				{
+					if (pageBegin == currentPage)
+					{
+						// 현재 페이지 active
+						newElement += '<li class=\"page-item active\" aria-current=\"page\"><a class=\"page-link\" href=\"javascript:pagingS(\''
+								+ String(pageBegin)
+								+ '\')\">'
+								+ pageBegin
+								+ '<span class=\"sr-only\">(현재 페이지)</span></a></li>';
+					} else
+					{
+						// 1, 2, 3 버튼
+						newElement += '<li class=\"page-item\"><a class=\"page-link\" href=\"javascript:pagingS(\''
+								+ String(pageBegin)
+								+ '\')\">'
+								+ pageBegin
+								+ '</a></li>';
+					}
+					++pageBegin;
+				}
+				if (totalBlock > currentBlock)
+				{
+					// 다음 버튼
+					newElement += '<li class =\"page-item\"><a class=\"page-link\" href=\"moveBlockS('
+							+ currentBlock + 1 + ')\">다음</a></li>';
+				}
+			}
+			document.getElementById('pagination_ul_simple').innerHTML = newElement;
+		}
+
+		function setDetailReviewTable()
+		{
+
+			let reviewList = document.getElementById('detail_review_list');
+			let newRow = document.createElement('li');
+			let index = reviewList.getElementsByTagName('li').length;
+
+			let nickName = dataList.D_REVIEW['nick_name'];
+			let postDate = dataList.D_REVIEW['post_date'];
+			let rating = dataList.D_REVIEW['rating'];
+			let recommendation = dataList.D_REVIEW['recommendation'];
+			let content = dataList.D_REVIEW['content'];
+			let cutedContent = content;
+			let collapseBtnCode = '';
+
+			if (content.length >= 120)
+			{
+				// 펼쳐보기, 감추기 버튼 생성
+				cutedContent = cutString(content);
+				collapseBtnCode = '<input type=\'button\' id=\'collapse_content_btn'
+						+ String(index)
+						+ '\' value=\'모두 보기\' onclick=\'showWholeContent('
+						+ index + ')\'>';
+			}
+
+			var detailReview =
+			{
+				'nick_name' : dataList.D_REVIEW['nick_name'],
+				'post_date' : dataList.D_REVIEW['post_date'],
+				'rating' : dataList.D_REVIEW['rating'],
+				'recommendation' : dataList.D_REVIEW['recommendation'],
+				'content' : dataList.D_REVIEW['content'],
+				'cuted_content' : cutedContent
+			};
+
+			detailReviewList.push(detailReview);
+
+			newRow.innerHTML = '<div class=\'media\'><div class=\'media-body\'>'
+					+ '<b class=\'mt-0 font-weight-bold\'>'
+					+ nickName
+					+ '</b>'
+					+ ' &ensp;'
+					+ postDate
+					+ ' &ensp;'
+					+ rating
+					+ '<p class=\'card-text\' id=\'detail_review_content'
+					+ String(index)
+					+ '\'>'
+					+ cutedContent
+					+ '</p>'
+					+ collapseBtnCode + '</div></div>';
+
+			reviewList.appendChild(newRow);
+		}
+
+		function calcPageDataD()
+		{
+			let beginIndex = detailReviewPageData['begin_index'];
+			let endIndex = detailReviewPageData['end_index'];
+			let numPerPage = detailReviewPageData['num_per_page'];
+			let totalRecord = detailReviewPageData['total_record'];
+			let currentPage = detailReviewPageData['current_page'];
+			let pagePerBlock = detailReviewPageData['page_per_block'];
+
+			detailReviewPageData['begin_index'] = (currentPage * numPerPage)
+					- numPerPage;
+			detailReviewPageData['end_index'] = numPerPage;
+			detailReviewPageData['total_page'] = parseInt(Math
+					.ceil(parseFloat(totalRecord) / numPerPage));
+			detailReviewPageData['current_block'] = parseInt(Math
+					.ceil(parseFloat(currentPage) / pagePerBlock));
+
+			let totalPage = detailReviewPageData['total_page'];
+
+			detailReviewPageData['total_block'] = parseInt(Math
+					.ceil(parseFloat(totalPage) / pagePerBlock));
+		}
+
+		function pagingD(num)
+		{
+			detailReviewPageData['current_page'] = Number(num);
+			getDetailReviewJSON();
+		}
+
+		function moveBlockD(num)
+		{
+			detailReviewPageData['current_page'] = detailReviewPageData['page_per_block']
+					* (Number(num) - 1) + 1;
+			getDetailReviewJSON();
+		}
+
+		function setPaginationBarD()
+		{
+			let pageBegin = ((detailReviewPageData['current_block'] - 1) * detailReviewPageData['page_per_block']) + 1;
+			let pageEnd = ((pageBegin + detailReviewPageData['page_per_block']) <= detailReviewPageData['total_page']) ? (pageBegin + detailReviewPageData['page_per_block'])
+					: detailReviewPageData['total_page'] + 1;
+
+			const totalPage = detailReviewPageData['total_page'];
+			const totalBlock = detailReviewPageData['total_block'];
+			const currentBlock = detailReviewPageData['current_block'];
+			const currentPage = detailReviewPageData['current_page'];
+
+			let newElement = '';
+
+			if (totalPage != 0)
+			{
+				if (currentBlock > 1)
+				{
+					// 이전 버튼
+					newElement += '<li class =\"page-item\"><a class=\"page-link\" href=\"javascript:moveBlockD(\''
+							+ String(currentBlock - 1)
+							+ '\')\" tabindex=\"-1\" aria-disabled=\"true\">이전</a></li>';
+				}
+				while (pageBegin < pageEnd)
+				{
+					if (pageBegin == currentPage)
+					{
+						// 현재 페이지 active
+						newElement += '<li class=\"page-item active\" aria-current=\"page\"><a class=\"page-link\" href=\"javascript:pagingD(\''
+								+ String(pageBegin)
+								+ '\')\">'
+								+ pageBegin
+								+ '<span class=\"sr-only\">(현재 페이지)</span></a></li>';
+					} else
+					{
+						// 1, 2, 3 버튼
+						newElement += '<li class=\"page-item\"><a class=\"page-link\" href=\"javascript:pagingD(\''
+								+ String(pageBegin)
+								+ '\')\">'
+								+ pageBegin
+								+ '</a></li>';
+					}
+					++pageBegin;
+				}
+				if (totalBlock > currentBlock)
+				{
+					// 다음 버튼
+					newElement += '<li class =\"page-item\"><a class=\"page-link\" href=\"moveBlockD('
+							+ currentBlock + 1 + ')\">다음</a></li>';
+				}
+			}
+			document.getElementById('pagination_ul_detail').innerHTML = newElement;
+		}
+
+		function cutString(str)
+		{
+			// 문자열의 길이가 120자 이상인 경우 100자로 제한하여 자른다.
+			return str.substr(0, 100) + '...';
+		}
+
+		function showWholeContent(index)
+		{
+			document.getElementById('detail_review_content' + String(index)).innerText = detailReviewList[index]['content'];
+			let btn = document.getElementById('collapse_content_btn'
+					+ String(index));
+
+			btn.setAttribute('value', '감추기');
+			btn.setAttribute('onclick', 'hideWholeContent(\'' + index + '\')');
+		}
+
+		function hideWholeContent(index)
+		{
+			document.getElementById('detail_review_content' + String(index)).innerText = detailReviewList[index]['cuted_content'];
+
+			let btn = document.getElementById('collapse_content_btn'
+					+ String(index));
+
+			btn.setAttribute('value', '모두 보기');
+			btn.setAttribute('onclick', 'showWholeContent(\'' + index + '\')');
+		}
+
+		function initializeUL(id)
+		{
+			let ul = document.getElementById(id);
+
+			while (ul.firstChild)
+			{
+				ul.removeChild(ul.firstChild);
+			}
+		}
+
+		function checkTextBytes(obj)
+		{
+			let str = obj.value;
+			let currentByte = 0;
+			let currentLength = 0;
+			let character = '';
+			let cutedStr = '';
+			let maxByte = 100;
+			let toBeCutedLength = 0;
+
+			for (let index = 0; index < str.length; ++index)
+			{
+				character = str.charAt(index);
+
+				if (escape(character).length > 4)
+				{
+					currentByte += 2;
+					++currentLength;
+				} else
+				{
+					++currentByte;
+					++currentLength;
+				}
+				if (currentByte <= maxByte)
+				{
+					toBeCutedLength = index;
+				} else
+				{
+					--currentByte;
+				}
+			}
+			if (currentByte > maxByte)
+			{
+				cutedStr = str.substr(0, toBeCutedLength);
+				obj.value = cutedStr;
+			}
+			document.getElementById('currentTextSize').innerText = currentLength;
+		}
+	</script>
+</body>
 </html>
