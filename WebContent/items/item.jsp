@@ -249,10 +249,10 @@
 					</div>
 				</div>
 				<div class="col-sm-10">
-					<textarea style="resize: none;" autocomplete="off" onkeyup="checkTextBytes(this)" class="form-control" id="simple_review_content" name="simple_review_content" rows="3" placeholder="내용">
+					<textarea style="resize: none;" autocomplete="off" onkeyup="checkTextBytes(this)" class="form-control" id="simple_review_content" name="simple_review_content" rows="3">
 							</textarea>
-					<em id="currentTextSize">0</em>/50자
-					<input type="button" class="btn btn-primary" value="등록">
+					<em id="currentTextSize">0</em>/100Byte
+					<input type="button" class="btn btn-primary" onclick="applySimpleReview()" value="등록">
 				</div>
 			</div>
 		</div>
@@ -421,8 +421,8 @@
 			xhrS.open('POST', '/AspireStore/items/review.aspire', true);
 			xhrS.setRequestHeader('Content-type',
 					'application/x-www-form-urlencoded');
-			xhrS.send('type=' + 'GET_S_REVIEW_SIZE' + '&icode=' + getBookCode()
-					+ '&ccode=' + getCategoryCode());
+			xhrS.send('type=' + 'GET_S_REVIEW_SIZE' + '&icode=' + String(getBookCode())
+					+ '&ccode=' + String(getCategoryCode()));
 		}
 
 		function referSimpleReviewData()
@@ -436,7 +436,7 @@
 				{
 					const responseList = JSON.parse(xhrRS.responseText);
 
-					simpleReviewPageData['list_size'] = responseList.SIMPLE_REVIEW.length;
+					simpleReviewPageData['list_size'] = responseList.REVIEWS.length;
 					initializeUL('simple_review_list');
 
 					let listSize = simpleReviewPageData['list_size'];
@@ -447,7 +447,7 @@
 							break;
 						} else
 						{
-							setSimpleReviewTable(responseList.SIMPLE_REVIEW[index]);
+							setSimpleReviewTable(responseList.REVIEWS[index]);
 						}
 					}
 					setPaginationBarS();
@@ -469,10 +469,10 @@
 			let reviewList = document.getElementById('simple_review_list');
 			let newRow = document.createElement('li');
 
-			let nickName = dataList.S_REVIEW['nick_name'];
-			let postDate = dataList.S_REVIEW['post_date'];
-			let rating = dataList.S_REVIEW['rating'];
-			let content = dataList.S_REVIEW['content'];
+			let nickName = dataList.REVIEW['WRITER_ID'];
+			let postDate = dataList.REVIEW['POST_DATE'];
+			let rating = dataList.REVIEW['RATING'];
+			let content = dataList.REVIEW['CONTENT'];
 
 			newRow.innerHTML = '<div class=\'media\'><div class=\'media-body\'>'
 					+ '<b class=\'mt-0 font-weight-bold\'>'
@@ -837,35 +837,65 @@
 			let character = '';
 			let cutedStr = '';
 			let maxByte = 100;
-			let toBeCutedLength = 0;
+			let toBeCutedIndex = 0;
 
 			for (let index = 0; index < str.length; ++index)
 			{
-				character = str.charAt(index);
+				character = str.charCodeAt(index);
 
-				if (escape(character).length > 4)
+				if (character > 128)
 				{
 					currentByte += 2;
-					++currentLength;
 				} else
 				{
 					++currentByte;
-					++currentLength;
 				}
 				if (currentByte <= maxByte)
 				{
-					toBeCutedLength = index;
-				} else
-				{
-					--currentByte;
+					toBeCutedIndex = index;
 				}
 			}
 			if (currentByte > maxByte)
 			{
-				cutedStr = str.substr(0, toBeCutedLength);
+				cutedStr = str.substr(0, toBeCutedIndex);
 				obj.value = cutedStr;
+				checkTextBytes(obj);
+			} else
+			{
+				document.getElementById('currentTextSize').innerText = currentByte;
 			}
-			document.getElementById('currentTextSize').innerText = currentLength;
+		}
+
+		function applySimpleReview()
+		{
+			let ratingRadio = document
+					.getElementsByName('simple_review_rating');
+			let rating = '';
+			for (let index = 0; index < ratingRadio.length; ++index)
+			{
+				if (ratingRadio[index].checked == true)
+				{
+					rating = ratingRadio[index].value;
+				}
+			}
+
+			let content = document.getElementById('simple_review_content').value;
+
+			var xhrAS = new XMLHttpRequest();
+
+			xhrAS.onreadystatechange = function()
+			{
+				if (xhrAS.readyState == XMLHttpRequest.DONE
+						&& xhrAS.status == 200)
+				{
+					getSimpleReviewJSON();
+				}
+			};
+			xhrAS.open('POST', '/AspireStore/items/review.aspire', true);
+			xhrAS.setRequestHeader('Content-type',
+					'application/x-www-form-urlencoded');
+			xhrAS.send('type=' + 'APPLY_S_REVIEW' + '&rating=' + rating
+					+ '&content=' + content + '&icode=' + getBookCode() + '&ccode=' + getCategoryCode());
 		}
 	</script>
 </body>

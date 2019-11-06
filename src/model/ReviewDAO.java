@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.sql.DataSource;
 
@@ -142,5 +143,35 @@ public class ReviewDAO
 			}
 		}
 		return reviews;
+	}
+
+	public boolean applySimpleReview(HashMap<String, String> reviewData)
+	{
+		String query = "INSERT INTO simplereview_table " + "VALUES (null, ?, ?, ?, ?, ?, ?)";
+		boolean flag = false;
+
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			prstmt.setInt(1, Integer.parseInt(reviewData.get("ICODE")));
+			prstmt.setString(2, reviewData.get("CCODE"));
+			prstmt.setString(3, reviewData.get("WRITER_ID"));
+			prstmt.setString(4, reviewData.get("CONTENT"));
+			prstmt.setString(5, reviewData.get("RATING"));
+			prstmt.setString(6, reviewData.get("POST_DATE"));
+
+			if (prstmt.executeUpdate() == 1)
+			{
+				flag = true;
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return flag;
+	}
+	
+	public boolean applyDetailReview(HashMap<String, String> reviewData)
+	{
+		return false;
 	}
 }

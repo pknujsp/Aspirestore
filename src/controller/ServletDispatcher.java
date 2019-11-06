@@ -426,6 +426,13 @@ public class ServletDispatcher extends HttpServlet
 						request.setAttribute("BEGIN_INDEX", request.getParameter("begin_index"));
 						request.setAttribute("END_INDEX", request.getParameter("end_index"));
 						break;
+					case "APPLY_S_REVIEW":
+						request.setAttribute("WRITER_ID", request.getSession().getAttribute("SESSIONKEY").toString());
+						request.setAttribute("RATING", request.getParameter("rating"));
+						request.setAttribute("CONTENT", request.getParameter("content"));
+						request.setAttribute("ICODE", request.getParameter("icode"));
+						request.setAttribute("CCODE", request.getParameter("ccode"));
+						break;
 					}
 				}
 				break;
