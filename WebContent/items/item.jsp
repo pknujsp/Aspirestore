@@ -231,7 +231,9 @@
 
 				</ul>
 			</nav>
+			
 			<br>
+			
 			<h6>간단 리뷰 작성</h6>
 			<div class="form-group">
 				<div class="col-sm-10">
@@ -272,6 +274,9 @@
 
 				</ul>
 			</nav>
+			
+			<br>
+			
 		</div>
 	</div>
 
@@ -421,8 +426,9 @@
 			xhrS.open('POST', '/AspireStore/items/review.aspire', true);
 			xhrS.setRequestHeader('Content-type',
 					'application/x-www-form-urlencoded');
-			xhrS.send('type=' + 'GET_S_REVIEW_SIZE' + '&icode=' + String(getBookCode())
-					+ '&ccode=' + String(getCategoryCode()));
+			xhrS.send('type=' + 'GET_S_REVIEW_SIZE' + '&icode='
+					+ String(getBookCode()) + '&ccode='
+					+ String(getCategoryCode()));
 		}
 
 		function referSimpleReviewData()
@@ -457,7 +463,6 @@
 			xhrRS.open('POST', '/AspireStore/items/review.aspire', true);
 			xhrRS.setRequestHeader('Content-type',
 					'application/x-www-form-urlencoded');
-			xhrRS.responseType = 'json';
 			xhrRS.send('type=' + 'GET_S_REVIEW_JSON' + '&icode='
 					+ getBookCode() + '&ccode=' + getCategoryCode()
 					+ '&begin_index=' + simpleReviewPageData['begin_index']
@@ -481,7 +486,7 @@
 					+ ' &ensp;'
 					+ postDate
 					+ ' &ensp;'
-					+ rating
+					+ convertRating(rating)
 					+ '<p class=\'card-text\'>'
 					+ content
 					+ '</p>'
@@ -552,7 +557,6 @@
 			xhrRD.open('POST', '/AspireStore/items/review.aspire', true);
 			xhrRD.setRequestHeader('Content-type',
 					'application/x-www-form-urlencoded');
-			xhrRD.responseType = 'json';
 			xhrRD.send('type=' + 'GET_D_REVIEW_JSON' + '&icode='
 					+ getBookCode() + '&ccode=' + getCategoryCode()
 					+ '&begin_index=' + detailReviewPageData['begin_index']
@@ -895,7 +899,25 @@
 			xhrAS.setRequestHeader('Content-type',
 					'application/x-www-form-urlencoded');
 			xhrAS.send('type=' + 'APPLY_S_REVIEW' + '&rating=' + rating
-					+ '&content=' + content + '&icode=' + getBookCode() + '&ccode=' + getCategoryCode());
+					+ '&content=' + content + '&icode=' + getBookCode()
+					+ '&ccode=' + getCategoryCode());
+		}
+		
+		function convertRating(ratingCode)
+		{
+			switch(ratingCode)
+			{
+			case '1':
+				return '매우 비 추천';
+			case '2':
+				return '비 추천';
+			case '3':
+				return '보통';
+			case '4':
+				return '추천';
+			case '5':
+				return '매우 추천';
+			}
 		}
 	</script>
 </body>

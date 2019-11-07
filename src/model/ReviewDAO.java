@@ -147,7 +147,8 @@ public class ReviewDAO
 
 	public boolean applySimpleReview(HashMap<String, String> reviewData)
 	{
-		String query = "INSERT INTO simplereview_table " + "VALUES (null, ?, ?, ?, ?, ?, ?)";
+		String query = "INSERT INTO simplereview_table " + "SELECT null, ?, ?, ?, ?, ?, ? FROM DUAL WHERE NOT EXISTS "
+				+ "(SELECT * FROM simplereview_table WHERE simpleReview_item_code = ? AND simpleReview_item_category_code = ? AND simpleReview_user_id = ?)";
 		boolean flag = false;
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
@@ -159,6 +160,10 @@ public class ReviewDAO
 			prstmt.setString(5, reviewData.get("RATING"));
 			prstmt.setString(6, reviewData.get("POST_DATE"));
 
+			prstmt.setInt(7, Integer.parseInt(reviewData.get("ICODE")));
+			prstmt.setString(8, reviewData.get("CCODE"));
+			prstmt.setString(9, reviewData.get("WRITER_ID"));
+
 			if (prstmt.executeUpdate() == 1)
 			{
 				flag = true;
@@ -169,7 +174,7 @@ public class ReviewDAO
 		}
 		return flag;
 	}
-	
+
 	public boolean applyDetailReview(HashMap<String, String> reviewData)
 	{
 		return false;

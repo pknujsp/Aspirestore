@@ -2,6 +2,7 @@ package controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 
 import javax.servlet.ServletContext;
@@ -13,9 +14,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.oreilly.servlet.MultipartRequest;
+
 import etc.Util;
+import model.FileDAO;
 import model.ReviewDAO;
 import model.ReviewDTO;
+import model.fileDTO;
 
 public class ServletItemReview extends HttpServlet
 {
@@ -91,17 +96,17 @@ public class ServletItemReview extends HttpServlet
 			String ccode = request.getAttribute("CCODE").toString();
 			int beginIndex = Integer.parseInt(request.getAttribute("BEGIN_INDEX").toString());
 			int endIndex = Integer.parseInt(request.getAttribute("END_INDEX").toString());
-			
+
 			ArrayList<ReviewDTO> reviews = reviewDAO.getSimpleReview(icode, ccode, beginIndex, endIndex);
-			
+
 			JSONObject rootObj = new JSONObject();
 			JSONArray rootArr = new JSONArray();
-			
-			for(int i=0;i<reviews.size();++i)
+
+			for (int i = 0; i < reviews.size(); ++i)
 			{
 				JSONObject review = new JSONObject();
 				JSONObject parentObj = new JSONObject();
-				
+
 				review.put("REVIEW_CODE", reviews.get(i).getReview_code());
 				review.put("ITEM_CODE", reviews.get(i).getItem_code());
 				review.put("ITEM_CATEGORY_CODE", reviews.get(i).getItem_category_code());
@@ -109,12 +114,12 @@ public class ServletItemReview extends HttpServlet
 				review.put("CONTENT", reviews.get(i).getContent());
 				review.put("RATING", reviews.get(i).getRating());
 				review.put("POST_DATE", reviews.get(i).getPost_date());
-				
+
 				parentObj.put("REVIEW", review);
 				rootArr.put(parentObj);
 			}
 			rootObj.put("REVIEWS", rootArr);
-			
+
 			response.setContentType("application/json");
 			response.getWriter().write(rootObj.toString());
 			request.setAttribute("VIEWURL", "ajax:/");
@@ -165,6 +170,44 @@ public class ServletItemReview extends HttpServlet
 	protected void applyDetailReview(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
+		try
+		{
+			ServletContext sc = this.getServletContext();
+			ReviewDAO reviewDAO = (ReviewDAO)sc.getAttribute("REVIEW_DAO");
+			FileDAO fileDAO = (FileDAO)sc.getAttribute("FILE_DAO");
+			HashMap<String, String> reviewData = new HashMap<String, String>();
+			
+			MultipartRequest multipartRequest = (MultipartRequest)request.getAttribute("MULTIPART_REQUEST");
+			reviewData.put("WRITER_ID", request.getAttribute("WRITER_ID").toString());
+			reviewData.put("SUBJECT",request.getAttribute("SUBJECT").toString());
+			reviewData.put("RATING",request.getAttribute("RATING").toString());
+			reviewData.put("CONTENT",request.getAttribute("CONTENT").toString());
+			reviewData.put("ICODE",request.getAttribute("ICODE").toString());
+			reviewData.put("CCODE", request.getAttribute("CCODE").toString());
+			
+			@SuppressWarnings("rawtypes")
+			Enumeration files = multipartRequest.getFileNames();
+			ArrayList<fileDTO> fileList = new ArrayList<fileDTO>();
+			
+			while (files.hasMoreElements())
+			{
+				String file = (String) files.nextElement();
+				String fileName = multipartRequest.getFilesystemName(file);
 
+				if (fileName == null)
+				{
+					// 파일 미 첨부 인 경우
+					break;
+				} else
+				{
+					fileList.add(new fileDTO().setFile_name(fileName)
+							.setFile_size((int) multipartRequest.getFile(file).length()).setFile_uri(SAVEFOLDER)
+							.setUploaded_date_time(currentTime).setUploader_id(questionerId));
+				}
+			}
+			
+			reviewDAO.applyDetailReview(reviewData);
+		
+		}
 	}
 }

@@ -17,6 +17,7 @@ import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
 import etc.ImageFileRenamePolicy;
+import etc.MULTIPART_REQUEST;
 import etc.OrderInformation;
 import model.AddressDTO;
 import model.BasketDTO;
@@ -395,13 +396,13 @@ public class ServletDispatcher extends HttpServlet
 					request.setAttribute("FILE_URI", request.getParameter("file_uri"));
 				}
 				break;
-				
+
 			case "/items/review.aspire":
 				if (checkNullParameters())
 				{
 					String rtype = request.getParameter("type");
 					request.setAttribute("TYPE", rtype);
-					
+
 					pageControllerPath = "/items/review";
 
 					switch (rtype)
@@ -432,6 +433,22 @@ public class ServletDispatcher extends HttpServlet
 						request.setAttribute("CONTENT", request.getParameter("content"));
 						request.setAttribute("ICODE", request.getParameter("icode"));
 						request.setAttribute("CCODE", request.getParameter("ccode"));
+						break;
+					case "APPLY_D_REVIEW":
+						MultipartRequest multipartRequest_R = new MultipartRequest(request,
+								MULTIPART_REQUEST.SAVE_FOLDER.getName(),
+								Integer.parseInt(MULTIPART_REQUEST.MAX_SIZE.getName()),
+								MULTIPART_REQUEST.ENC_TYPE.getName(), new ImageFileRenamePolicy());
+
+						String typeD = multipartRequest_R.getParameter("type");
+						request.setAttribute("TYPE", typeD);
+						request.setAttribute("MULTI_REQUEST", multipartRequest_R);
+						request.setAttribute("WRITER_ID", request.getSession().getAttribute("SESSIONKEY").toString());
+						request.setAttribute("SUBJECT", multipartRequest_R.getParameter("subject"));
+						request.setAttribute("RATING", multipartRequest_R.getParameter("rating"));
+						request.setAttribute("CONTENT", multipartRequest_R.getParameter("content"));
+						request.setAttribute("ICODE", multipartRequest_R.getParameter("icode"));
+						request.setAttribute("CCODE", multipartRequest_R.getParameter("ccode"));
 						break;
 					}
 				}
