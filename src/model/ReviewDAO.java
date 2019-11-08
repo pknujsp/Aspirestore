@@ -145,6 +145,45 @@ public class ReviewDAO
 		return reviews;
 	}
 
+	public ReviewDTO getDetailReview(int reviewCode)
+	{
+		String query = "SELECT * FROM detailreview_table WHERE detailReview_code = ?";
+
+		ResultSet set = null;
+		ReviewDTO review = null;
+
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			prstmt.setInt(1, reviewCode);
+
+			set = prstmt.executeQuery();
+
+			if (set.next())
+			{
+				review = new ReviewDTO().setReview_code(set.getInt(1)).setItem_code(set.getInt(2))
+						.setItem_category_code(set.getString(3)).setWriter_id(set.getString(4))
+						.setSubject(set.getString(5)).setContent(set.getString(6)).setRating(set.getString(7))
+						.setNum_files(set.getInt(8)).setPost_date(set.getString(9));
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return review;
+	}
+
 	public boolean applySimpleReview(HashMap<String, String> reviewData)
 	{
 		String query = "INSERT INTO simplereview_table " + "SELECT null, ?, ?, ?, ?, ?, ? FROM DUAL WHERE NOT EXISTS "

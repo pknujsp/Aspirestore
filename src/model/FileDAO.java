@@ -24,9 +24,12 @@ public class FileDAO
 		if (type.equals("ANSWER"))
 		{
 			query = "SELECT * FROM qnaimages_table WHERE qnaimages_answer_post_code = ? AND qnaimages_uploader_id = ?";
-		} else
+		} else if (type.equals("QUESTION"))
 		{
 			query = "SELECT * FROM qnaimages_table WHERE qnaimages_question_post_code = ? AND qnaimages_uploader_id = ?";
+		} else if (type.equals("DETAIL_REVIEW"))
+		{
+			query = "SELECT * FROM reviewimages_table WHERE reviewimages_post_code = ? AND reviewimages_uploader_id = ?";
 		}
 
 		ResultSet set = null;
@@ -42,10 +45,19 @@ public class FileDAO
 			files = new ArrayList<FileDTO>();
 			while (set.next())
 			{
-				files.add(new FileDTO().setImage_code(set.getInt(1)).setQuestion_post_code(set.getInt(2))
-						.setAnswer_post_code(set.getInt(3)).setUploader_id(set.getString(4))
-						.setFile_uri(set.getString(5)).setFile_name(set.getString(6)).setFile_size(set.getInt(7))
-						.setUploaded_date_time(set.getString(8)));
+				if (!type.equals("DETAIL_REVIEW"))
+				{
+					files.add(new FileDTO().setImage_code(set.getInt(1)).setQuestion_post_code(set.getInt(2))
+							.setAnswer_post_code(set.getInt(3)).setUploader_id(set.getString(4))
+							.setFile_uri(set.getString(5)).setFile_name(set.getString(6)).setFile_size(set.getInt(7))
+							.setUploaded_date_time(set.getString(8)));
+				} else
+				{
+					files.add(new FileDTO().setImage_code(set.getInt(1)).setReview_code(set.getInt(2))
+							.setUploader_id(set.getString(3)).setFile_uri(set.getString(4))
+							.setFile_name(set.getString(5)).setFile_size(set.getInt(6))
+							.setUploaded_date_time(set.getString(7)));
+				}
 			}
 		} catch (Exception e)
 		{
@@ -82,10 +94,10 @@ public class FileDAO
 				prstmt.setString(4, files.get(i).getFile_name());
 				prstmt.setInt(5, files.get(i).getFile_size());
 				prstmt.setString(6, files.get(i).getUploaded_date_time());
-				
+
 				prstmt.addBatch();
 			}
-			if(prstmt.executeBatch().length == files.size())
+			if (prstmt.executeBatch().length == files.size())
 			{
 				flag = true;
 			}

@@ -24,8 +24,8 @@ public class ServletGetItem extends HttpServlet
 		{
 			ServletContext servletContext = this.getServletContext();
 
-			int ccode = Integer.parseInt((String) request.getAttribute("CCODE"));
-			int icode = Integer.parseInt((String) request.getAttribute("ICODE"));
+			String ccode = request.getAttribute("CCODE").toString();
+			int icode = Integer.parseInt(request.getAttribute("ICODE").toString());
 			ItemsDAO dao = (ItemsDAO) servletContext.getAttribute("itemsDAO");
 			ItemsDTO item = dao.getItem(ccode, icode);
 
@@ -45,5 +45,11 @@ public class ServletGetItem extends HttpServlet
 		{
 			throw new ServletException(e);
 		}
+	}
+	
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
+		this.doGet(request, response);
 	}
 }

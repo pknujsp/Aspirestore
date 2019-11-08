@@ -49,6 +49,9 @@ public class ServletItemReview extends HttpServlet
 		case "APPLY_D_REVIEW":
 			applyDetailReview(request, response);
 			break;
+		case "READ_D_REVIEW":
+			readDetailReview(request, response);
+			break;
 		}
 	}
 
@@ -133,7 +136,48 @@ public class ServletItemReview extends HttpServlet
 	protected void getDetailReview(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
+		try
+		{
+			ServletContext sc = this.getServletContext();
 
+			ReviewDAO reviewDAO = (ReviewDAO) sc.getAttribute("REVIEW_DAO");
+			int icode = Integer.parseInt(request.getAttribute("ICODE").toString());
+			String ccode = request.getAttribute("CCODE").toString();
+			int beginIndex = Integer.parseInt(request.getAttribute("BEGIN_INDEX").toString());
+			int endIndex = Integer.parseInt(request.getAttribute("END_INDEX").toString());
+
+			ArrayList<ReviewDTO> reviews = reviewDAO.getDetailReview(icode, ccode, beginIndex, endIndex);
+
+			JSONObject rootObj = new JSONObject();
+			JSONArray rootArr = new JSONArray();
+
+			for (int i = 0; i < reviews.size(); ++i)
+			{
+				JSONObject review = new JSONObject();
+				JSONObject parentObj = new JSONObject();
+
+				review.put("REVIEW_CODE", reviews.get(i).getReview_code());
+				review.put("ITEM_CODE", reviews.get(i).getItem_code());
+				review.put("ITEM_CATEGORY_CODE", reviews.get(i).getItem_category_code());
+				review.put("WRITER_ID", reviews.get(i).getWriter_id());
+				review.put("SUBJECT", reviews.get(i).getSubject());
+				review.put("CONTENT", reviews.get(i).getContent());
+				review.put("RATING", reviews.get(i).getRating());
+				review.put("NUM_FILES", reviews.get(i).getNum_files());
+				review.put("POST_DATE", reviews.get(i).getPost_date());
+
+				parentObj.put("DETAIL_REVIEW", review);
+				rootArr.put(parentObj);
+			}
+			rootObj.put("DETAIL_REVIEWS", rootArr);
+
+			response.setContentType("application/json");
+			response.getWriter().write(rootObj.toString());
+			request.setAttribute("VIEWURL", "ajax:/");
+		} catch (Exception e)
+		{
+			throw new ServletException(e);
+		}
 	}
 
 	protected void applySimpleReview(HttpServletRequest request, HttpServletResponse response)
@@ -228,6 +272,35 @@ public class ServletItemReview extends HttpServlet
 			request.setAttribute("ICODE", iCode);
 			request.setAttribute("CCODE", cCode);
 			request.setAttribute("VIEWURL", "forward:/items/item.aspire");
+		} catch (Exception e)
+		{
+			throw new ServletException(e);
+		}
+	}
+
+	protected void readDetailReview(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException
+	{
+		try
+		{
+			ServletContext sc = this.getServletContext();
+			ReviewDAO reviewDAO = (ReviewDAO) sc.getAttribute("REVIEW_DAO");
+			FileDAO fileDAO = (FileDAO) sc.getAttribute("FILE_DAO");
+			int reviewCode = Integer.parseInt(request.getAttribute("RCODE").toString());
+
+			ReviewDTO review = reviewDAO.getDetailReview(reviewCode);
+			ArrayList<FileDTO> files = null;
+
+			if (review.getNum_files() != 0)
+			{
+				files = fileDAO.getFiles(review.getReview_code(), review.getWriter_id(), "DETAIL_REVIEW");
+			}
+
+			request.setAttribute("ATTACHED_FILES", files);
+			request.setAttribute("ICODE", review.getItem_code());
+			request.setAttribute("CCODE", review.getItem_category_code());
+			request.setAttribute("REVIEW", review);
+			request.setAttribute("VIEWURL", "forward:/items/detailReview.jsp");
 		} catch (Exception e)
 		{
 			throw new ServletException(e);

@@ -385,7 +385,7 @@
 		(function()
 		{
 			getSimpleReviewJSON();
-			getDetailReviewJSON();
+
 		})()
 
 		function getBookCode()
@@ -463,6 +463,7 @@
 						}
 					}
 					setPaginationBarS();
+					getDetailReviewJSON();
 				}
 			};
 
@@ -542,7 +543,7 @@
 				{
 					const responseList = JSON.parse(xhrRD.responseText);
 
-					detailReviewPageData['list_size'] = responseList.DETAIL_REVIEW.length;
+					detailReviewPageData['list_size'] = responseList.DETAIL_REVIEWS.length;
 					initializeUL('detail_review_list');
 
 					let listSize = detailReviewPageData['list_size'];
@@ -553,7 +554,7 @@
 							break;
 						} else
 						{
-							setDetailReviewTable(responseList.DETAIL_REVIEW[index]);
+							setDetailReviewTable(responseList.DETAIL_REVIEWS[index]);
 						}
 					}
 					setPaginationBarD();
@@ -658,18 +659,19 @@
 			document.getElementById('pagination_ul_simple').innerHTML = newElement;
 		}
 
-		function setDetailReviewTable()
+		function setDetailReviewTable(dataList)
 		{
 
 			let reviewList = document.getElementById('detail_review_list');
 			let newRow = document.createElement('li');
 			let index = reviewList.getElementsByTagName('li').length;
 
-			let nickName = dataList.D_REVIEW['nick_name'];
-			let postDate = dataList.D_REVIEW['post_date'];
-			let rating = dataList.D_REVIEW['rating'];
-			let recommendation = dataList.D_REVIEW['recommendation'];
-			let content = dataList.D_REVIEW['content'];
+			let nickName = dataList.DETAIL_REVIEW['WRITER_ID'];
+			let reviewCode = dataList.DETAIL_REVIEW['REVIEW_CODE'];
+			let postDate = dataList.DETAIL_REVIEW['POST_DATE'];
+			let rating = dataList.DETAIL_REVIEW['RATING'];
+			let subject = dataList.DETAIL_REVIEW['SUBJECT'];
+			let content = dataList.DETAIL_REVIEW['CONTENT'];
 			let cutedContent = content;
 			let collapseBtnCode = '';
 
@@ -685,11 +687,10 @@
 
 			var detailReview =
 			{
-				'nick_name' : dataList.D_REVIEW['nick_name'],
-				'post_date' : dataList.D_REVIEW['post_date'],
-				'rating' : dataList.D_REVIEW['rating'],
-				'recommendation' : dataList.D_REVIEW['recommendation'],
-				'content' : dataList.D_REVIEW['content'],
+				'nick_name' : dataList.DETAIL_REVIEW['WRITER_ID'],
+				'post_date' : dataList.DETAIL_REVIEW['POST_DATE'],
+				'rating' : dataList.DETAIL_REVIEW['RATING'],
+				'content' : dataList.DETAIL_REVIEW['CONTENT'],
 				'cuted_content' : cutedContent
 			};
 
@@ -697,11 +698,19 @@
 
 			newRow.innerHTML = '<div class=\'media\'><div class=\'media-body\'>'
 					+ '<b class=\'mt-0 font-weight-bold\'>'
-					+ nickName
+					+ '<a href=\'/AspireStore/items/review.aspire?type=READ_D_REVIEW&rcode='
+					+ reviewCode
+					+ '&icode='
+					+ getBookCode()
+					+ '&ccode='
+					+ getCategoryCode()
+					+ '\'\' >'
+					+ subject
+					+ '</a>'
 					+ '</b>'
-					+ ' &ensp;'
+					+ ' &ensp;|&ensp;'
 					+ postDate
-					+ ' &ensp;'
+					+ ' &ensp;|&ensp;'
 					+ rating
 					+ '<p class=\'card-text\' id=\'detail_review_content'
 					+ String(index)

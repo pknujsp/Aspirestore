@@ -428,6 +428,11 @@ public class ServletDispatcher extends HttpServlet
 						request.setAttribute("ICODE", request.getParameter("icode"));
 						request.setAttribute("CCODE", request.getParameter("ccode"));
 						break;
+					case "READ_D_REVIEW":
+						request.setAttribute("RCODE", request.getParameter("rcode"));
+						request.setAttribute("ICODE", request.getParameter("icode"));
+						request.setAttribute("CCODE", request.getParameter("ccode"));
+						break;
 					case "GET_S_REVIEW_JSON":
 						request.setAttribute("ICODE", request.getParameter("icode"));
 						request.setAttribute("CCODE", request.getParameter("ccode"));

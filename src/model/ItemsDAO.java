@@ -22,7 +22,7 @@ public class ItemsDAO
 		this.ds = ds;
 	}
 
-	public ItemsDTO getItem(int ccode, int icode)
+	public ItemsDTO getItem(String ccode, int icode)
 	{
 		Connection connection = null;
 		PreparedStatement prstmt = null;
@@ -31,12 +31,12 @@ public class ItemsDAO
 
 		try
 		{
-			String query = "SELECT * FROM items WHERE item_code=? AND item_category_code=? ORDER BY item_code ASC";
+			String query = "SELECT * FROM items WHERE item_code= ? AND item_category_code= ?";
 			connection = ds.getConnection();
 			prstmt = connection.prepareStatement(query);
 
 			prstmt.setInt(1, icode);
-			prstmt.setInt(2, ccode);
+			prstmt.setString(2, ccode);
 			set = prstmt.executeQuery();
 
 			if (set.next())
