@@ -1,4 +1,4 @@
-<%@page import="model.fileDTO"%>
+<%@page import="model.FileDTO"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="model.QnaDTO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true"%>
@@ -7,7 +7,7 @@
 <%
 	QnaDTO questionData = (QnaDTO) request.getAttribute("QUESTION_DATA");
 	@SuppressWarnings("unchecked")
-	ArrayList<fileDTO> questionFiles = (ArrayList<fileDTO>) request.getAttribute("QUESTION_FILES");
+	ArrayList<FileDTO> questionFiles = (ArrayList<FileDTO>) request.getAttribute("QUESTION_FILES");
 
 	pageContext.setAttribute("QUESTION_FILES", questionFiles);
 	pageContext.setAttribute("QUESTION_DATA", questionData);

@@ -1,10 +1,11 @@
 package model;
 
-public class fileDTO
+public class FileDTO
 {
 	private int image_code;
 	private int question_post_code;
 	private int answer_post_code;
+	private int review_code;
 	private String uploader_id;
 	private String file_uri;
 	private String file_name;
@@ -24,6 +25,11 @@ public class fileDTO
 	public int getAnswer_post_code()
 	{
 		return answer_post_code;
+	}
+
+	public int getReview_code()
+	{
+		return review_code;
 	}
 
 	public String getUploader_id()
@@ -51,49 +57,55 @@ public class fileDTO
 		return uploaded_date_time;
 	}
 
-	public fileDTO setImage_code(int image_code)
+	public FileDTO setImage_code(int image_code)
 	{
 		this.image_code = image_code;
 		return this;
 	}
 
-	public fileDTO setQuestion_post_code(int question_post_code)
+	public FileDTO setQuestion_post_code(int question_post_code)
 	{
 		this.question_post_code = question_post_code;
 		return this;
 	}
 
-	public fileDTO setAnswer_post_code(int answer_post_code)
+	public FileDTO setAnswer_post_code(int answer_post_code)
 	{
 		this.answer_post_code = answer_post_code;
 		return this;
 	}
 
-	public fileDTO setUploader_id(String uploader_id)
+	public FileDTO setUploader_id(String uploader_id)
 	{
 		this.uploader_id = uploader_id;
 		return this;
 	}
 
-	public fileDTO setFile_uri(String file_uri)
+	public FileDTO setFile_uri(String file_uri)
 	{
 		this.file_uri = file_uri;
 		return this;
 	}
 
-	public fileDTO setFile_name(String file_name)
+	public FileDTO setFile_name(String file_name)
 	{
 		this.file_name = file_name;
 		return this;
 	}
 
-	public fileDTO setFile_size(int file_size)
+	public FileDTO setFile_size(int file_size)
 	{
 		this.file_size = file_size;
 		return this;
 	}
 
-	public fileDTO setUploaded_date_time(String uploaded_date_time)
+	public FileDTO setReview_code(int review_code)
+	{
+		this.review_code = review_code;
+		return this;
+	}
+
+	public FileDTO setUploaded_date_time(String uploaded_date_time)
 	{
 		this.uploaded_date_time = uploaded_date_time;
 		return this;

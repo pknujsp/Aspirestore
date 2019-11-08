@@ -175,8 +175,60 @@ public class ReviewDAO
 		return flag;
 	}
 
-	public boolean applyDetailReview(HashMap<String, String> reviewData)
+	public int applyDetailReview(HashMap<String, String> reviewData)
 	{
-		return false;
+		String query = "INSERT INTO detailreview_table "
+				+ "SELECT null, ?, ?, ?, ?, ?, ?, ?, ? FROM DUAL WHERE NOT EXISTS "
+				+ "(SELECT * FROM detailreview_table WHERE detailReview_item_code = ? AND detailReview_item_category_code = ? AND detailReview_user_id = ?)";
+		String selectQuery = "SELECT detailReview_code FROM detailreview_table WHERE detailReview_item_code = ? AND detailReview_item_category_code = ? AND detailReview_user_id = ?";
+		ResultSet set = null;
+		int reviewCode = -1;
+
+		try (Connection connection = ds.getConnection();
+				PreparedStatement prstmt = connection.prepareStatement(query);
+				PreparedStatement prstmt2 = connection.prepareStatement(selectQuery);)
+		{
+			prstmt.setInt(1, Integer.parseInt(reviewData.get("ICODE")));
+			prstmt.setString(2, reviewData.get("CCODE"));
+			prstmt.setString(3, reviewData.get("WRITER_ID"));
+			prstmt.setString(4, reviewData.get("SUBJECT"));
+			prstmt.setString(5, reviewData.get("CONTENT"));
+			prstmt.setString(6, reviewData.get("RATING"));
+			prstmt.setInt(7, Integer.parseInt(reviewData.get("NUM_FILES")));
+			prstmt.setString(8, reviewData.get("POST_DATE"));
+
+			prstmt.setInt(9, Integer.parseInt(reviewData.get("ICODE")));
+			prstmt.setString(10, reviewData.get("CCODE"));
+			prstmt.setString(11, reviewData.get("WRITER_ID"));
+
+			if (prstmt.executeUpdate() == 1)
+			{
+				prstmt2.setInt(1, Integer.parseInt(reviewData.get("ICODE")));
+				prstmt2.setString(2, reviewData.get("CCODE"));
+				prstmt2.setString(3, reviewData.get("WRITER_ID"));
+
+				set = prstmt2.executeQuery();
+				if (set.next())
+				{
+					reviewCode = set.getInt(1);
+				}
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return reviewCode;
 	}
 }

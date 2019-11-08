@@ -12,6 +12,8 @@
 	ItemsDTO item = (ItemsDTO) request.getAttribute("ITEM");
 	AuthorDTO author = (AuthorDTO) request.getAttribute("AUTHOR");
 	String publisherName = (String) request.getAttribute("PUBLISHER_NAME");
+
+	pageContext.setAttribute("ITEM", item);
 %>
 <!DOCTYPE html>
 <html>
@@ -231,9 +233,9 @@
 
 				</ul>
 			</nav>
-			
+
 			<br>
-			
+
 			<h6>간단 리뷰 작성</h6>
 			<div class="form-group">
 				<div class="col-sm-10">
@@ -265,7 +267,11 @@
 			<h6>상세 리뷰</h6>
 			<input type="button" id="sort_Drating_desc_btn" value="평점 순">
 			<input type="button" id="sort_Dpostdate_desc_btn" value="최신 순">
-			<input type="button" id="write_detail_review_btn" onclick="createDRForm()" value="리뷰 작성">
+			<form action="/AspireStore/myaspire/writeReview.jsp" method="GET">
+				<input type="submit" class="btn btn-primary" id="write_detail_review_btn" value="리뷰 작성">
+				<input type="hidden" id="detail_review_icode" name="detail_review_icode" value="${pageScope.ITEM.item_code }">
+				<input type="hidden" id="detail_review_ccode" name="detail_review_ccode" value="${pageScope.ITEM.item_category_code  }">
+			</form>
 			<ul class="style-unstyled" id="detail_review_list">
 
 			</ul>
@@ -274,9 +280,9 @@
 
 				</ul>
 			</nav>
-			
+
 			<br>
-			
+
 		</div>
 	</div>
 
@@ -902,10 +908,10 @@
 					+ '&content=' + content + '&icode=' + getBookCode()
 					+ '&ccode=' + getCategoryCode());
 		}
-		
+
 		function convertRating(ratingCode)
 		{
-			switch(ratingCode)
+			switch (ratingCode)
 			{
 			case '1':
 				return '매우 비 추천';

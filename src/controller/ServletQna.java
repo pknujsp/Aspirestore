@@ -22,7 +22,7 @@ import org.json.JSONObject;
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
-import model.fileDTO;
+import model.FileDTO;
 import model.FileDAO;
 import model.QnaDAO;
 import model.QnaDTO;
@@ -143,8 +143,8 @@ public class ServletQna extends HttpServlet
 
 			// 첨부파일 가져오기
 			FileDAO fileDAO = (FileDAO) sc.getAttribute("FILE_DAO");
-			ArrayList<fileDTO> questionFiles = null;
-			ArrayList<fileDTO> answerFiles = null;
+			ArrayList<FileDTO> questionFiles = null;
+			ArrayList<FileDTO> answerFiles = null;
 
 			if (questionPostData.getNumFiles() > 0)
 			{
@@ -190,7 +190,7 @@ public class ServletQna extends HttpServlet
 			// questionCode, customerId를 가지고 문의글 데이터를 가져온다.
 			QnaDTO questionData = qnaDAO.getQuestionPost(questionerId, questionCode);
 
-			ArrayList<fileDTO> questionFiles = null;
+			ArrayList<FileDTO> questionFiles = null;
 			if (questionData.getNumFiles() > 0)
 			{
 				questionFiles = fileDAO.getFiles(questionData.getQuestion_code(), questionData.getUser_id(),
@@ -269,8 +269,8 @@ public class ServletQna extends HttpServlet
 
 			// 첨부파일 가져오기
 			FileDAO fileDAO = (FileDAO) sc.getAttribute("FILE_DAO");
-			ArrayList<fileDTO> questionFiles = null;
-			ArrayList<fileDTO> answerFiles = null;
+			ArrayList<FileDTO> questionFiles = null;
+			ArrayList<FileDTO> answerFiles = null;
 
 			if (questionData.getNumFiles() > 0)
 			{

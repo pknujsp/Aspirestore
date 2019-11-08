@@ -467,7 +467,7 @@ public class QnaDAO
 		return flag;
 	}
 
-	public boolean uploadFiles(ArrayList<fileDTO> fileList, int code, char tableType)
+	public boolean uploadFiles(ArrayList<FileDTO> fileList, int code, char tableType)
 	{
 		String query = "INSERT INTO qnaimages_table VALUES (null, ?, ?, ?, ?, ?, ?, ?)";
 		boolean flag = false;

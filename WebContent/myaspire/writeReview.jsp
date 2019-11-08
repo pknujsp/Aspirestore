@@ -1,5 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+<%
+	int iCode = Integer.parseInt(request.getParameter("detail_review_icode"));
+	String cCode = request.getParameter("detail_review_ccode");
+
+	pageContext.setAttribute("ICODE", iCode);
+	pageContext.setAttribute("CCODE", cCode);
+%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -56,8 +65,8 @@
 				<div class="col-sm-10">
 					<input type="submit" class="btn btn-primary" id="applyDReviewBtn" name="applyDReviewBtn" value="리뷰 등록">
 					<input type="hidden" name="type" id="type" value="APPLY_D_REVIEW">
-					<input type="hidden" name="icode" id="icode" value="">
-					<input type="hidden" name="ccode" id="ccode" value="">
+					<input type="hidden" name="icode" id="icode" value="${pageScope.ICODE }">
+					<input type="hidden" name="ccode" id="ccode" value="${pageScope.CCODE }">
 				</div>
 			</div>
 		</form>
@@ -67,5 +76,22 @@
 
 	<script src="/AspireStore/jquery/jquery.js"></script>
 	<script src="/AspireStore/js/bootstrap.bundle.js"></script>
+
+	<script>
+		function addInputFile()
+		{
+			let fileDiv = document.getElementById('input_file_row');
+			let newFileInput = document.createElement('input');
+
+			newFileInput.setAttribute('multiple', 'multiple');
+			newFileInput.setAttribute('type', 'file');
+			newFileInput.setAttribute('class', 'form-control-file');
+			newFileInput.setAttribute('id', 'file');
+			newFileInput.setAttribute('name', 'file'
+					+ String(fileDiv.childElementCount + 1));
+
+			fileDiv.appendChild(newFileInput);
+		}
+	</script>
 </body>
 </html>

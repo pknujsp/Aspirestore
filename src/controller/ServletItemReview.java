@@ -16,11 +16,12 @@ import org.json.JSONObject;
 
 import com.oreilly.servlet.MultipartRequest;
 
+import etc.MULTIPART_REQUEST;
 import etc.Util;
 import model.FileDAO;
+import model.FileDTO;
 import model.ReviewDAO;
 import model.ReviewDTO;
-import model.fileDTO;
 
 public class ServletItemReview extends HttpServlet
 {
@@ -173,22 +174,24 @@ public class ServletItemReview extends HttpServlet
 		try
 		{
 			ServletContext sc = this.getServletContext();
-			ReviewDAO reviewDAO = (ReviewDAO)sc.getAttribute("REVIEW_DAO");
-			FileDAO fileDAO = (FileDAO)sc.getAttribute("FILE_DAO");
+			ReviewDAO reviewDAO = (ReviewDAO) sc.getAttribute("REVIEW_DAO");
+			FileDAO fileDAO = (FileDAO) sc.getAttribute("FILE_DAO");
 			HashMap<String, String> reviewData = new HashMap<String, String>();
-			
-			MultipartRequest multipartRequest = (MultipartRequest)request.getAttribute("MULTIPART_REQUEST");
-			reviewData.put("WRITER_ID", request.getAttribute("WRITER_ID").toString());
-			reviewData.put("SUBJECT",request.getAttribute("SUBJECT").toString());
-			reviewData.put("RATING",request.getAttribute("RATING").toString());
-			reviewData.put("CONTENT",request.getAttribute("CONTENT").toString());
-			reviewData.put("ICODE",request.getAttribute("ICODE").toString());
-			reviewData.put("CCODE", request.getAttribute("CCODE").toString());
-			
+
+			MultipartRequest multipartRequest = (MultipartRequest) request.getAttribute("MULTI_REQUEST");
+
+			String writerId = request.getAttribute("WRITER_ID").toString();
+			String subject = request.getAttribute("SUBJECT").toString();
+			String rating = request.getAttribute("RATING").toString();
+			String content = request.getAttribute("CONTENT").toString();
+			String iCode = request.getAttribute("ICODE").toString();
+			String cCode = request.getAttribute("CCODE").toString();
+			String currentTime = Util.getCurrentDateTime();
+
 			@SuppressWarnings("rawtypes")
 			Enumeration files = multipartRequest.getFileNames();
-			ArrayList<fileDTO> fileList = new ArrayList<fileDTO>();
-			
+			ArrayList<FileDTO> fileList = new ArrayList<FileDTO>();
+
 			while (files.hasMoreElements())
 			{
 				String file = (String) files.nextElement();
@@ -200,14 +203,34 @@ public class ServletItemReview extends HttpServlet
 					break;
 				} else
 				{
-					fileList.add(new fileDTO().setFile_name(fileName)
-							.setFile_size((int) multipartRequest.getFile(file).length()).setFile_uri(SAVEFOLDER)
-							.setUploaded_date_time(currentTime).setUploader_id(questionerId));
+					fileList.add(new FileDTO().setFile_name(fileName)
+							.setFile_size((int) multipartRequest.getFile(file).length())
+							.setFile_uri(MULTIPART_REQUEST.SAVE_FOLDER.getName()).setUploaded_date_time(currentTime)
+							.setUploader_id(writerId));
 				}
 			}
-			
-			reviewDAO.applyDetailReview(reviewData);
-		
+			reviewData.put("WRITER_ID", writerId);
+			reviewData.put("SUBJECT", subject);
+			reviewData.put("RATING", rating);
+			reviewData.put("CONTENT", content);
+			reviewData.put("ICODE", iCode);
+			reviewData.put("CCODE", cCode);
+			reviewData.put("NUM_FILES", String.valueOf(fileList.size()));
+			reviewData.put("POST_DATE", currentTime);
+
+			int reviewCode = reviewDAO.applyDetailReview(reviewData);
+
+			if (!fileList.isEmpty())
+			{
+				fileDAO.insertFileToDB(fileList, reviewCode);
+			}
+
+			request.setAttribute("ICODE", iCode);
+			request.setAttribute("CCODE", cCode);
+			request.setAttribute("VIEWURL", "forward:/items/item.aspire");
+		} catch (Exception e)
+		{
+			throw new ServletException(e);
 		}
 	}
 }

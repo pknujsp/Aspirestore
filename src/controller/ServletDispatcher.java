@@ -86,8 +86,13 @@ public class ServletDispatcher extends HttpServlet
 				if (checkNullParameters())
 				{
 					pageControllerPath = "/items/item";
-					request.setAttribute("CCODE", request.getParameter("ccode"));
-					request.setAttribute("ICODE", request.getParameter("icode"));
+
+					if (request.getAttribute("ICODE") == null)
+					{
+						// 상세 리뷰 작성 이후 X
+						request.setAttribute("CCODE", request.getParameter("ccode"));
+						request.setAttribute("ICODE", request.getParameter("icode"));
+					}
 				}
 				break;
 
@@ -400,7 +405,15 @@ public class ServletDispatcher extends HttpServlet
 			case "/items/review.aspire":
 				if (checkNullParameters())
 				{
-					String rtype = request.getParameter("type");
+					String rtype = null;
+
+					if (request.getParameter("type") == null)
+					{
+						rtype = "APPLY_D_REVIEW";
+					} else
+					{
+						rtype = request.getParameter("type");
+					}
 					request.setAttribute("TYPE", rtype);
 
 					pageControllerPath = "/items/review";

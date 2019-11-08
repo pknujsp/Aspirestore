@@ -18,7 +18,7 @@ import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 import com.oreilly.servlet.multipart.FileRenamePolicy;
 
-import model.fileDTO;
+import model.FileDTO;
 import model.QnaDAO;
 import model.QnaDTO;
 
@@ -54,7 +54,7 @@ public class ServletApplyPost extends HttpServlet
 			@SuppressWarnings("rawtypes")
 			Enumeration files = multipartRequest.getFileNames();
 
-			ArrayList<fileDTO> fileList = new ArrayList<fileDTO>();
+			ArrayList<FileDTO> fileList = new ArrayList<FileDTO>();
 
 			String currentTime = etc.Util.getCurrentDateTime();
 			String questionerId = request.getAttribute("QUESTIONER_ID").toString();
@@ -73,7 +73,7 @@ public class ServletApplyPost extends HttpServlet
 					break;
 				} else
 				{
-					fileList.add(new fileDTO().setFile_name(fileName)
+					fileList.add(new FileDTO().setFile_name(fileName)
 							.setFile_size((int) multipartRequest.getFile(file).length()).setFile_uri(SAVEFOLDER)
 							.setUploaded_date_time(currentTime).setUploader_id(questionerId));
 				}
@@ -116,7 +116,7 @@ public class ServletApplyPost extends HttpServlet
 			@SuppressWarnings("rawtypes")
 			Enumeration files = multipartRequest.getFileNames();
 
-			ArrayList<fileDTO> fileList = new ArrayList<fileDTO>();
+			ArrayList<FileDTO> fileList = new ArrayList<FileDTO>();
 
 			String currentTime = etc.Util.getCurrentDateTime();
 			String questionerId = request.getAttribute("QUESTIONER_ID").toString();
@@ -138,7 +138,7 @@ public class ServletApplyPost extends HttpServlet
 					break;
 				} else
 				{
-					fileList.add(new fileDTO().setFile_name(fileName)
+					fileList.add(new FileDTO().setFile_name(fileName)
 							.setFile_size((int) multipartRequest.getFile(file).length()).setFile_uri(SAVEFOLDER)
 							.setUploaded_date_time(currentTime).setUploader_id(managerId));
 				}
