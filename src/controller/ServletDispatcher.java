@@ -458,8 +458,7 @@ public class ServletDispatcher extends HttpServlet
 								Integer.parseInt(MULTIPART_REQUEST.MAX_SIZE.getName()),
 								MULTIPART_REQUEST.ENC_TYPE.getName(), new ImageFileRenamePolicy());
 
-						String typeD = multipartRequest_R.getParameter("type");
-						request.setAttribute("TYPE", typeD);
+						request.setAttribute("TYPE", multipartRequest_R.getParameter("type"));
 						request.setAttribute("MULTI_REQUEST", multipartRequest_R);
 						request.setAttribute("WRITER_ID", request.getSession().getAttribute("SESSIONKEY").toString());
 						request.setAttribute("SUBJECT", multipartRequest_R.getParameter("subject"));

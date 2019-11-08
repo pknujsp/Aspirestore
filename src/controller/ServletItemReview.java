@@ -121,6 +121,31 @@ public class ServletItemReview extends HttpServlet
 
 				parentObj.put("REVIEW", review);
 				rootArr.put(parentObj);
+
+			}
+
+			if (request.getSession().getAttribute("SESSIONKEY") != null)
+			{
+				// 로그인을 한 경우
+				String userId = request.getSession().getAttribute("SESSIONKEY").toString();
+
+				for (int i = 0; i < reviews.size(); ++i)
+				{
+					if (reviews.get(i).getWriter_id().equals(userId))
+					{
+						JSONObject myReview = new JSONObject();
+
+						myReview.put("REVIEW_CODE", reviews.get(i).getReview_code());
+						myReview.put("ITEM_CODE", reviews.get(i).getItem_code());
+						myReview.put("ITEM_CATEGORY_CODE", reviews.get(i).getItem_category_code());
+						myReview.put("WRITER_ID", reviews.get(i).getWriter_id());
+						myReview.put("CONTENT", reviews.get(i).getContent());
+						myReview.put("RATING", reviews.get(i).getRating());
+						myReview.put("POST_DATE", reviews.get(i).getPost_date());
+
+						rootObj.put("MY_S_REVIEW", myReview);
+					}
+				}
 			}
 			rootObj.put("REVIEWS", rootArr);
 
@@ -169,6 +194,32 @@ public class ServletItemReview extends HttpServlet
 				parentObj.put("DETAIL_REVIEW", review);
 				rootArr.put(parentObj);
 			}
+			
+			if (request.getSession().getAttribute("SESSIONKEY") != null)
+			{
+				// 로그인을 한 경우
+				String userId = request.getSession().getAttribute("SESSIONKEY").toString();
+
+				for (int i = 0; i < reviews.size(); ++i)
+				{
+					if (reviews.get(i).getWriter_id().equals(userId))
+					{
+						JSONObject myReview = new JSONObject();
+
+						myReview.put("REVIEW_CODE", reviews.get(i).getReview_code());
+						myReview.put("ITEM_CODE", reviews.get(i).getItem_code());
+						myReview.put("ITEM_CATEGORY_CODE", reviews.get(i).getItem_category_code());
+						myReview.put("WRITER_ID", reviews.get(i).getWriter_id());
+						myReview.put("SUBJECT", reviews.get(i).getSubject());
+						myReview.put("CONTENT", reviews.get(i).getContent());
+						myReview.put("RATING", reviews.get(i).getRating());
+						myReview.put("POST_DATE", reviews.get(i).getPost_date());
+
+						rootObj.put("MY_D_REVIEW", myReview);
+					}
+				}
+			}
+			
 			rootObj.put("DETAIL_REVIEWS", rootArr);
 
 			response.setContentType("application/json");

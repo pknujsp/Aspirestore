@@ -21,7 +21,7 @@
 	<jsp:include page="/navbar.jsp" />
 
 	<div class="container border">
-		<form id="detail_review_form" name="detail_review_form" method="post" action="/AspireStore/items/review.aspire" enctype="multipart/form-data">
+		<form id="detail_review_form" name="detail_review_form" method="POST" action="/AspireStore/items/review.aspire" enctype="multipart/form-data">
 			<div class="form-group row">
 				<label for="subject" class="col-sm-2 col-form-label">제목</label>
 				<div class="col-sm-10">
@@ -63,10 +63,10 @@
 			</div>
 			<div class="form-group row">
 				<div class="col-sm-10">
-					<input type="submit" class="btn btn-primary" id="applyDReviewBtn" name="applyDReviewBtn" value="리뷰 등록">
 					<input type="hidden" name="type" id="type" value="APPLY_D_REVIEW">
 					<input type="hidden" name="icode" id="icode" value="${pageScope.ICODE }">
 					<input type="hidden" name="ccode" id="ccode" value="${pageScope.CCODE }">
+					<input type="submit" class="btn btn-primary" id="applyDReviewBtn" name="applyDReviewBtn" value="리뷰 등록">
 				</div>
 			</div>
 		</form>

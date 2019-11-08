@@ -45,8 +45,8 @@
 		</div>
 		<div class="form-group row">
 			<label for="content" class="col-sm-2 col-form-label">내용</label>
-			<div class="col">
-				<p class="text-justify" id="content">${pageScope.REVIEW.content }</p>
+			<div>
+				<pre class="text-justify" id="content" style="word-break:break-all;">${pageScope.REVIEW.content }</pre>
 			</div>
 		</div>
 		<div class="form-group row">

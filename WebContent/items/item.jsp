@@ -31,7 +31,6 @@
 
 </head>
 <body>
-
 	<jsp:include page="/navbar.jsp"></jsp:include>
 	<br>
 
@@ -219,70 +218,80 @@
 		</div>
 
 		<hr>
+		<div class="row">
+			<div class="col-lg-8 col-md-10 mx-auto">
+				<div>
+					<h6>간단 리뷰</h6>
+					<input type="button" id="sort_Srating_desc_btn" value="평점 순">
+					<input type="button" id="sort_Spostdate_desc_btn" value="최신 순">
 
-		<div>
-			<h6>간단 리뷰</h6>
-			<input type="button" id="sort_Srating_desc_btn" value="평점 순">
-			<input type="button" id="sort_Spostdate_desc_btn" value="최신 순">
+					<div class="container table-responsive">
+						<table class="table" id="simple_review_list" style="table-layout: fixed">
 
-			<ul class="style-unstyled" id="simple_review_list">
+						</table>
+					</div>
+					<nav aria-label="PaginationBar">
+						<ul class="pagination justify-content-center" id="pagination_ul_simple">
 
-			</ul>
-			<nav aria-label="PaginationBar">
-				<ul class="pagination justify-content-center" id="pagination_ul_simple">
+						</ul>
+					</nav>
 
-				</ul>
-			</nav>
+					<hr>
 
-			<br>
 
-			<h6>간단 리뷰 작성</h6>
-			<div class="form-group">
-				<div class="col-sm-10">
-					<div class="form-check form-check-inline">
-						<input class="form-check-input" id="simple_review_rating1" name="simple_review_rating" type="radio" value="1">
-						<label class="form-check-label" for="simple_review_rating1">매우 비 추천</label>
-						<input class="form-check-input" id="simple_review_rating2" name="simple_review_rating" type="radio" value="2">
-						<label class="form-check-label" for="simple_review_rating2">비 추천</label>
-						<input class="form-check-input" id="simple_review_rating3" name="simple_review_rating" type="radio" value="3">
-						<label class="form-check-label" for="simple_review_rating3">보통</label>
-						<input class="form-check-input" id="simple_review_rating4" name="simple_review_rating" type="radio" value="4">
-						<label class="form-check-label" for="simple_review_rating4">추천</label>
-						<input class="form-check-input" id="simple_review_rating5" name="simple_review_rating" type="radio" value="5">
-						<label class="form-check-label" for="simple_review_rating5">매우 추천</label>
+					<div class="form-group" id="simple_review_form">
+						<h6>간단 리뷰 작성</h6>
+						<div class="col-sm-10">
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" id="simple_review_rating1" name="simple_review_rating" type="radio" value="1">
+								<label class="form-check-label" for="simple_review_rating1">매우 비 추천</label>
+								<input class="form-check-input" id="simple_review_rating2" name="simple_review_rating" type="radio" value="2">
+								<label class="form-check-label" for="simple_review_rating2">비 추천</label>
+								<input class="form-check-input" id="simple_review_rating3" name="simple_review_rating" type="radio" value="3">
+								<label class="form-check-label" for="simple_review_rating3">보통</label>
+								<input class="form-check-input" id="simple_review_rating4" name="simple_review_rating" type="radio" value="4">
+								<label class="form-check-label" for="simple_review_rating4">추천</label>
+								<input class="form-check-input" id="simple_review_rating5" name="simple_review_rating" type="radio" value="5">
+								<label class="form-check-label" for="simple_review_rating5">매우 추천</label>
+							</div>
+						</div>
+						<div class="col">
+							<textarea style="resize: none;" autocomplete="off" onkeyup="checkTextBytes(this)" class="form-control" id="simple_review_content" name="simple_review_content" rows="3">
+							</textarea>
+							<em id="currentTextSize">0</em>/100Byte
+							<input type="button" class="btn btn-primary" onclick="applySimpleReview()" value="등록">
+						</div>
 					</div>
 				</div>
-				<div class="col-sm-10">
-					<textarea style="resize: none;" autocomplete="off" onkeyup="checkTextBytes(this)" class="form-control" id="simple_review_content" name="simple_review_content" rows="3">
-							</textarea>
-					<em id="currentTextSize">0</em>/100Byte
-					<input type="button" class="btn btn-primary" onclick="applySimpleReview()" value="등록">
+
+				<hr>
+				<div id="detail_review_form"></div>
+				
+				<hr>
+				<div>
+					<h6>상세 리뷰</h6>
+					<input type="button" id="sort_Drating_desc_btn" value="평점 순">
+					<input type="button" id="sort_Dpostdate_desc_btn" value="최신 순">
+					<form action="/AspireStore/myaspire/writeReview.jsp" method="GET">
+						<input type="submit" class="btn btn-primary" id="write_detail_review_btn" value="리뷰 작성">
+						<input type="hidden" id="detail_review_icode" name="detail_review_icode" value="${pageScope.ITEM.item_code }">
+						<input type="hidden" id="detail_review_ccode" name="detail_review_ccode" value="${pageScope.ITEM.item_category_code  }">
+					</form>
+					<div class="container table-responsive">
+
+						<table class="table" id="detail_review_list" style="table-layout: fixed">
+
+						</table>
+					</div>
+					<nav aria-label="PaginationBar">
+						<ul class="pagination justify-content-center" id="pagination_ul_detail">
+						</ul>
+					</nav>
+
+					<br>
+
 				</div>
 			</div>
-		</div>
-
-		<hr>
-
-		<div>
-			<h6>상세 리뷰</h6>
-			<input type="button" id="sort_Drating_desc_btn" value="평점 순">
-			<input type="button" id="sort_Dpostdate_desc_btn" value="최신 순">
-			<form action="/AspireStore/myaspire/writeReview.jsp" method="GET">
-				<input type="submit" class="btn btn-primary" id="write_detail_review_btn" value="리뷰 작성">
-				<input type="hidden" id="detail_review_icode" name="detail_review_icode" value="${pageScope.ITEM.item_code }">
-				<input type="hidden" id="detail_review_ccode" name="detail_review_ccode" value="${pageScope.ITEM.item_category_code  }">
-			</form>
-			<ul class="style-unstyled" id="detail_review_list">
-
-			</ul>
-			<nav aria-label="PaginationBar">
-				<ul class="pagination justify-content-center" id="pagination_ul_detail">
-
-				</ul>
-			</nav>
-
-			<br>
-
 		</div>
 	</div>
 
@@ -448,8 +457,14 @@
 				{
 					const responseList = JSON.parse(xhrRS.responseText);
 
+					// 이미 작성한 간단 리뷰가 있는 경우 -> 작성 폼을 숨기고 작성한 내용을 보여줌
 					simpleReviewPageData['list_size'] = responseList.REVIEWS.length;
 					initializeUL('simple_review_list');
+
+					if (responseList.MY_S_REVIEW != null)
+					{
+						setSimpleReviewForm(responseList.MY_S_REVIEW);
+					}
 
 					let listSize = simpleReviewPageData['list_size'];
 					for (let index = 0; index < simpleReviewPageData['num_per_page']; ++index)
@@ -478,28 +493,33 @@
 
 		function setSimpleReviewTable(dataList)
 		{
-			let reviewList = document.getElementById('simple_review_list');
-			let newRow = document.createElement('li');
+			let reviewTable = document.getElementById('simple_review_list');
+			let newRow = reviewTable.insertRow(reviewTable.rows.length);
 
-			let nickName = dataList.REVIEW['WRITER_ID'];
+			let writerId = dataList.REVIEW['WRITER_ID'];
 			let postDate = dataList.REVIEW['POST_DATE'];
 			let rating = dataList.REVIEW['RATING'];
 			let content = dataList.REVIEW['CONTENT'];
 
-			newRow.innerHTML = '<div class=\'media\'><div class=\'media-body\'>'
-					+ '<b class=\'mt-0 font-weight-bold\'>'
-					+ nickName
-					+ '</b>'
-					+ ' &ensp;'
-					+ postDate
-					+ ' &ensp;'
-					+ convertRating(rating)
-					+ '<p class=\'card-text\'>'
-					+ content
-					+ '</p>'
-					+ '</div></div>';
+			let formCell = newRow.insertCell(0);
 
-			reviewList.appendChild(newRow);
+			let topDiv = document.createElement('div');
+			let downDiv = document.createElement('div');
+
+			let topSpan = document.createElement('span');
+
+			topSpan.innerHTML = '<strong>' + writerId
+					+ '</strong>&nbsp;|&nbsp;' + postDate + '&nbsp;|&nbsp;'
+					+ convertRating(rating);
+
+			topDiv.appendChild(topSpan);
+
+			let contentPre = document.createElement('pre');
+			contentPre.innerText = content;
+			downDiv.appendChild(contentPre);
+
+			formCell.appendChild(topDiv);
+			formCell.appendChild(downDiv);
 		}
 
 		function getDetailReviewJSON()
@@ -547,6 +567,12 @@
 					initializeUL('detail_review_list');
 
 					let listSize = detailReviewPageData['list_size'];
+					
+					if (responseList.MY_D_REVIEW != null)
+					{
+						setDetailReviewForm(responseList.MY_D_REVIEW);
+					}
+
 					for (let index = 0; index < detailReviewPageData['num_per_page']; ++index)
 					{
 						if (index == listSize)
@@ -663,10 +689,13 @@
 		{
 
 			let reviewList = document.getElementById('detail_review_list');
-			let newRow = document.createElement('li');
-			let index = reviewList.getElementsByTagName('li').length;
+			let index = reviewList.rows.length;
+			let newRow = reviewList.insertRow(index);
 
-			let nickName = dataList.DETAIL_REVIEW['WRITER_ID'];
+			let dataCell = newRow.insertCell(0);
+			dataCell.setAttribute('style', 'word-break:break-all');
+
+			let writerId = dataList.DETAIL_REVIEW['WRITER_ID'];
 			let reviewCode = dataList.DETAIL_REVIEW['REVIEW_CODE'];
 			let postDate = dataList.DETAIL_REVIEW['POST_DATE'];
 			let rating = dataList.DETAIL_REVIEW['RATING'];
@@ -696,7 +725,7 @@
 
 			detailReviewList.push(detailReview);
 
-			newRow.innerHTML = '<div class=\'media\'><div class=\'media-body\'>'
+			dataCell.innerHTML = '<div class=\'media\'><div class=\'media-body\'>'
 					+ '<b class=\'mt-0 font-weight-bold\'>'
 					+ '<a href=\'/AspireStore/items/review.aspire?type=READ_D_REVIEW&rcode='
 					+ reviewCode
@@ -711,15 +740,13 @@
 					+ ' &ensp;|&ensp;'
 					+ postDate
 					+ ' &ensp;|&ensp;'
-					+ rating
-					+ '<p class=\'card-text\' id=\'detail_review_content'
+					+ convertRating(rating)
+					+ '<div><p class=\'text-justify\' id=\'detail_review_content'
 					+ String(index)
 					+ '\'>'
 					+ cutedContent
-					+ '</p>'
+					+ '</p></div>'
 					+ collapseBtnCode + '</div></div>';
-
-			reviewList.appendChild(newRow);
 		}
 
 		function calcPageDataD()
@@ -816,6 +843,7 @@
 			// 문자열의 길이가 120자 이상인 경우 100자로 제한하여 자른다.
 			return str.substr(0, 100) + '...';
 		}
+
 
 		function showWholeContent(index)
 		{
@@ -933,6 +961,76 @@
 			case '5':
 				return '매우 추천';
 			}
+		}
+
+		function setSimpleReviewForm(data)
+		{
+			let form = document.getElementById('simple_review_form');
+
+			while (form.firstChild)
+			{
+				// 해당 div의 모든 요소를 비운다.
+				form.removeChild(form.firstChild);
+			}
+
+			form.innerHTML = '<h6>나의 간단 리뷰</h6><div class=\'media\'><div class=\'media-body\'>'
+					+ '<b class=\'mt-0 font-weight-bold\'>'
+					+ data['WRITER_ID']
+					+ '</a>'
+					+ '</b>'
+					+ ' &ensp;|&ensp;'
+					+ data['POST_DATE']
+					+ ' &ensp;|&ensp;'
+					+ convertRating(data['RATING'])
+					+ '<p class=\'card-text\' id=\'simple_review_content'
+					+ '\'>'
+					+ data['CONTENT'] + '</p>' + '</div></div>';
+		}
+
+		function setDetailReviewForm(data)
+		{
+			let form = document.getElementById('detail_review_form');
+
+			while (form.firstChild)
+			{
+				// 해당 div의 모든 요소를 비운다.
+				form.removeChild(form.firstChild);
+			}
+			let writerId = data['WRITER_ID'];
+			let reviewCode = data['REVIEW_CODE'];
+			let postDate = data['POST_DATE'];
+			let rating = data['RATING'];
+			let subject = data['SUBJECT'];
+			let content = data['CONTENT'];
+			let cutedContent = content;
+			let collapseBtnCode = '';
+
+			if (content.length >= 120)
+			{
+				// 펼쳐보기, 감추기 버튼 생성
+				cutedContent = cutString(content);
+			}
+
+			form.innerHTML = '<h6>나의 상세 리뷰</h6><div class=\'media\'><div class=\'media-body\'>'
+					+ '<b class=\'mt-0 font-weight-bold\'>'
+					+ '<a href=\'/AspireStore/items/review.aspire?type=READ_D_REVIEW&rcode='
+					+ reviewCode
+					+ '&icode='
+					+ getBookCode()
+					+ '&ccode='
+					+ getCategoryCode()
+					+ '\'\' >'
+					+ subject
+					+ '</a>'
+					+ '</b>'
+					+ ' &ensp;|&ensp;'
+					+ postDate
+					+ ' &ensp;|&ensp;'
+					+ convertRating(rating)
+					+ '<div><p class=\'text-justify\' id=\'detail_my_review_content\'>'
+					+ cutedContent
+					+ '</p></div>'
+					+ '</div></div>';
 		}
 	</script>
 </body>
