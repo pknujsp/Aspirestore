@@ -52,6 +52,12 @@ public class ServletItemReview extends HttpServlet
 		case "READ_D_REVIEW":
 			readDetailReview(request, response);
 			break;
+		case "MODIFY":
+			modifyMyReview(request, response);
+			break;
+		case "DELETE":
+			deleteMyReview(request, response);
+			break;
 		}
 	}
 
@@ -194,7 +200,7 @@ public class ServletItemReview extends HttpServlet
 				parentObj.put("DETAIL_REVIEW", review);
 				rootArr.put(parentObj);
 			}
-			
+
 			if (request.getSession().getAttribute("SESSIONKEY") != null)
 			{
 				// 로그인을 한 경우
@@ -219,7 +225,7 @@ public class ServletItemReview extends HttpServlet
 					}
 				}
 			}
-			
+
 			rootObj.put("DETAIL_REVIEWS", rootArr);
 
 			response.setContentType("application/json");
@@ -352,6 +358,63 @@ public class ServletItemReview extends HttpServlet
 			request.setAttribute("CCODE", review.getItem_category_code());
 			request.setAttribute("REVIEW", review);
 			request.setAttribute("VIEWURL", "forward:/items/detailReview.jsp");
+		} catch (Exception e)
+		{
+			throw new ServletException(e);
+		}
+	}
+
+	protected void deleteMyReview(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException
+	{
+		try
+		{
+			ServletContext sc = this.getServletContext();
+
+			ReviewDAO reviewDAO = (ReviewDAO) sc.getAttribute("REVIEW_DAO");
+
+			int icode = Integer.parseInt(request.getAttribute("ICODE").toString());
+			String ccode = request.getAttribute("ICODE").toString();
+			String writerId = request.getAttribute("WRITER_ID").toString();
+			String tableType = request.getAttribute("TABLE_TYPE").toString();
+			int reviewCode = Integer.parseInt(request.getAttribute("REVIEW_CODE").toString());
+
+			reviewDAO.deleteMyReview(icode, ccode, writerId, tableType);
+
+			if (tableType.equals("DETAIL"))
+			{
+				FileDAO fileDAO = (FileDAO) sc.getAttribute("FILE_DAO");
+				ArrayList<FileDTO> files = fileDAO.getFiles(reviewCode, writerId, "DETAIL_REVIEW");
+
+				if (files.size() > 0)
+				{
+					fileDAO.deleteReviewFilesDB(reviewCode, writerId);
+					fileDAO.deleteRealFiles(files);
+				}
+			}
+
+			request.setAttribute("ICODE", icode);
+			request.setAttribute("CCODE", ccode);
+			request.setAttribute("VIEWURL", "forward:/items/item.aspire");
+		} catch (Exception e)
+		{
+			throw new ServletException(e);
+		}
+	}
+
+	protected void modifyMyReview(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException
+	{
+		try
+		{
+			ServletContext sc = this.getServletContext();
+
+			ReviewDAO reviewDAO = (ReviewDAO) sc.getAttribute("REVIEW_DAO");
+
+			int icode = Integer.parseInt(request.getAttribute("ICODE").toString());
+			String ccode = request.getAttribute("ICODE").toString();
+			String writerId = request.getAttribute("WRITER_ID").toString();
+			String tableType = request.getAttribute("TABLE_TYPE").toString();
 		} catch (Exception e)
 		{
 			throw new ServletException(e);

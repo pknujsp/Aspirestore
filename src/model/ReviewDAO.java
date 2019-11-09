@@ -270,4 +270,42 @@ public class ReviewDAO
 		}
 		return reviewCode;
 	}
+
+	public boolean deleteMyReview(int icode, String ccode, String writerId, String tableType)
+	{
+		String query = null;
+		boolean flag = false;
+
+		if (tableType.equals("SIMPLE"))
+		{
+			query = "DELETE FROM simplereview_table WHERE simpleReview_item_code = ? AND simpleReview_item_category_code = ? AND simpleReview_user_id = ?";
+		} else
+		{
+			// DETAIL
+			query = "DELETE FROM detailreview_table WHERE detailReview_item_code = ? AND detailReview_item_category_code = ? AND detailReview_user_id = ?";
+		}
+
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			prstmt.setInt(1, icode);
+			prstmt.setString(2, ccode);
+			prstmt.setString(3, writerId);
+
+			if (prstmt.executeUpdate() == 1)
+			{
+				flag = true;
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return flag;
+	}
+
+	public boolean modifyMyReview(int icode, String ccode, String writerId, ReviewDTO modifiedReview, String tableType)
+	{
+		return false;
+	}
+	
+	
 }

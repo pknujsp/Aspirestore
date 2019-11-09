@@ -266,7 +266,7 @@
 
 				<hr>
 				<div id="detail_review_form"></div>
-				
+
 				<hr>
 				<div>
 					<h6>상세 리뷰</h6>
@@ -297,6 +297,14 @@
 
 	<form action="/AspireStore/basket.aspire" id="basketForm" name="basketForm" method="post">
 		<input type="hidden" id="type" name="type" value="GET_BASKET">
+	</form>
+
+	<form action="/AspireStore/items/review.aspire" method="POST" id="processing_form" name="processing_form">
+		<input type="hidden" id="type" name="type">
+		<input type="hidden" id="table_type" name="table_type">
+		<input type="hidden" id="review_code" name="review_code">
+		<input type="hidden" id="icode" name="icode" value="${pageScope.ITEM.item_code }">
+		<input type="hidden" id="ccode" name="ccode" value="${pageScope.ITEM.item_category_code }">
 	</form>
 
 	<%@ include file="/footer.html"%>
@@ -360,6 +368,9 @@
 	</script>
 
 	<script>
+		var mySimpleReviewCode = 0;
+		var myDetailReviewCode = 0;
+
 		var simpleReviewPageData =
 		{
 			'total_record' : 0, //전체 레코드 수
@@ -438,7 +449,7 @@
 				}
 			};
 
-			xhrS.open('POST', '/AspireStore/items/review.aspire', true);
+			xhrS.open('POST', '/AspireStore/items/review.aspire', false);
 			xhrS.setRequestHeader('Content-type',
 					'application/x-www-form-urlencoded');
 			xhrS.send('type=' + 'GET_S_REVIEW_SIZE' + '&icode='
@@ -482,7 +493,7 @@
 				}
 			};
 
-			xhrRS.open('POST', '/AspireStore/items/review.aspire', true);
+			xhrRS.open('POST', '/AspireStore/items/review.aspire', false);
 			xhrRS.setRequestHeader('Content-type',
 					'application/x-www-form-urlencoded');
 			xhrRS.send('type=' + 'GET_S_REVIEW_JSON' + '&icode='
@@ -545,7 +556,7 @@
 				}
 			};
 
-			xhrD.open('POST', '/AspireStore/items/review.aspire', true);
+			xhrD.open('POST', '/AspireStore/items/review.aspire', false);
 			xhrD.setRequestHeader('Content-type',
 					'application/x-www-form-urlencoded');
 			xhrD.send('type=' + 'GET_D_REVIEW_SIZE' + '&icode=' + getBookCode()
@@ -567,7 +578,7 @@
 					initializeUL('detail_review_list');
 
 					let listSize = detailReviewPageData['list_size'];
-					
+
 					if (responseList.MY_D_REVIEW != null)
 					{
 						setDetailReviewForm(responseList.MY_D_REVIEW);
@@ -587,7 +598,7 @@
 				}
 			};
 
-			xhrRD.open('POST', '/AspireStore/items/review.aspire', true);
+			xhrRD.open('POST', '/AspireStore/items/review.aspire', false);
 			xhrRD.setRequestHeader('Content-type',
 					'application/x-www-form-urlencoded');
 			xhrRD.send('type=' + 'GET_D_REVIEW_JSON' + '&icode='
@@ -717,6 +728,7 @@
 			var detailReview =
 			{
 				'nick_name' : dataList.DETAIL_REVIEW['WRITER_ID'],
+				'review_code' : dataList.DETAIL_REVIEW['REVIEW_CODE'],
 				'post_date' : dataList.DETAIL_REVIEW['POST_DATE'],
 				'rating' : dataList.DETAIL_REVIEW['RATING'],
 				'content' : dataList.DETAIL_REVIEW['CONTENT'],
@@ -844,7 +856,6 @@
 			return str.substr(0, 100) + '...';
 		}
 
-
 		function showWholeContent(index)
 		{
 			document.getElementById('detail_review_content' + String(index)).innerText = detailReviewList[index]['content'];
@@ -963,6 +974,40 @@
 			}
 		}
 
+		function deleteMyReview(tableType)
+		{
+			let form = document.processing_form;
+			form.table_type.value = tableType;
+
+			if (tableType == 'SIMPLE')
+			{
+				form.review_code.value = mySimpleReviewCode;
+			} else
+			{
+				// DETAIL
+				form.review_code.value = myDetailReviewCode;
+			}
+			form.type.value = 'DELETE';
+			form.submit();
+		}
+
+		function modifyMyReview(tableType)
+		{
+			let form = document.processing_form;
+			form.table_type.value = tableType;
+
+			if (tableType == 'SIMPLE')
+			{
+				form.review_code.value = mySimpleReviewCode;
+			} else
+			{
+				// DETAIL
+				form.review_code.value = myDetailReviewCode;
+			}
+			form.type.value = 'MODIFY';
+			form.submit();
+		}
+
 		function setSimpleReviewForm(data)
 		{
 			let form = document.getElementById('simple_review_form');
@@ -972,19 +1017,18 @@
 				// 해당 div의 모든 요소를 비운다.
 				form.removeChild(form.firstChild);
 			}
+			mySimpleReviewCode = data['REVIEW_CODE'];
 
-			form.innerHTML = '<h6>나의 간단 리뷰</h6><div class=\'media\'><div class=\'media-body\'>'
-					+ '<b class=\'mt-0 font-weight-bold\'>'
-					+ data['WRITER_ID']
-					+ '</a>'
-					+ '</b>'
-					+ ' &ensp;|&ensp;'
-					+ data['POST_DATE']
-					+ ' &ensp;|&ensp;'
-					+ convertRating(data['RATING'])
-					+ '<p class=\'card-text\' id=\'simple_review_content'
-					+ '\'>'
+			const innerHTML = '<h6>나의 간단 리뷰</h6>'
+					+ '<div class=\'media\'><div class=\'media-body\'>'
+					+ '<b class=\'mt-0 font-weight-bold\'>' + data['WRITER_ID']
+					+ '</a>' + '</b>' + '&ensp;|&ensp;' + data['POST_DATE']
+					+ '&ensp;|&ensp;' + convertRating(data['RATING'])
+					+ '&nbsp;|&nbsp;'
+					+ '<p class=\'card-text\' id=\'simple_review_content\'>'
 					+ data['CONTENT'] + '</p>' + '</div></div>';
+
+			form.innerHTML = innerHTML;
 		}
 
 		function setDetailReviewForm(data)
@@ -1011,7 +1055,10 @@
 				cutedContent = cutString(content);
 			}
 
-			form.innerHTML = '<h6>나의 상세 리뷰</h6><div class=\'media\'><div class=\'media-body\'>'
+			myDetailReviewCode = data['REVIEW_CODE'];
+
+			form.innerHTML = '<h6>나의 상세 리뷰</h6>'
+					+ '<div class=\'media\'><div class=\'media-body\'>'
 					+ '<b class=\'mt-0 font-weight-bold\'>'
 					+ '<a href=\'/AspireStore/items/review.aspire?type=READ_D_REVIEW&rcode='
 					+ reviewCode
@@ -1023,14 +1070,13 @@
 					+ subject
 					+ '</a>'
 					+ '</b>'
-					+ ' &ensp;|&ensp;'
+					+ '&ensp;|&ensp;'
 					+ postDate
-					+ ' &ensp;|&ensp;'
+					+ '&ensp;|&ensp;'
 					+ convertRating(rating)
+					+ '&ensp;|&ensp;'
 					+ '<div><p class=\'text-justify\' id=\'detail_my_review_content\'>'
-					+ cutedContent
-					+ '</p></div>'
-					+ '</div></div>';
+					+ cutedContent + '</p></div>' + '</div></div>';
 		}
 	</script>
 </body>

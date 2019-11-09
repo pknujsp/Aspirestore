@@ -6,6 +6,8 @@ public class FileDTO
 	private int question_post_code;
 	private int answer_post_code;
 	private int review_code;
+	private int item_code;
+	private String item_category_code;
 	private String uploader_id;
 	private String file_uri;
 	private String file_name;
@@ -25,6 +27,16 @@ public class FileDTO
 	public int getAnswer_post_code()
 	{
 		return answer_post_code;
+	}
+
+	public String getItem_category_code()
+	{
+		return item_category_code;
+	}
+
+	public int getItem_code()
+	{
+		return item_code;
 	}
 
 	public int getReview_code()
@@ -102,6 +114,18 @@ public class FileDTO
 	public FileDTO setReview_code(int review_code)
 	{
 		this.review_code = review_code;
+		return this;
+	}
+
+	public FileDTO setItem_category_code(String item_category_code)
+	{
+		this.item_category_code = item_category_code;
+		return this;
+	}
+
+	public FileDTO setItem_code(int item_code)
+	{
+		this.item_code = item_code;
 		return this;
 	}
 

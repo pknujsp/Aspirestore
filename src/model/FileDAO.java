@@ -1,5 +1,6 @@
 package model;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -106,5 +107,45 @@ public class FileDAO
 			e.printStackTrace();
 		}
 		return flag;
+	}
+
+	public void deleteReviewFilesDB(int reviewCode, String uploaderId)
+	{
+		String deletionQuery = "DELETE FROM reviewimages_table WHERE reviewimages_post_code = ? AND reviewimages_uploader_id = ?";
+
+		try (Connection connection = dataSource.getConnection();
+				PreparedStatement prstmt = connection.prepareStatement(deletionQuery);)
+		{
+			prstmt.setInt(1, reviewCode);
+			prstmt.setString(2, uploaderId);
+
+			prstmt.executeUpdate();
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	public boolean deleteRealFiles(ArrayList<FileDTO> files)
+	{
+		int numFile = 0;
+
+		for (int index = 0; index < files.size(); ++index)
+		{
+			File file = new File(files.get(index).getFile_uri(), files.get(index).getFile_name());
+
+			if (file.isFile())
+			{
+				++numFile;
+				file.delete();
+			}
+		}
+		if (numFile == files.size())
+		{
+			return true;
+		} else
+		{
+			return false;
+		}
 	}
 }

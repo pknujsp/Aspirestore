@@ -18,10 +18,8 @@
 					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 도서 관리 </a>
 
 					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item" href="#">신규 도서 등록</a>
-						<a class="dropdown-item" href="#">도서 수정</a>
-						<a class="dropdown-item" href="#">도서 삭제</a>
-						<a class="dropdown-item" href="#">도서 재고 관리</a>
+						<a class="dropdown-item" href="#">도서 관리</a>
+						<a class="dropdown-item" href="#">도서 재고</a>
 						<div class="dropdown-divider"></div>
 					</div>
 				</li>

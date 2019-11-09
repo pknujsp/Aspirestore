@@ -467,6 +467,20 @@ public class ServletDispatcher extends HttpServlet
 						request.setAttribute("ICODE", multipartRequest_R.getParameter("icode"));
 						request.setAttribute("CCODE", multipartRequest_R.getParameter("ccode"));
 						break;
+					case "DELETE":
+						request.setAttribute("ICODE", request.getParameter("icode"));
+						request.setAttribute("CCODE", request.getParameter("ccode"));
+						request.setAttribute("REVIEW_CODE", request.getParameter("review_code"));
+						request.setAttribute("TABLE_TYPE", request.getParameter("table_type"));
+						request.setAttribute("WRITER_ID", request.getSession().getAttribute("SESSIONKEY").toString());
+						break;
+					case "MODIFY":
+						request.setAttribute("ICODE", request.getParameter("icode"));
+						request.setAttribute("CCODE", request.getParameter("ccode"));
+						request.setAttribute("REVIEW_CODE", request.getParameter("review_code"));
+						request.setAttribute("TABLE_TYPE", request.getParameter("table_type"));
+						request.setAttribute("WRITER_ID", request.getSession().getAttribute("SESSIONKEY").toString());
+						break;
 					}
 				}
 				break;
