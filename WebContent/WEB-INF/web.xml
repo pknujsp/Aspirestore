@@ -119,52 +119,52 @@
 		<servlet-name>basketservlet</servlet-name>
 		<servlet-class>controller.ServletBasket</servlet-class>
 	</servlet>
-	
+
 	<servlet-mapping>
 		<servlet-name>basketservlet</servlet-name>
 		<url-pattern>/basket</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>ordersmanagementservlet</servlet-name>
 		<servlet-class>controller.ServletOrdersManagement</servlet-class>
 	</servlet>
-	
+
 	<servlet-mapping>
 		<servlet-name>ordersmanagementservlet</servlet-name>
 		<url-pattern>/management/ordersmanagement</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>qnaservlet</servlet-name>
 		<servlet-class>controller.ServletQna</servlet-class>
 	</servlet>
-	
+
 	<servlet-mapping>
 		<servlet-name>qnaservlet</servlet-name>
 		<url-pattern>/csservice/qna</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>applypostservlet</servlet-name>
 		<servlet-class>controller.ServletApplyPost</servlet-class>
 	</servlet>
-	
+
 	<servlet-mapping>
 		<servlet-name>applypostservlet</servlet-name>
 		<url-pattern>/csservice/applyPost</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>filemanagementservlet</servlet-name>
 		<servlet-class>controller.ServletFileManagement</servlet-class>
 	</servlet>
-	
+
 	<servlet-mapping>
 		<servlet-name>filemanagementservlet</servlet-name>
 		<url-pattern>/files/fileManagement</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>reviewservlet</servlet-name>
 		<servlet-class>controller.ServletItemReview</servlet-class>
@@ -173,6 +173,16 @@
 	<servlet-mapping>
 		<servlet-name>reviewservlet</servlet-name>
 		<url-pattern>/items/review</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>bookmanagementservlet</servlet-name>
+		<servlet-class>controller.ServletBookManagement</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>bookmanagementservlet</servlet-name>
+		<url-pattern>/management/bookManagement</url-pattern>
 	</servlet-mapping>
 
 	<servlet>

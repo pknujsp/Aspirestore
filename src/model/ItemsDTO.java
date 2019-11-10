@@ -5,12 +5,15 @@ public class ItemsDTO
 	private int item_code;
 	private String item_name;
 	private int item_author_code;
+	private String item_author_name;
 	private int item_publisher_code;
+	private String item_publisher_name;
 	private String item_publication_date;
 	private int item_fixed_price;
 	private int item_selling_price;
 	private int item_remaining_quantity;
 	private String item_category_code;
+	private String item_category_desc;
 	private String item_page_number;
 	private String item_weight;
 	private String item_size;
@@ -20,6 +23,21 @@ public class ItemsDTO
 	private String item_contents_table;
 	private String item_publisher_review;
 	private String item_registration_datetime;
+
+	public String getItem_author_name()
+	{
+		return item_author_name;
+	}
+
+	public String getItem_category_desc()
+	{
+		return item_category_desc;
+	}
+
+	public String getItem_publisher_name()
+	{
+		return item_publisher_name;
+	}
 
 	public int getItem_code()
 	{
@@ -216,6 +234,24 @@ public class ItemsDTO
 	public ItemsDTO setItem_registration_datetime(String item_registration_datetime)
 	{
 		this.item_registration_datetime = item_registration_datetime;
+		return this;
+	}
+
+	public ItemsDTO setItem_author_name(String item_author_name)
+	{
+		this.item_author_name = item_author_name;
+		return this;
+	}
+
+	public ItemsDTO setItem_category_desc(String item_category_desc)
+	{
+		this.item_category_desc = item_category_desc;
+		return this;
+	}
+
+	public ItemsDTO setItem_publisher_name(String item_publisher_name)
+	{
+		this.item_publisher_name = item_publisher_name;
 		return this;
 	}
 

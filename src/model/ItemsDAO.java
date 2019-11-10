@@ -287,6 +287,166 @@ public class ItemsDAO
 		return prices;
 	}
 
+	public int getTotalRecords(ArrayList<ArrayList<String>> categoryList)
+	{
+		String query = "SELECT count(*) FROM items WHERE ";
+		boolean firstValue = true;
+
+		for (int i = 0; i < categoryList.size(); ++i)
+		{
+			if (categoryList.get(i) != null)
+			{
+				String whereCondition = null;
+				if (firstValue)
+				{
+					whereCondition = "(";
+					firstValue = false;
+				} else
+				{
+					whereCondition = " OR (";
+				}
+				for (int j = 1; j < categoryList.get(i).size(); ++j)
+				{
+					if (j == categoryList.get(i).size() - 1)
+					{
+						whereCondition += "item_category_code = ?)";
+					} else
+					{
+
+						whereCondition += "item_category_code = ? OR ";
+					}
+				}
+				query += whereCondition;
+			}
+		}
+
+		ResultSet set = null;
+		int size = 0;
+
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			int sqlIndex = 1;
+			for (int i = 0; i < categoryList.size(); ++i)
+			{
+				if (categoryList.get(i) != null)
+				{
+					for (int j = 1; j < categoryList.get(i).size(); ++j)
+					{
+						prstmt.setString(sqlIndex++, categoryList.get(i).get(j));
+					}
+				}
+			}
+			set = prstmt.executeQuery();
+
+			if (set.next())
+			{
+				size = set.getInt(1);
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return size;
+	}
+
+	public ArrayList<ItemsDTO> getRecords(ArrayList<ArrayList<String>> categoryList)
+	{
+		// JOIN 작성 필요
+		String query = "SELECT i.item_code, i.item_name, i.item_category_code, c.category_name ,i.item_author_code, a.author_name, i.item_publisher_code, "
+				+ "p.publisher_name, i.item_selling_price, i.item_remaining_quantity, i.item_registration_datetime "
+				+ "FROM items AS i " + "INNER JOIN itemcategory AS c ON i.item_category_code = c.category_code "
+				+ "INNER JOIN authors AS a ON i.item_author_code = a.author_code "
+				+ "INNER JOIN publishers AS p ON i.item_publisher_code = p.publisher_code WHERE ";
+
+		boolean firstValue = true;
+
+		for (int i = 0; i < categoryList.size(); ++i)
+		{
+			if (categoryList.get(i) != null)
+			{
+				String whereCondition = null;
+				if (firstValue)
+				{
+					whereCondition = "(";
+					firstValue = false;
+				} else
+				{
+					whereCondition = " OR (";
+				}
+				for (int j = 1; j < categoryList.get(i).size(); ++j)
+				{
+					if (j == categoryList.get(i).size() - 1)
+					{
+						whereCondition += "i.item_category_code = ?)";
+					} else
+					{
+
+						whereCondition += "i.item_category_code = ? OR ";
+					}
+				}
+				query += whereCondition;
+			}
+		}
+
+		ResultSet set = null;
+		ArrayList<ItemsDTO> books = null;
+
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			int sqlIndex = 1;
+			for (int i = 0; i < categoryList.size(); ++i)
+			{
+				if (categoryList.get(i) != null)
+				{
+					for (int j = 1; j < categoryList.get(i).size(); ++j)
+					{
+						prstmt.setString(sqlIndex++, categoryList.get(i).get(j));
+					}
+				}
+			}
+			set = prstmt.executeQuery();
+			books = new ArrayList<ItemsDTO>();
+
+			while (set.next())
+			{
+				books.add(new ItemsDTO().setItem_code(set.getInt(1)).setItem_name(set.getString(2))
+						.setItem_category_code(set.getString(3)).setItem_category_desc(set.getString(4))
+						.setItem_author_code(set.getInt(5)).setItem_author_name(set.getString(6))
+						.setItem_publisher_code(set.getInt(7)).setItem_publisher_name(set.getString(8))
+						.setItem_selling_price(set.getInt(9)).setItem_remaining_quantity(set.getInt(10))
+						.setItem_registration_datetime(set.getString(11)));
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return books;
+	}
+
 	private String cutString(String str)
 	{
 		if (str.length() >= 150)

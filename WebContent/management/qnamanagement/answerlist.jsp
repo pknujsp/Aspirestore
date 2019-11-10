@@ -234,7 +234,8 @@
 
 			let totalPage = pageData['total_page'];
 
-			pageData['total_block'] = parseInt(Math.ceil(parseFloat(totalPage)
+			pageData['total_blo
+				ck'] = parseInt(Math.ceil(parseFloat(totalPage)
 					/ pagePerBlock));
 		}
 

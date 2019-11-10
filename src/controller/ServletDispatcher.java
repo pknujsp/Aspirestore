@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -12,6 +13,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
@@ -484,6 +489,32 @@ public class ServletDispatcher extends HttpServlet
 					}
 				}
 				break;
+
+			case "/management/bookManagement.aspire":
+				if (checkNullParameters())
+				{
+					// bookList에서 받은 카테고리 JSON Data 처리
+					BufferedReader reader = request.getReader();
+					JSONTokener tokener = new JSONTokener(reader);
+					JSONArray jsonArr = new JSONArray(tokener);
+					JSONObject parameterObj = jsonArr.getJSONObject(13);
+
+					String requestedType = parameterObj.getString("type");
+					request.setAttribute("TYPE", requestedType);
+					pageControllerPath = "/management/bookManagement";
+
+					switch (requestedType)
+					{
+					case "GET_TOTAL_RECORDS":
+						request.setAttribute("JSON_ARR", jsonArr);
+						break;
+
+					case "GET_RECORDS":
+						request.setAttribute("JSON_ARR", jsonArr);
+						break;
+					}
+
+				}
 			}
 
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher(pageControllerPath);
