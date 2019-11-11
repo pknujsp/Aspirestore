@@ -2,6 +2,7 @@ package controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -29,6 +30,13 @@ public class ServletBookManagement extends HttpServlet
 			break;
 		case "GET_RECORDS":
 			getRecords(request, response);
+			break;
+		case "VIEW_MORE_DATA":
+			viewMoreData(request, response);
+			break;
+
+		case "MODIFY_DATA":
+
 			break;
 		}
 	}
@@ -145,6 +153,28 @@ public class ServletBookManagement extends HttpServlet
 			response.setContentType("application/json");
 			response.getWriter().write(rootObj.toString());
 			request.setAttribute("VIEWURL", "ajax:/");
+		} catch (Exception e)
+		{
+			throw new ServletException(e);
+		}
+	}
+
+	protected void viewMoreData(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException
+	{
+		try
+		{
+			ServletContext sc = this.getServletContext();
+			ItemsDAO itemsDAO = (ItemsDAO) sc.getAttribute("itemsDAO");
+
+			int icode = Integer.parseInt(request.getAttribute("ICODE").toString());
+			String ccode = request.getAttribute("CCODE").toString();
+			Map<String, Object> bookData = itemsDAO.getBookData(icode, ccode);
+
+			request.setAttribute("BOOK", bookData.get("BOOK"));
+			request.setAttribute("AUTHOR", bookData.get("AUTHOR"));
+			request.setAttribute("PUBLISHER", bookData.get("PUBLISHER"));
+			request.setAttribute("VIEWURL", "forward:/management/bookmanagement/bookInfo.jsp");
 		} catch (Exception e)
 		{
 			throw new ServletException(e);

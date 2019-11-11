@@ -508,11 +508,19 @@
 					</div>
 					<div class="modal-footer" id="modal_footer">
 						<button type="button" class="btn btn-primary" onclick="makeJSONForCategory()" data-dismiss="modal">확인</button>
+						&nbsp;
+						<button type="button" class="btn btn-primary" id="checkAllBtn" onclick="checkAllBox(true)">모두 선택</button>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+
+	<form method="POST" id="processing_form" name="processing_form" action="/AspireStore/management/bookManagement.aspire" enctype="application/x-www-form-urlencoded">
+		<input type="hidden" id="type" name="type">
+		<input type="hidden" id="book_code" name="book_code">
+		<input type="hidden" id="book_category_code" name="book_category_code">
+	</form>
 
 	<script src="/AspireStore/jquery/jquery.js"></script>
 	<script src="/AspireStore/js/bootstrap.bundle.js"></script>
@@ -554,6 +562,21 @@
 				}
 			}
 			document.getElementById(obj.name + '_badge').innerText = checkedNum;
+		}
+
+		function changeAllBadge(inputName)
+		{
+			let checkboxes = document.getElementsByName(inputName);
+			let checkedNum = 0;
+
+			for (let index = 0; index < checkboxes.length; index++)
+			{
+				if (checkboxes[index].checked == true)
+				{
+					++checkedNum;
+				}
+			}
+			document.getElementById(inputName + '_badge').innerText = checkedNum;
 		}
 
 		function setTableCol(bookData)
@@ -603,17 +626,21 @@
 
 			let moreBtn = document.createElement('input');
 
+			let methodMore = 'viewMoreData(\'' + bookObj['book_code'] + '\',\''
+					+ bookObj['book_category_code'] + '\')';
 			moreBtn.setAttribute('type', 'button');
 			moreBtn.setAttribute('class', 'btn btn-primary');
-			moreBtn.setAttribute('onclick', '');
+			moreBtn.setAttribute('onclick', methodMore);
 			moreBtn.setAttribute('value', '자세히');
 			moreCol.appendChild(moreBtn);
 
+			let methodModify = 'modifyData(\'' + bookObj['book_code'] + '\',\''
+					+ bookObj['book_category_code'] + '\')';
 			let modificationBtn = document.createElement('input');
 
 			modificationBtn.setAttribute('type', 'button');
 			modificationBtn.setAttribute('class', 'btn btn-primary');
-			modificationBtn.setAttribute('onclick', '');
+			modificationBtn.setAttribute('onclick', methodModify);
 			modificationBtn.setAttribute('value', '수정');
 			processingCol.appendChild(modificationBtn);
 		}
@@ -822,8 +849,70 @@
 				rootObj[String(index * 100 + 100)] = checkedList;
 				checkedCategoryList.push(rootObj);
 			}
-			let jsonData = JSON.stringify(checkedCategoryList);
-			return jsonData;
+		}
+
+		function viewMoreData(bookCode, bookCategoryCode)
+		{
+			document.processing_form.type.value = 'VIEW_MORE_DATA';
+			document.processing_form.method = 'GET';
+			document.processing_form.book_code.value = bookCode;
+			document.processing_form.book_category_code.value = bookCategoryCode;
+
+			document.processing_form.submit();
+		}
+
+		function modifyData(bookCode, bookCategoryCode)
+		{
+			document.processing_form.type.value = 'MODIFY_DATA';
+			document.processing_form.method = 'POST';
+			document.processing_form.book_code.value = bookCode;
+			document.processing_form.book_category_code.value = bookCategoryCode;
+
+			document.processing_form.submit();
+		}
+
+		function checkAllBox(status)
+		{
+			const tabContent = document.getElementById('tab_content');
+			const inputTags = tabContent.getElementsByTagName('input');
+			let dataMap = new Map();
+			let sequence = 0;
+
+			for (let index = 0; index < inputTags.length; ++index)
+			{
+				if (dataMap.get('tag_name_' + String(sequence - 1)) == inputTags[index].name)
+				{
+					continue;
+				} else
+				{
+					dataMap.set("tag_name_" + String(sequence++),
+							inputTags[index].name);
+				}
+			}
+
+			for (let index = 0; index < dataMap.size; ++index)
+			{
+				const category = document.getElementsByName(dataMap
+						.get('tag_name_' + String(index)));
+				for (let j = 0; j < category.length; ++j)
+				{
+					category[j].checked = status;
+				}
+				changeAllBadge(dataMap.get('tag_name_' + String(index)));
+			}
+			makeJSONForCategory();
+
+			let btn = document.getElementById('checkAllBtn');
+			if (!status)
+			{
+				btn.setAttribute('onclick', 'checkAllBox(true)');
+				btn.innerText = '모두 선택';
+			} else
+			{
+				btn.setAttribute('onclick', 'checkAllBox(false)');
+				btn.innerText = '모두 선택 해제';
+			}
+
 		}
 	</script>
 </body>

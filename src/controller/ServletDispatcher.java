@@ -494,29 +494,53 @@ public class ServletDispatcher extends HttpServlet
 				if (checkNullParameters())
 				{
 					// bookList에서 받은 카테고리 JSON Data 처리
-					BufferedReader reader = request.getReader();
-					JSONTokener tokener = new JSONTokener(reader);
-					JSONArray jsonArr = new JSONArray(tokener);
-					JSONObject parameterObj = jsonArr.getJSONObject(13);
+					String requestedType = null;
+					String contentType = request.getContentType();
 
-					String requestedType = parameterObj.getString("type");
-					request.setAttribute("TYPE", requestedType);
+					if (contentType == null)
+					{
+						// GET
+						requestedType = request.getParameter("type");
+						request.setAttribute("TYPE", requestedType);
+					} else if (contentType.equals("application/x-www-form-urlencoded"))
+					{
+						// POST
+						requestedType = request.getParameter("type");
+						request.setAttribute("TYPE", requestedType);
+					} else if (contentType.equals("application/json"))
+					{
+						BufferedReader reader = request.getReader();
+						JSONTokener tokener = new JSONTokener(reader);
+						JSONArray jsonArr = new JSONArray(tokener);
+						JSONObject parameterObj = jsonArr.getJSONObject(13);
+
+						requestedType = parameterObj.getString("type");
+						request.setAttribute("TYPE", requestedType);
+						request.setAttribute("JSON_ARR", jsonArr);
+					}
 					pageControllerPath = "/management/bookManagement";
 
 					switch (requestedType)
 					{
 					case "GET_TOTAL_RECORDS":
-						request.setAttribute("JSON_ARR", jsonArr);
 						break;
 
 					case "GET_RECORDS":
-						request.setAttribute("JSON_ARR", jsonArr);
+						break;
+
+					case "VIEW_MORE_DATA":
+						request.setAttribute("ICODE", request.getParameter("book_code"));
+						request.setAttribute("CCODE", request.getParameter("book_category_code"));
+						break;
+
+					case "MODIFY_DATA":
+						request.setAttribute("ICODE", request.getParameter("book_code"));
+						request.setAttribute("CCODE", request.getParameter("book_category_code"));
 						break;
 					}
-
 				}
+				break;
 			}
-
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher(pageControllerPath);
 			requestDispatcher.include(request, response);
 			String viewUrl = request.getAttribute("VIEWURL").toString();
