@@ -540,6 +540,22 @@ public class ServletDispatcher extends HttpServlet
 					}
 				}
 				break;
+
+			case "/management/authorManagement.aspire":
+				if (checkNullParameters())
+				{
+					String requestedType = request.getParameter("type");
+					request.setAttribute("TYPE", requestedType);
+					pageControllerPath = "/management/authorManagement";
+
+					switch (requestedType)
+					{
+					case "GET_AUTHORS":
+						request.setAttribute("AUTHOR_NAME", request.getParameter("author_name"));
+						break;
+					}
+				}
+				break;
 			}
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher(pageControllerPath);
 			requestDispatcher.include(request, response);

@@ -559,7 +559,7 @@
 			{
 				if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200)
 				{
-					const responseList = JSON.parse(xhr.responseText);
+					const responseList = JSON.parse(xhr.response);
 
 					pageData['list_size'] = responseList.ORDER_DATA.length;
 					initializePageTable();

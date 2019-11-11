@@ -516,7 +516,7 @@
 		</div>
 	</div>
 
-	<form method="POST" id="processing_form" name="processing_form" action="/AspireStore/management/bookManagement.aspire" enctype="application/x-www-form-urlencoded">
+	<form method="GET" id="processing_form" name="processing_form" action="/AspireStore/management/bookManagement.aspire" enctype="application/x-www-form-urlencoded">
 		<input type="hidden" id="type" name="type">
 		<input type="hidden" id="book_code" name="book_code">
 		<input type="hidden" id="book_category_code" name="book_category_code">
@@ -528,6 +528,7 @@
 	<script type="text/javascript">
 		var bookList = [];
 		var checkedCategoryList = [];
+		var dataMap = new Map();
 
 		var pageData =
 		{
@@ -548,6 +549,11 @@
 			e.preventDefault();
 			$("#wrapper").toggleClass("toggled");
 		});
+
+		(function()
+		{
+			setCategoryTagName();
+		})()
 
 		function changeBadge(obj)
 		{
@@ -702,33 +708,44 @@
 
 		function processPage()
 		{
-			let xhr = new XMLHttpRequest();
-
-			xhr.onreadystatechange = function()
+			if (!checkCheckedCategory())
 			{
-				if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200)
+				alert('카테고리를 선택하세요.');
+				return;
+			} else
+			{
+				let xhr = new XMLHttpRequest();
+
+				xhr.onreadystatechange = function()
 				{
-					const totalRecords = Number(xhr.responseText);
-					const numDataToDisplaySelect = document
-							.getElementById('select_menu');
+					if (xhr.readyState == XMLHttpRequest.DONE
+							&& xhr.status == 200)
+					{
+						const totalRecords = Number(xhr.responseText);
+						const numDataToDisplaySelect = document
+								.getElementById('select_menu');
 
-					pageData['total_record'] = totalRecords;
-					pageData['num_per_page'] = numDataToDisplaySelect.options[numDataToDisplaySelect.selectedIndex].value;
-					calcPageData();
-					referBookData();
-				}
-			};
-			xhr.open('POST', '/AspireStore/management/bookManagement.aspire',
-					'true');
-			xhr.setRequestHeader('Content-type', 'application/json');
+						pageData['total_record'] = totalRecords;
+						pageData['num_per_page'] = numDataToDisplaySelect.options[numDataToDisplaySelect.selectedIndex].value;
+						calcPageData();
+						referBookData();
+					}
+				};
+				xhr
+						.open(
+								'POST',
+								'/AspireStore/management/bookManagement.aspire',
+								'true');
+				xhr.setRequestHeader('Content-type', 'application/json');
 
-			var typeObj =
-			{
-				type : 'GET_TOTAL_RECORDS'
-			};
-			checkedCategoryList.push(typeObj);
-			xhr.send(JSON.stringify(checkedCategoryList));
-			checkedCategoryList.pop();
+				var typeObj =
+				{
+					type : 'GET_TOTAL_RECORDS'
+				};
+				checkedCategoryList.push(typeObj);
+				xhr.send(JSON.stringify(checkedCategoryList));
+				checkedCategoryList.pop();
+			}
 		}
 
 		function calcPageData()
@@ -812,13 +829,12 @@
 			}
 			document.gelElementById('pagination_ul').innerHTML = paginationElement;
 		}
-
-		function makeJSONForCategory()
+		function setCategoryTagName()
 		{
 			const tabContent = document.getElementById('tab_content');
 			const inputTags = tabContent.getElementsByTagName('input');
 			checkedCategoryList = [];
-			let dataMap = new Map();
+
 			let sequence = 0;
 
 			for (let index = 0; index < inputTags.length; ++index)
@@ -832,6 +848,11 @@
 							inputTags[index].name);
 				}
 			}
+		}
+
+		function makeJSONForCategory()
+		{
+			checkedCategoryList = [];
 
 			for (let index = 0; index < dataMap.size; ++index)
 			{
@@ -854,7 +875,6 @@
 		function viewMoreData(bookCode, bookCategoryCode)
 		{
 			document.processing_form.type.value = 'VIEW_MORE_DATA';
-			document.processing_form.method = 'GET';
 			document.processing_form.book_code.value = bookCode;
 			document.processing_form.book_category_code.value = bookCategoryCode;
 
@@ -864,7 +884,6 @@
 		function modifyData(bookCode, bookCategoryCode)
 		{
 			document.processing_form.type.value = 'MODIFY_DATA';
-			document.processing_form.method = 'POST';
 			document.processing_form.book_code.value = bookCode;
 			document.processing_form.book_category_code.value = bookCategoryCode;
 
@@ -873,23 +892,6 @@
 
 		function checkAllBox(status)
 		{
-			const tabContent = document.getElementById('tab_content');
-			const inputTags = tabContent.getElementsByTagName('input');
-			let dataMap = new Map();
-			let sequence = 0;
-
-			for (let index = 0; index < inputTags.length; ++index)
-			{
-				if (dataMap.get('tag_name_' + String(sequence - 1)) == inputTags[index].name)
-				{
-					continue;
-				} else
-				{
-					dataMap.set("tag_name_" + String(sequence++),
-							inputTags[index].name);
-				}
-			}
-
 			for (let index = 0; index < dataMap.size; ++index)
 			{
 				const category = document.getElementsByName(dataMap
@@ -913,6 +915,23 @@
 				btn.innerText = '모두 선택 해제';
 			}
 
+		}
+
+		function checkCheckedCategory()
+		{
+			for (let index = 0; index < dataMap.size; ++index)
+			{
+				const category = document.getElementsByName(dataMap
+						.get('tag_name_' + String(index)));
+				for (let j = 0; j < category.length; ++j)
+				{
+					if (category[j].checked == true)
+					{
+						return true;
+					}
+				}
+			}
+			return false;
 		}
 	</script>
 </body>

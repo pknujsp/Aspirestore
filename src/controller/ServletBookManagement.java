@@ -34,9 +34,8 @@ public class ServletBookManagement extends HttpServlet
 		case "VIEW_MORE_DATA":
 			viewMoreData(request, response);
 			break;
-
 		case "MODIFY_DATA":
-
+			modifyData(request, response);
 			break;
 		}
 	}
@@ -178,6 +177,28 @@ public class ServletBookManagement extends HttpServlet
 		} catch (Exception e)
 		{
 			throw new ServletException(e);
+		}
+	}
+
+	protected void modifyData(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException
+	{
+		try
+		{
+			ServletContext sc = this.getServletContext();
+			ItemsDAO itemsDAO = (ItemsDAO) sc.getAttribute("itemsDAO");
+
+			int icode = Integer.parseInt(request.getAttribute("ICODE").toString());
+			String ccode = request.getAttribute("CCODE").toString();
+			Map<String, Object> bookData = itemsDAO.getBookData(icode, ccode);
+
+			request.setAttribute("BOOK", bookData.get("BOOK"));
+			request.setAttribute("AUTHOR", bookData.get("AUTHOR"));
+			request.setAttribute("PUBLISHER", bookData.get("PUBLISHER"));
+			request.setAttribute("VIEWURL", "forward:/management/bookmanagement/bookModification.jsp");
+		} catch (Exception e)
+		{
+			new ServletException(e);
 		}
 	}
 }
