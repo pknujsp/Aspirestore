@@ -30,21 +30,24 @@
 
 </head>
 <body>
-	<div class="d-flex" id="wrapper">
-		<div class="bg-light border-right" id="sidebar-wrapper">
-			<!-- <div class="sidebar-heading">Start Bootstrap</div> -->
-			<div class="list-group list-group-flush">
-				<a href="#" class="list-group-item list-group-item-action bg-light">도서 관리</a>
-				<a href="#" class="list-group-item list-group-item-action bg-light">도서 재고</a>
+	<form id="modification_form" name="modification_form" action="/AspireStore/management/bookManagement.aspire" method="POST">
+		<input type="hidden" id="input_item_category_code" name="input_item_category_code" value="${pageScope.BOOK.item_category_code}">
+		<input type="hidden" id="input_item_code" name="input_item_code" value="${pageScope.BOOK.item_code}">
+		<div class="d-flex" id="wrapper">
+			<div class="bg-light border-right" id="sidebar-wrapper">
+				<!-- <div class="sidebar-heading">Start Bootstrap</div> -->
+				<div class="list-group list-group-flush">
+					<a href="#" class="list-group-item list-group-item-action bg-light">도서 관리</a>
+					<a href="#" class="list-group-item list-group-item-action bg-light">도서 재고</a>
+				</div>
 			</div>
-		</div>
 
-		<div id="page-content-wrapper">
-			<jsp:include page="../management_navbar.jsp"></jsp:include>
+			<div id="page-content-wrapper">
+				<jsp:include page="../management_navbar.jsp"></jsp:include>
 
 
-			<div class="container border border-info">
-				<form id="modification_form" name="modification_form" method="POST">
+				<div class="container border border-info">
+
 					<div>
 						<span>
 							<img src="/AspireStore/images/ReactBookImage.jpg" alt="No Image" border="0" style="width: 40%; height: auto;" />
@@ -197,27 +200,26 @@
 					<input type="button" class="btn btn-primary" id="complete_modification_btn" name="complete_modification_btn" value="수정 완료">
 					&nbsp;
 					<input type="button" class="btn btn-secondary" id="cancel_modification_btn" name="cancel_modification_btn" value="수정 취소">
-				</form>
-			</div>
-			<footer>
-				<%@ include file="/footer.html"%>
-			</footer>
-		</div>
-	</div>
 
-	<!-- 저자 정보 수정 MODAL -->
-	<div class="modal fade" id="author_modal" tabindex="-1" role="dialog" aria-labelledby="modal_label" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="author_modal_title">저자 정보 수정</h5>
-
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
 				</div>
-				<div class="modal-body">
-					<form id="author_form" name="author_form" method="POST">
+				<footer>
+					<%@ include file="/footer.html"%>
+				</footer>
+			</div>
+		</div>
+
+		<!-- 저자 정보 수정 MODAL -->
+		<div class="modal fade" id="author_modal" tabindex="-1" role="dialog" aria-labelledby="modal_label" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="author_modal_title">저자 정보 수정</h5>
+
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
 						<input type="hidden" id="input_author_code" name="input_author_code" value="${pageScope.AUTHOR.author_code }">
 						<div>
 							<div class="form-row">
@@ -253,18 +255,18 @@
 								</tbody>
 							</table>
 						</div>
-					</form>
-				</div>
-				<div class="modal-footer" id="author_modal_footer">
-					<div class="form-row align-items-right">
-						<div class="col-auto">
-							<input type="text" class="form-control form-control-sm" id="input_find_author_name" value="${pageScope.AUTHOR.author_name }">
-						</div>
-						<div class="col-auto">
-							<button type="button" class="btn btn-primary" onclick="getAuthors()">저자 조회</button>
-						</div>
-						<div class="col-auto">
-							<button type="button" class="btn btn-primary" data-dismiss="modal">확인</button>
+					</div>
+					<div class="modal-footer" id="author_modal_footer">
+						<div class="form-row align-items-right">
+							<div class="col-auto">
+								<input type="text" class="form-control form-control-sm" id="input_find_author_name" value="${pageScope.AUTHOR.author_name }">
+							</div>
+							<div class="col-auto">
+								<button type="button" class="btn btn-primary" onclick="getAuthors()">저자 조회</button>
+							</div>
+							<div class="col-auto">
+								<button type="button" class="btn btn-primary" onclick="temporarilySaveAuthorData()" data-dismiss="modal">확인</button>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -282,16 +284,16 @@
 						</button>
 					</div>
 					<div class="modal-body">
-						<form id="author_form" name="author_form" method="POST">
-							<table class="table" id='publisher_modal_table'>
-								<thead id="publisher_modal_thead">
 
-								</thead>
-								<tbody id="publisher_modal_tbody">
+						<table class="table" id='publisher_modal_table'>
+							<thead id="publisher_modal_thead">
 
-								</tbody>
-							</table>
-						</form>
+							</thead>
+							<tbody id="publisher_modal_tbody">
+
+							</tbody>
+						</table>
+
 					</div>
 					<div class="modal-footer" id="publisher_modal_footer">
 						<button type="button" class="btn btn-primary" data-dismiss="modal">확인</button>
@@ -299,126 +301,187 @@
 				</div>
 			</div>
 		</div>
+		
+		<input type="hidden" id="original_item_code" name="original_item_code" value="${pageScope.BOOK.item_code}">
+		<input type="hidden" id="original_item_name" name="original_item_name" value="${pageScope.BOOK.item_name}">
+		<input type="hidden" id="original_item_publisher_code" name="original_item_publisher_code" value="${pageScope.BOOK.item_publisher_code}">
+		<input type="hidden" id="original_item_publication_date" name="original_item_publication_date" value="${pageScope.BOOK.item_publication_date}">
+		<input type="hidden" id="original_item_fixed_price" name="original_item_fixed_price" value="${pageScope.BOOK.item_fixed_price}">
+		<input type="hidden" id="original_item_selling_price" name="original_item_selling_price" value="${pageScope.BOOK.item_selling_price}">
+		<input type="hidden" id="original_item_remaining_quantity" name="original_item_remaining_quantity" value="${pageScope.BOOK.item_remaining_quantity}">
+		<input type="hidden" id="original_item_category_code" name="original_item_category_code" value="${pageScope.BOOK.item_category_code}">
+		<input type="hidden" id="original_item_page_number" name="original_item_page_number" value="${pageScope.BOOK.item_page_number}">
+		<input type="hidden" id="original_item_weight" name="original_item_weight" value="${pageScope.BOOK.item_weight}">
+		<input type="hidden" id="original_item_size" name="original_item_size" value="${pageScope.BOOK.item_size}">
+		<input type="hidden" id="original_item_isbn13" name="original_item_isbn13" value="${pageScope.BOOK.item_isbn13}">
+		<input type="hidden" id="original_item_isbn10" name="original_item_isbn10" value="${pageScope.BOOK.item_isbn10}">
+		<input type="hidden" id="original_item_book_introduction" name="original_item_book_introduction" value="${pageScope.BOOK.item_book_introduction}">
+		<input type="hidden" id="original_item_contents_table" name="original_item_contents_table" value="${pageScope.BOOK.item_contents_table}">
+		<input type="hidden" id="original_item_publisher_review" name="original_item_publisher_review" value="${pageScope.BOOK.item_publisher_review}">
+		<input type="hidden" id="original_item_registration_datetime" name="original_item_registration_datetime" value="${pageScope.BOOK.item_registration_datetime}">
+		<input type="hidden" id="original_item_category_desc" name="original_item_category_desc" value="${pageScope.BOOK.item_category_desc}">
 
-		<script src="/AspireStore/jquery/jquery.js"></script>
-		<script src="/AspireStore/js/bootstrap.bundle.js"></script>
-		<script type="text/javascript">
-			var authorList = [];
+		<input type="hidden" id="original_author_code" name="original_author_code" value="${pageScope.AUTHOR.author_code}">
+		<input type="hidden" id="original_author_name" name="original_author_name" value="${pageScope.AUTHOR.author_name}">
+		<input type="hidden" id="original_author_region" name="original_author_region" value="${pageScope.AUTHOR.author_region}">
+		<input type="hidden" id="original_author_information" name="original_author_information" value="${pageScope.AUTHOR.author_information}">
 
-			$("#menu-toggle").click(function(e)
+		<input type="hidden" id="original_publisher_code" name="original_publisher_code" value="${pageScope.PUBLISHER.publisher_code}">
+		<input type="hidden" id="original_publisher_name" name="original_publisher_name" value="${pageScope.PUBLISHER.publisher_name}">
+		<input type="hidden" id="original_publisher_region" name="original_publisher_region" value="${pageScope.PUBLISHER.publisher_region}">
+	</form>
+	<script src="/AspireStore/jquery/jquery.js"></script>
+	<script src="/AspireStore/js/bootstrap.bundle.js"></script>
+	<script type="text/javascript">
+		var authorList = [];
+		var modifiedAuthorData = new Object();
+		var selectedAuthorIndex = 0;
+
+		$("#menu-toggle").click(function(e)
+		{
+			e.preventDefault();
+			$("#wrapper").toggleClass("toggled");
+		});
+
+		function unlockElement(elementID, btnObj)
+		{
+			let element = document.getElementById(elementID);
+			// tag의 readonly를 해제
+			element.readOnly = false;
+
+			let btn = document.getElementById(btnObj.id);
+			btn.setAttribute('value', '잠금');
+			btn.setAttribute('onclick', 'lockElement(\'' + elementID
+					+ '\', this)');
+		}
+
+		function lockElement(elementID, btnObj)
+		{
+			let element = document.getElementById(elementID);
+			// tag의 readonly를 해제
+			element.readOnly = true;
+
+			let btn = document.getElementById(btnObj.id);
+			btn.setAttribute('value', '잠금 해제');
+			btn.setAttribute('onclick', 'unlockElement(\'' + elementID
+					+ '\', this)');
+		}
+
+		function getAuthors()
+		{
+			let authorName = document.getElementById('input_find_author_name').value;
+
+			let xhr = new XMLHttpRequest();
+
+			xhr.onreadystatechange = function()
 			{
-				e.preventDefault();
-				$("#wrapper").toggleClass("toggled");
-			});
-
-			function unlockElement(elementID, btnObj)
-			{
-				let element = document.getElementById(elementID);
-				// tag의 readonly를 해제
-				element.readOnly = false;
-
-				let btn = document.getElementById(btnObj.id);
-				btn.setAttribute('value', '잠금');
-				btn.setAttribute('onclick', 'lockElement(\'' + elementID
-						+ '\', this)');
-			}
-
-			function lockElement(elementID, btnObj)
-			{
-				let element = document.getElementById(elementID);
-				// tag의 readonly를 해제
-				element.readOnly = true;
-
-				let btn = document.getElementById(btnObj.id);
-				btn.setAttribute('value', '잠금 해제');
-				btn.setAttribute('onclick', 'unlockElement(\'' + elementID
-						+ '\', this)');
-			}
-
-			function getAuthors()
-			{
-				let authorName = document
-						.getElementById('input_find_author_name').value;
-
-				let xhr = new XMLHttpRequest();
-
-				xhr.onreadystatechange = function()
+				if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200)
 				{
-					if (xhr.readyState == XMLHttpRequest.DONE
-							&& xhr.status == 200)
-					{
-						const responseList = xhr.response;
-						initializeAuthorTable();
-						authorList = [];
+					const responseList = xhr.response;
+					initializeAuthorTable();
+					authorList = [];
 
-						setAuthorList(responseList.AUTHORS);
-						setAuthorTable();
-					}
+					setAuthorList(responseList.AUTHORS);
+					setAuthorTable();
+				}
+			};
+			xhr.open('POST', '/AspireStore/management/authorManagement.aspire',
+					'true');
+			xhr.responseType = 'json';
+			xhr.setRequestHeader('Content-type',
+					'application/x-www-form-urlencoded');
+			xhr.send('type=GET_AUTHORS' + '&author_name=' + authorName);
+		}
+
+		function setAuthorList(list)
+		{
+			for (let index = 0; index < list.length; ++index)
+			{
+				var authorObj =
+				{
+					author_name : list[index].AUTHOR.AUTHOR_NAME,
+					author_region : list[index].AUTHOR.AUTHOR_REGION,
+					author_code : list[index].AUTHOR.AUTHOR_CODE,
+					author_desc : list[index].AUTHOR.AUTHOR_DESC
 				};
-				xhr.open('POST',
-						'/AspireStore/management/authorManagement.aspire',
-						'true');
-				xhr.responseType = 'json';
-				xhr.setRequestHeader('Content-type',
-						'application/x-www-form-urlencoded');
-				xhr.send('type=GET_AUTHORS' + '&author_name=' + authorName);
+				authorList.push(authorObj);
 			}
+		}
 
-			function setAuthorList(list)
+		function setAuthorTable()
+		{
+			let tBody = document.getElementById('author_modal_tbody');
+			for (let index = 0; index < authorList.length; ++index)
 			{
-				for (let index = 0; index < list.length; ++index)
-				{
-					var authorObj =
-					{
-						author_name : list[index].AUTHOR.AUTHOR_NAME,
-						author_region : list[index].AUTHOR.AUTHOR_REGION,
-						author_code : list[index].AUTHOR.AUTHOR_CODE,
-						author_desc : list[index].AUTHOR.AUTHOR_DESC
-					};
-					authorList.push(authorObj);
-				}
-			}
+				let newRow = tBody.insertRow(index);
 
-			function setAuthorTable()
+				let authorNameCol = newRow.insertCell(0);
+				let authorRegionCol = newRow.insertCell(1);
+				let authorDescCol = newRow.insertCell(2);
+				let authorSelectionCol = newRow.insertCell(3);
+
+				authorNameCol.innerText = authorList[index]['author_name'];
+				authorRegionCol.innerText = authorList[index]['author_region'];
+				authorDescCol.innerText = authorList[index]['author_desc'];
+
+				let selectionBtn = document.createElement('input');
+				selectionBtn.setAttribute('type', 'button');
+				selectionBtn.setAttribute('class', 'btn btn-secondary');
+				selectionBtn.setAttribute('onclick', 'setAuthorForm(' + index
+						+ ')');
+				selectionBtn.setAttribute('value', '선택');
+				authorSelectionCol.appendChild(selectionBtn);
+			}
+		}
+
+		function initializeAuthorTable()
+		{
+			let tBody = document.getElementById('author_modal_tbody');
+			for (let index = tBody.rows.length - 1; index >= 0; --index)
 			{
-				let tBody = document.getElementById('author_modal_tbody');
-				for (let index = 0; index < authorList.length; ++index)
-				{
-					let newRow = tBody.insertRow(index);
-
-					let authorNameCol = newRow.insertCell(0);
-					let authorRegionCol = newRow.insertCell(1);
-					let authorDescCol = newRow.insertCell(2);
-					let authorSelectionCol = newRow.insertCell(2);
-
-					authorNameCol.innerText = authorList[index]['author_name'];
-					authorRegionCol.innerText = authorList[index]['author_region'];
-					authorDescCol.innerText = authorList[index]['author_desc'];
-
-					let selectionBtn = document.createElement('input');
-					selectionBtn.setAttiribute('type', 'button');
-					selectionBtn.setAttiribute('class', 'btn btn-secondary');
-					selectionBtn.setAttiribute('onclick', 'setAuthorForm('
-							+ index + ')');
-					authorSelectionCol.appendChild(selectionBtn);
-				}
+				tBody.deleteRow(index);
 			}
+		}
 
-			function initializeAuthorTable()
+		function setAuthorForm(index)
+		{
+			selectedAuthorIndex = index;
+			document.getElementById('input_author_name').value = authorList[index]['author_name'];
+			document.getElementById('input_author_region').value = authorList[index]['author_region'];
+			document.getElementById('textarea_author_desc').value = authorList[index]['author_desc'];
+			document.getElementById('input_author_code').value = authorList[index]['author_code'];
+		}
+
+		function convertRegionToChar(region)
+		{
+			switch (region)
 			{
-				let tBody = document.getElementById('author_modal_tbody');
-				for (let index = tBody.rows.length - 1; index >= 0; --index)
-				{
-					tBody.deleteRow(index);
-				}
+			case '국내':
+				return 'd';
+			case '해외':
+				return 'a';
 			}
+		}
 
-			function setAuthorForm(index)
+		function temporarilySaveAuthorData()
+		{
+			let region = document.getElementById('input_author_region').value;
+
+			if (region != '국내' && region != '해외')
 			{
-				document.getElementById('input_author_name').value = authorList[index]['author_name'];
-				document.getElementById('input_author_region').value = authorList[index]['author_region'];
-				document.getElementById('textarea_author_desc').value = authorList[index]['author_desc'];
+				alert('지역은 국내 또는 해외로 입력해주세요!');
+			} else
+			{
+				modifiedAuthorData['author_name'] = document
+						.getElementById('input_author_name').value;
+				modifiedAuthorData['author_region'] = convertRegionToChar(document
+						.getElementById('input_author_region').value);
+				modifiedAuthorData['author_code'] = document
+						.getElementById('input_author_code').value;
+				modifiedAuthorData['author_desc'] = document
+						.getElementById('textarea_author_desc').value;
 			}
-		</script>
+		}
+	</script>
 </body>
 </html>

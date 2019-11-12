@@ -36,8 +36,7 @@ public class AuthorDAO
 			while (set.next())
 			{
 				authorData = new AuthorDTO().setAuthor_code(acode).setAuthor_name(set.getString(2))
-						.setAuthor_region(set.getNString(3)).setAuthor_information(set.getString(4));
-
+						.setAuthor_region(convertRegion(set.getString(3))).setAuthor_information(set.getString(4));
 			}
 
 		} catch (Exception e)
@@ -122,20 +121,20 @@ public class AuthorDAO
 
 	public ArrayList<AuthorDTO> getAuthors(String authorName)
 	{
-		String query = "SELECT * FROM authors WHERE author_name = ?";
+		String query = "SELECT * FROM authors WHERE author_name LIKE ?";
 		ResultSet set = null;
 		ArrayList<AuthorDTO> list = null;
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
 		{
-			prstmt.setString(1, authorName);
+			prstmt.setString(1, "%" + authorName + "%");
 			set = prstmt.executeQuery();
 
 			list = new ArrayList<AuthorDTO>();
 			while (set.next())
 			{
 				list.add(new AuthorDTO().setAuthor_code(set.getInt(1)).setAuthor_name(set.getString(2))
-						.setAuthor_region(set.getString(3)).setAuthor_information(set.getString(4)));
+						.setAuthor_region(convertRegion(set.getString(3))).setAuthor_information(set.getString(4)));
 			}
 		} catch (Exception e)
 		{
@@ -154,5 +153,16 @@ public class AuthorDAO
 			}
 		}
 		return list;
+	}
+
+	private String convertRegion(String region)
+	{
+		if (region.equals("d"))
+		{
+			return "국내";
+		} else
+		{
+			return "해외";
+		}
 	}
 }
