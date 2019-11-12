@@ -60,14 +60,8 @@
 							<input type="text" class="form-control" id="input_item_name" name="input_item_name" value="${pageScope.BOOK.item_name}" readonly="readonly">
 							<input type="button" id="input_item_name_btn" onclick="unlockElement('input_item_name',this)" value="잠금 해제">
 						</div>
-						<hr>
-						<div class="form-group">
-							<label for="input_publisher">출판사</label>
-							<input type="text" class="form-control" id="input_publisher" name="input_publisher" value="${pageScope.PUBLISHER.publisher_name}" readonly="readonly">
-							<input type="button" id="input_publisher_btn" onclick="unlockElement('input_publisher',this)" value="잠금 해제">
-						</div>
 
-						<hr />
+						<hr>
 
 						<div class="form-group">
 							<label for="input_fixed_price">정가</label>
@@ -197,7 +191,7 @@
 						<hr>
 
 					</div>
-					<input type="button" class="btn btn-primary" id="complete_modification_btn" name="complete_modification_btn" value="수정 완료">
+					<input type="button" class="btn btn-primary" onclick="checkModifiedData()" id="complete_modification_btn" name="complete_modification_btn" value="수정 완료">
 					&nbsp;
 					<input type="button" class="btn btn-secondary" id="cancel_modification_btn" name="cancel_modification_btn" value="수정 취소">
 
@@ -220,9 +214,12 @@
 						</button>
 					</div>
 					<div class="modal-body">
-						<input type="hidden" id="input_author_code" name="input_author_code" value="${pageScope.AUTHOR.author_code }">
 						<div>
 							<div class="form-row">
+								<div class="form-group col-sm-6">
+									<label for="input_publisher_code">저자 코드</label>
+									<input type="text" class="form-control form-control-sm" id="input_author_code" name="input_author_code" value="${pageScope.AUTHOR.author_code }" readonly="readonly">
+								</div>
 								<div class="form-group col-sm-6">
 									<label for="input_author_name">저자 명</label>
 									<input type="button" id="input_author_name_btn" class="btn btn-info" onclick="unlockElement('input_author_name',this)" value="잠금 해제">
@@ -244,6 +241,7 @@
 							<table class="table" id="author_modal_table">
 								<thead id="author_modal_thead">
 									<tr>
+										<th>저자 코드</th>
 										<th>저자 명</th>
 										<th>지역</th>
 										<th>저자 소개</th>
@@ -265,7 +263,7 @@
 								<button type="button" class="btn btn-primary" onclick="getAuthors()">저자 조회</button>
 							</div>
 							<div class="col-auto">
-								<button type="button" class="btn btn-primary" onclick="temporarilySaveAuthorData()" data-dismiss="modal">확인</button>
+								<button type="button" class="btn btn-primary" onclick="checkRegion('input_author_region')" data-dismiss="modal">확인</button>
 							</div>
 						</div>
 					</div>
@@ -279,63 +277,137 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="publisher_modal_title">출판사 정보 수정</h5>
+
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
 					<div class="modal-body">
+						<div>
+							<div class="form-row">
+								<div class="form-group col-sm-6">
+									<label for="input_publisher_code">출판사 코드</label>
+									<input type="text" class="form-control form-control-sm" id="input_publisher_code" name="input_publisher_code" value="${pageScope.PUBLISHER.publisher_code }" readonly="readonly">
+								</div>
+								<div class="form-group col-sm-6">
+									<label for="input_publisher_name">출판사 명</label>
+									<input type="button" id="input_publisher_name_btn" class="btn btn-info" onclick="unlockElement('input_publisher_name',this)" value="잠금 해제">
+									<input type="text" class="form-control form-control-sm" id="input_publisher_name" name="input_publisher_name" value="${pageScope.PUBLISHER.publisher_name }" readonly="readonly">
+								</div>
+								<div class="form-group col-sm-6">
+									<label for="input_publisher_region">지역</label>
+									<input type="button" id="input_publisher_region_btn" class="btn btn-info" onclick="unlockElement('input_publisher_region',this)" value="잠금 해제">
+									<input type="text" class="form-control form-control-sm" id="input_publisher_region" name="input_publisher_region" value="${pageScope.PUBLISHER.publisher_region }" readonly="readonly">
+								</div>
+							</div>
+						</div>
+						<div>
+							<table class="table" id="publisher_modal_table">
+								<thead id="publisher_modal_thead">
+									<tr>
+										<th>출판사 코드</th>
+										<th>출판사 명</th>
+										<th>지역</th>
+										<th>선택</th>
+									</tr>
+								</thead>
+								<tbody id="publisher_modal_tbody">
 
-						<table class="table" id='publisher_modal_table'>
-							<thead id="publisher_modal_thead">
-
-							</thead>
-							<tbody id="publisher_modal_tbody">
-
-							</tbody>
-						</table>
-
+								</tbody>
+							</table>
+						</div>
 					</div>
 					<div class="modal-footer" id="publisher_modal_footer">
-						<button type="button" class="btn btn-primary" data-dismiss="modal">확인</button>
+						<div class="form-row align-items-right">
+							<div class="col-auto">
+								<input type="text" class="form-control form-control-sm" id="input_find_publisher_name" value="${pageScope.PUBLISHER.publisher_name }">
+							</div>
+							<div class="col-auto">
+								<button type="button" class="btn btn-primary" onclick="getPublishers()">출판사 조회</button>
+							</div>
+							<div class="col-auto">
+								<button type="button" class="btn btn-primary" onclick="checkRegion('input_publisher_region')" data-dismiss="modal">확인</button>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		
-		<input type="hidden" id="original_item_code" name="original_item_code" value="${pageScope.BOOK.item_code}">
-		<input type="hidden" id="original_item_name" name="original_item_name" value="${pageScope.BOOK.item_name}">
-		<input type="hidden" id="original_item_publisher_code" name="original_item_publisher_code" value="${pageScope.BOOK.item_publisher_code}">
-		<input type="hidden" id="original_item_publication_date" name="original_item_publication_date" value="${pageScope.BOOK.item_publication_date}">
-		<input type="hidden" id="original_item_fixed_price" name="original_item_fixed_price" value="${pageScope.BOOK.item_fixed_price}">
-		<input type="hidden" id="original_item_selling_price" name="original_item_selling_price" value="${pageScope.BOOK.item_selling_price}">
-		<input type="hidden" id="original_item_remaining_quantity" name="original_item_remaining_quantity" value="${pageScope.BOOK.item_remaining_quantity}">
-		<input type="hidden" id="original_item_category_code" name="original_item_category_code" value="${pageScope.BOOK.item_category_code}">
-		<input type="hidden" id="original_item_page_number" name="original_item_page_number" value="${pageScope.BOOK.item_page_number}">
-		<input type="hidden" id="original_item_weight" name="original_item_weight" value="${pageScope.BOOK.item_weight}">
-		<input type="hidden" id="original_item_size" name="original_item_size" value="${pageScope.BOOK.item_size}">
-		<input type="hidden" id="original_item_isbn13" name="original_item_isbn13" value="${pageScope.BOOK.item_isbn13}">
-		<input type="hidden" id="original_item_isbn10" name="original_item_isbn10" value="${pageScope.BOOK.item_isbn10}">
-		<input type="hidden" id="original_item_book_introduction" name="original_item_book_introduction" value="${pageScope.BOOK.item_book_introduction}">
-		<input type="hidden" id="original_item_contents_table" name="original_item_contents_table" value="${pageScope.BOOK.item_contents_table}">
-		<input type="hidden" id="original_item_publisher_review" name="original_item_publisher_review" value="${pageScope.BOOK.item_publisher_review}">
-		<input type="hidden" id="original_item_registration_datetime" name="original_item_registration_datetime" value="${pageScope.BOOK.item_registration_datetime}">
-		<input type="hidden" id="original_item_category_desc" name="original_item_category_desc" value="${pageScope.BOOK.item_category_desc}">
+		<div id="original_datalist">
+			<input type="hidden" id="original_item_name" name="original_item_name" value="${pageScope.BOOK.item_name}">
+			<input type="hidden" id="original_item_publisher_code" name="original_item_publisher_code" value="${pageScope.BOOK.item_publisher_code}">
+			<input type="hidden" id="original_item_publication_date" name="original_item_publication_date" value="${pageScope.BOOK.item_publication_date}">
+			<input type="hidden" id="original_item_fixed_price" name="original_item_fixed_price" value="${pageScope.BOOK.item_fixed_price}">
+			<input type="hidden" id="original_item_selling_price" name="original_item_selling_price" value="${pageScope.BOOK.item_selling_price}">
+			<input type="hidden" id="original_item_page_number" name="original_item_page_number" value="${pageScope.BOOK.item_page_number}">
+			<input type="hidden" id="original_item_weight" name="original_item_weight" value="${pageScope.BOOK.item_weight}">
+			<input type="hidden" id="original_item_size" name="original_item_size" value="${pageScope.BOOK.item_size}">
+			<input type="hidden" id="original_item_isbn13" name="original_item_isbn13" value="${pageScope.BOOK.item_isbn13}">
+			<input type="hidden" id="original_item_isbn10" name="original_item_isbn10" value="${pageScope.BOOK.item_isbn10}">
+			<input type="hidden" id="original_item_book_introduction" name="original_item_book_introduction" value="${pageScope.BOOK.item_book_introduction}">
+			<input type="hidden" id="original_item_contents_table" name="original_item_contents_table" value="${pageScope.BOOK.item_contents_table}">
+			<input type="hidden" id="original_item_publisher_review" name="original_item_publisher_review" value="${pageScope.BOOK.item_publisher_review}">
 
-		<input type="hidden" id="original_author_code" name="original_author_code" value="${pageScope.AUTHOR.author_code}">
-		<input type="hidden" id="original_author_name" name="original_author_name" value="${pageScope.AUTHOR.author_name}">
-		<input type="hidden" id="original_author_region" name="original_author_region" value="${pageScope.AUTHOR.author_region}">
-		<input type="hidden" id="original_author_information" name="original_author_information" value="${pageScope.AUTHOR.author_information}">
+			<input type="hidden" id="original_author_code" name="original_author_code" value="${pageScope.AUTHOR.author_code}">
+			<input type="hidden" id="original_author_name" name="original_author_name" value="${pageScope.AUTHOR.author_name}">
+			<input type="hidden" id="original_author_region" name="original_author_region" value="${pageScope.AUTHOR.author_region}">
+			<input type="hidden" id="original_author_information" name="original_author_information" value="${pageScope.AUTHOR.author_information}">
 
-		<input type="hidden" id="original_publisher_code" name="original_publisher_code" value="${pageScope.PUBLISHER.publisher_code}">
-		<input type="hidden" id="original_publisher_name" name="original_publisher_name" value="${pageScope.PUBLISHER.publisher_name}">
-		<input type="hidden" id="original_publisher_region" name="original_publisher_region" value="${pageScope.PUBLISHER.publisher_region}">
+			<input type="hidden" id="original_publisher_code" name="original_publisher_code" value="${pageScope.PUBLISHER.publisher_code}">
+			<input type="hidden" id="original_publisher_name" name="original_publisher_name" value="${pageScope.PUBLISHER.publisher_name}">
+			<input type="hidden" id="original_publisher_region" name="original_publisher_region" value="${pageScope.PUBLISHER.publisher_region}">
+		</div>
 	</form>
 	<script src="/AspireStore/jquery/jquery.js"></script>
 	<script src="/AspireStore/js/bootstrap.bundle.js"></script>
 	<script type="text/javascript">
 		var authorList = [];
-		var modifiedAuthorData = new Object();
+		var publisherList = [];
 		var selectedAuthorIndex = 0;
+		var selectedPublisherIndex = 0;
+
+		const originalData =
+		{
+			input_item_name : '',
+			input_publisher_code : '',
+			input_pub_date : '',
+			input_fixed_price : 0,
+			input_selling_price : 0,
+			input_page_number : '',
+			input_weight : '',
+			input_size : '',
+			input_isbn13 : '',
+			input_isbn10 : '',
+			textarea_book_introduction : '',
+			textarea_item_contents_table : '',
+			textarea_item_publisher_review : '',
+			input_author_code : 0,
+			input_author_name : '',
+			input_author_region : '',
+			textarea_author_desc : '',
+			input_publisher_code : 0,
+			input_publisher_name : '',
+			input_publisher_region : ''
+		};
+
+		(function saveBookData()
+		{
+			let dataList = document.getElementById('original_datalist');
+			let inputTags = dataList.getElementsByTagName('input');
+			let sequence = 0;
+			let keys = Object.keys(originalData);
+
+			for (let index = 0; index < inputTags.length; ++index)
+			{
+				originalData[keys[index]] = inputTags[index].value;
+			}
+
+			while (dataList.firstChild)
+			{
+				// 원본 데이터를 가지고 있는 input tag를 제거
+				dataList.removeChild(dataList.childNodes[0]);
+			}
+		})()
 
 		$("#menu-toggle").click(function(e)
 		{
@@ -415,11 +487,13 @@
 			{
 				let newRow = tBody.insertRow(index);
 
-				let authorNameCol = newRow.insertCell(0);
-				let authorRegionCol = newRow.insertCell(1);
-				let authorDescCol = newRow.insertCell(2);
-				let authorSelectionCol = newRow.insertCell(3);
+				let authorCodeCol = newRow.insertCell(0);
+				let authorNameCol = newRow.insertCell(1);
+				let authorRegionCol = newRow.insertCell(2);
+				let authorDescCol = newRow.insertCell(3);
+				let authorSelectionCol = newRow.insertCell(4);
 
+				authorCodeCol.innerText = authorList[index]['author_code'];
 				authorNameCol.innerText = authorList[index]['author_name'];
 				authorRegionCol.innerText = authorList[index]['author_region'];
 				authorDescCol.innerText = authorList[index]['author_desc'];
@@ -463,24 +537,126 @@
 			}
 		}
 
-		function temporarilySaveAuthorData()
+		function checkRegion(id)
 		{
-			let region = document.getElementById('input_author_region').value;
+			let region = document.getElementById(id).value;
 
 			if (region != '국내' && region != '해외')
 			{
 				alert('지역은 국내 또는 해외로 입력해주세요!');
-			} else
-			{
-				modifiedAuthorData['author_name'] = document
-						.getElementById('input_author_name').value;
-				modifiedAuthorData['author_region'] = convertRegionToChar(document
-						.getElementById('input_author_region').value);
-				modifiedAuthorData['author_code'] = document
-						.getElementById('input_author_code').value;
-				modifiedAuthorData['author_desc'] = document
-						.getElementById('textarea_author_desc').value;
 			}
+		}
+
+		function getPublishers()
+		{
+			let publisherName = document
+					.getElementById('input_find_publisher_name').value;
+
+			let xhr = new XMLHttpRequest();
+
+			xhr.onreadystatechange = function()
+			{
+				if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200)
+				{
+					const responseList = xhr.response;
+					initializePublisherTable();
+					publisherList = [];
+
+					setPublisherList(responseList.PUBLISHERS);
+					setPublisherTable();
+				}
+			};
+			xhr.open('POST',
+					'/AspireStore/management/publisherManagement.aspire',
+					'true');
+			xhr.responseType = 'json';
+			xhr.setRequestHeader('Content-type',
+					'application/x-www-form-urlencoded');
+			xhr
+					.send('type=GET_PUBLISHERS' + '&publisher_name='
+							+ publisherName);
+		}
+
+		function setPublisherList(list)
+		{
+			for (let index = 0; index < list.length; ++index)
+			{
+				var publisherObj =
+				{
+					publisher_name : list[index].PUBLISHER.PUBLISHER_NAME,
+					publisher_region : list[index].PUBLISHER.PUBLISHER_REGION,
+					publisher_code : list[index].PUBLISHER.PUBLISHER_CODE,
+				};
+				publisherList.push(publisherObj);
+			}
+		}
+
+		function setPublisherTable()
+		{
+			let tBody = document.getElementById('publisher_modal_tbody');
+			for (let index = 0; index < publisherList.length; ++index)
+			{
+				let newRow = tBody.insertRow(index);
+
+				let publisherCodeCol = newRow.insertCell(0);
+				let publisherNameCol = newRow.insertCell(1);
+				let publisherRegionCol = newRow.insertCell(2);
+				let publisherSelectionCol = newRow.insertCell(3);
+
+				publisherCodeCol.innerText = publisherList[index]['publisher_code'];
+				publisherNameCol.innerText = publisherList[index]['publisher_name'];
+				publisherRegionCol.innerText = publisherList[index]['publisher_region'];
+
+				let selectionBtn = document.createElement('input');
+				selectionBtn.setAttribute('type', 'button');
+				selectionBtn.setAttribute('class', 'btn btn-secondary');
+				selectionBtn.setAttribute('onclick', 'setPublisherForm('
+						+ index + ')');
+				selectionBtn.setAttribute('value', '선택');
+				publisherSelectionCol.appendChild(selectionBtn);
+			}
+		}
+
+		function initializePublisherTable()
+		{
+			let tBody = document.getElementById('publisher_modal_tbody');
+			for (let index = tBody.rows.length - 1; index >= 0; --index)
+			{
+				tBody.deleteRow(index);
+			}
+		}
+
+		function setPublisherForm(index)
+		{
+			selectedPublisherIndex = index;
+			document.getElementById('input_publisher_name').value = publisherList[index]['publisher_name'];
+			document.getElementById('input_publisher_region').value = publisherList[index]['publisher_region'];
+			document.getElementById('input_publisher_code').value = publisherList[index]['publisher_code'];
+		}
+
+		// 데이터 수정 후 갱신하는 코드 작성 필요, 이후 사진도 수정할 수 있는 기능 추가
+		function checkModifiedData()
+		{
+			// 변경된 값의 input tag name을 가지는 리스트
+			const modifiedValueList = [];
+			const form = document.modification_form;
+			const inputTags = form.getElementsByTagName('input');
+			const textareaTags = form.getElementsByTagName('textarea');
+			const originalObjKeys = Object.keys(originalData);
+
+			for (let index = 0; index < originalObjKeys.length; ++index)
+			{
+				let modifiedValue = document
+						.getElementById(originalObjKeys[index]).value;
+				let originalValue = originalData[originalObjKeys[index]];
+
+				if (modifiedValue != modifiedValue)
+				{
+					modifiedValueList.push(originalObjKeys[index]);
+				}
+				// textarea의 값에 대해서도 대조 하는 코드 작성필요
+			}
+			// 변경된 값만 POST로 넘기고, 처리하도록
 		}
 	</script>
 </body>

@@ -124,7 +124,7 @@ public class ItemsDAO
 						.setAuthor_region(convertRegion(set.getString(24))).setAuthor_information(set.getString(25));
 
 				publisher = new PublisherDTO().setPublisher_code(set.getInt(19)).setPublisher_name(set.getString(20))
-						.setPublisher_region(set.getString(21));
+						.setPublisher_region(convertRegion(set.getString(21)));
 			}
 		} catch (Exception e)
 		{

@@ -194,6 +194,16 @@
 		<servlet-name>authormanagementservlet</servlet-name>
 		<url-pattern>/management/authorManagement</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>publishermanagementservlet</servlet-name>
+		<servlet-class>controller.ServletPublisherManagement</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>publishermanagementservlet</servlet-name>
+		<url-pattern>/management/publisherManagement</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<servlet-name>frontcontroller</servlet-name>

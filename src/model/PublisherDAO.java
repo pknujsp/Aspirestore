@@ -74,4 +74,51 @@ public class PublisherDAO
 		}
 		return list;
 	}
+
+	public ArrayList<PublisherDTO> getPublishers(String publisherName)
+	{
+		String query = "SELECT * FROM publishers WHERE publisher_name LIKE ?";
+		ResultSet set = null;
+		ArrayList<PublisherDTO> list = null;
+
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			prstmt.setString(1, "%" + publisherName + "%");
+			set = prstmt.executeQuery();
+
+			list = new ArrayList<PublisherDTO>();
+			while (set.next())
+			{
+				list.add(new PublisherDTO().setPublisher_code(set.getInt(1)).setPublisher_name(set.getString(2))
+						.setPublisher_region(convertRegion(set.getString(3))));
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return list;
+	}
+
+	private String convertRegion(String region)
+	{
+		if (region.equals("d"))
+		{
+			return "국내";
+		} else
+		{
+			return "해외";
+		}
+	}
 }
