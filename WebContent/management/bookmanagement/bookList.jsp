@@ -701,9 +701,9 @@
 			{
 				type : 'GET_RECORDS'
 			};
-			checkedCategoryList.push(typeObj);
+			checkedCategoryList.unshift(typeObj);
 			xhr.send(JSON.stringify(checkedCategoryList));
-			checkedCategoryList.pop();
+			checkedCategoryList.shift();
 		}
 
 		function processPage()
@@ -742,9 +742,9 @@
 				{
 					type : 'GET_TOTAL_RECORDS'
 				};
-				checkedCategoryList.push(typeObj);
+				checkedCategoryList.unshift(typeObj);
 				xhr.send(JSON.stringify(checkedCategoryList));
-				checkedCategoryList.pop();
+				checkedCategoryList.shift();
 			}
 		}
 

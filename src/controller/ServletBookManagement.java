@@ -2,6 +2,7 @@ package controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -14,8 +15,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import model.AuthorDAO;
+import model.AuthorDTO;
 import model.ItemsDAO;
 import model.ItemsDTO;
+import model.PublisherDAO;
+import model.PublisherDTO;
 
 public class ServletBookManagement extends HttpServlet
 {
@@ -36,6 +41,9 @@ public class ServletBookManagement extends HttpServlet
 			break;
 		case "MODIFY_DATA":
 			modifyData(request, response);
+			break;
+		case "UPDATE_DATA":
+			updateData(request, response);
 			break;
 		}
 	}
@@ -199,6 +207,45 @@ public class ServletBookManagement extends HttpServlet
 		} catch (Exception e)
 		{
 			new ServletException(e);
+		}
+	}
+
+	protected void updateData(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException
+	{
+		try
+		{
+			ServletContext sc = this.getServletContext();
+			ItemsDAO itemsDAO = (ItemsDAO) sc.getAttribute("itemsDAO");
+			AuthorDAO authorDAO = (AuthorDAO) sc.getAttribute("authorDAO");
+			PublisherDAO publisherDAO = (PublisherDAO) sc.getAttribute("PUBLISHER_DAO");
+
+			JSONArray jsonData = (JSONArray) request.getAttribute("JSON_ARR");
+			ArrayList<HashMap<String, String>> dataList = new ArrayList<HashMap<String, String>>();
+
+			HashMap<String, String> processingDataMap = new HashMap<String, String>();
+			processingDataMap.put("icode", jsonData.getJSONObject(0).getString("item_code"));
+			processingDataMap.put("ccode", jsonData.getJSONObject(0).getString("item_category_code"));
+
+			dataList.add(processingDataMap);
+
+			for (int index = 1; index < jsonData.length(); ++index)
+			{
+				HashMap<String, String> dataMap = new HashMap<String, String>();
+				dataMap.put("data_name", jsonData.getJSONObject(index).getString("data_name"));
+				dataMap.put("data_value", jsonData.getJSONObject(index).getString("data_value"));
+
+				dataList.add(dataMap);
+			}
+			// 도서 데이터 수정 처리
+			ItemsDTO bookData = null;
+			// 저자 데이터 수정 처리
+			AuthorDTO authorData = null;
+			// 출판사 데이터 수정 처리
+			PublisherDTO publisherData = null;
+		} catch (Exception e)
+		{
+			throw new ServletException(e);
 		}
 	}
 }

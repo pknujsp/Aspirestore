@@ -512,7 +512,7 @@ public class ServletDispatcher extends HttpServlet
 						BufferedReader reader = request.getReader();
 						JSONTokener tokener = new JSONTokener(reader);
 						JSONArray jsonArr = new JSONArray(tokener);
-						JSONObject parameterObj = jsonArr.getJSONObject(13);
+						JSONObject parameterObj = jsonArr.getJSONObject(0);
 
 						requestedType = parameterObj.getString("type");
 						request.setAttribute("TYPE", requestedType);
@@ -536,6 +536,9 @@ public class ServletDispatcher extends HttpServlet
 					case "MODIFY_DATA":
 						request.setAttribute("ICODE", request.getParameter("book_code"));
 						request.setAttribute("CCODE", request.getParameter("book_category_code"));
+						break;
+					
+					case "UPDATE_DATA":
 						break;
 					}
 				}
