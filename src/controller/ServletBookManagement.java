@@ -226,26 +226,151 @@ public class ServletBookManagement extends HttpServlet
 			HashMap<String, String> processingDataMap = new HashMap<String, String>();
 			processingDataMap.put("icode", jsonData.getJSONObject(0).getString("item_code"));
 			processingDataMap.put("ccode", jsonData.getJSONObject(0).getString("item_category_code"));
+			processingDataMap.put("acode", jsonData.getJSONObject(0).getString("author_code"));
+			processingDataMap.put("pcode", jsonData.getJSONObject(0).getString("publisher_code"));
 
 			dataList.add(processingDataMap);
 
 			for (int index = 1; index < jsonData.length(); ++index)
 			{
 				HashMap<String, String> dataMap = new HashMap<String, String>();
-				dataMap.put("data_name", jsonData.getJSONObject(index).getString("data_name"));
+				dataMap.put("data_type", classifyType(jsonData.getJSONObject(index).getString("data_name")));
+				dataMap.put("data_name", separateName(jsonData.getJSONObject(index).getString("data_name")));
 				dataMap.put("data_value", jsonData.getJSONObject(index).getString("data_value"));
 
 				dataList.add(dataMap);
 			}
-			// 도서 데이터 수정 처리
-			ItemsDTO bookData = null;
-			// 저자 데이터 수정 처리
-			AuthorDTO authorData = null;
-			// 출판사 데이터 수정 처리
-			PublisherDTO publisherData = null;
+
+			ItemsDTO bookData = new ItemsDTO();
+			AuthorDTO authorData = new AuthorDTO();
+			PublisherDTO publisherData = new PublisherDTO();
+
+			for (int index = 1; index < jsonData.length(); ++index)
+			{
+				switch (dataList.get(index).get("data_type"))
+				{
+				case "item":
+					checkBookModification(bookData, dataList.get(index));
+					break;
+				case "author":
+					checkAuthorModification(authorData, dataList.get(index), dataList.get(0).get("acode"));
+					break;
+				case "publisher":
+					checkPublisherModification(publisherData, dataList.get(index), dataList.get(0).get("pcode"));
+					break;
+				}
+			}
+
+			request.setAttribute("VIEWURL", "ajax:/");
 		} catch (Exception e)
 		{
 			throw new ServletException(e);
+		}
+	}
+
+	private String classifyType(String dataName)
+	{
+		String separatedStr = dataName.substring(0, 2);
+		String dataType = null;
+
+		switch (separatedStr)
+		{
+		case "it":
+			dataType = "item";
+			break;
+		case "au":
+			dataType = "author";
+			break;
+		case "pu":
+			dataType = "publisher";
+			break;
+		}
+		return dataType;
+	}
+
+	private String separateName(String dataName)
+	{
+		return dataName.substring(3);
+	}
+
+	private void checkBookModification(ItemsDTO book, HashMap<String, String> data)
+	{
+		String dataName = data.get("data_name");
+		String dataValue = data.get("data_value");
+
+		if (dataName.equals("item_name"))
+		{
+			book.setItem_name(dataValue);
+		} else if (dataName.equals("pub_date"))
+		{
+			book.setItem_publication_date(dataValue);
+		} else if (dataName.equals("fixed_price"))
+		{
+			book.setItem_fixed_price(Integer.parseInt(dataValue));
+		} else if (dataName.equals("selling_price"))
+		{
+			book.setItem_selling_price(Integer.parseInt(dataValue));
+		} else if (dataName.equals("page_number"))
+		{
+			book.setItem_page_number(dataValue);
+		} else if (dataName.equals("weight"))
+		{
+			book.setItem_weight(dataValue);
+		} else if (dataName.equals("size"))
+		{
+			book.setItem_size(dataValue);
+		} else if (dataName.equals("isbn13"))
+		{
+			book.setItem_isbn13(dataValue);
+		} else if (dataName.equals("isbn10"))
+		{
+			book.setItem_isbn10(dataValue);
+		} else if (dataName.equals("book_introduction"))
+		{
+			book.setItem_book_introduction(dataValue);
+		} else if (dataName.equals("item_contents_table"))
+		{
+			book.setItem_contents_table(dataValue);
+		} else if (dataName.equals("item_publisher_review"))
+		{
+			book.setItem_publisher_review(dataValue);
+		}
+	}
+
+	private void checkAuthorModification(AuthorDTO author, HashMap<String, String> data, String originalAcode)
+	{
+		String dataName = data.get("data_name");
+		String dataValue = data.get("data_value");
+
+		if (dataName.equals("author_code"))
+		{
+			author.setAuthor_code(Integer.parseInt(dataValue));
+		} else if (dataName.equals("author_name"))
+		{
+			author.setAuthor_name(dataValue);
+		} else if (dataName.equals("author_region"))
+		{
+			author.setAuthor_region(dataValue);
+		} else if (dataName.equals("author_desc"))
+		{
+			author.setAuthor_information(dataValue);
+		}
+	}
+
+	private void checkPublisherModification(PublisherDTO publisher, HashMap<String, String> data, String originalPcode)
+	{
+		String dataName = data.get("data_name");
+		String dataValue = data.get("data_value");
+
+		if (dataName.equals("publisher_code"))
+		{
+			publisher.setPublisher_code(Integer.parseInt(dataValue));
+		} else if (dataName.equals("publisher_name"))
+		{
+			publisher.setPublisher_name(dataValue);
+		} else if (dataName.equals("publisher_region"))
+		{
+			publisher.setPublisher_region(dataValue);
 		}
 	}
 }

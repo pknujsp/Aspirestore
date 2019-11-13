@@ -56,24 +56,24 @@
 					</div>
 					<div>
 						<div class="form-group">
-							<label for="item_name">도서 명</label>
-							<input type="text" class="form-control" id="item_name" name="item_name" value="${pageScope.BOOK.item_name}" readonly="readonly">
-							<input type="button" id="item_name_btn" onclick="unlockElement('item_name',this)" value="잠금 해제">
+							<label for="it_item_name">도서 명</label>
+							<input type="text" class="form-control" id="it_item_name" name="it_item_name" value="${pageScope.BOOK.item_name}" readonly="readonly">
+							<input type="button" id="item_name_btn" onclick="unlockElement('it_item_name',this)" value="잠금 해제">
 						</div>
 
 						<hr>
 
 						<div class="form-group">
-							<label for="fixed_price">정가</label>
-							<input type="text" class="form-control" id="fixed_price" name="fixed_price" value="${pageScope.BOOK.item_fixed_price}" readonly="readonly">
+							<label for="it_fixed_price">정가</label>
+							<input type="text" class="form-control" id="it_fixed_price" name="it_fixed_price" value="${pageScope.BOOK.item_fixed_price}" readonly="readonly">
 							원
-							<input type="button" id="fixed_price_btn" onclick="unlockElement('fixed_price',this)" value="잠금 해제">
+							<input type="button" id="fixed_price_btn" onclick="unlockElement('it_fixed_price',this)" value="잠금 해제">
 						</div>
 						<div class="form-group">
-							<label for="selling_price">판매가</label>
-							<input type="text" class="form-control" id="selling_price" name="selling_price" value="${pageScope.BOOK.item_selling_price}" readonly="readonly">
+							<label for="it_selling_price">판매가</label>
+							<input type="text" class="form-control" id="it_selling_price" name="it_selling_price" value="${pageScope.BOOK.item_selling_price}" readonly="readonly">
 							원
-							<input type="button" id="selling_price_btn" onclick="unlockElement('selling_price',this)" value="잠금 해제">
+							<input type="button" id="selling_price_btn" onclick="unlockElement('it_selling_price',this)" value="잠금 해제">
 						</div>
 						<hr>
 						<div>
@@ -86,9 +86,9 @@
 										<tr>
 											<td>
 												<div class="form-group">
-													<label for="pub_date">출간 날짜</label>
-													<input type="text" class="form-control" id="pub_date" name="pub_date" value="${pageScope.BOOK.item_publication_date}" readonly="readonly">
-													<input type="button" id="pub_date_btn" onclick="unlockElement('pub_date',this)" value="잠금 해제">
+													<label for="it_pub_date">출간 날짜</label>
+													<input type="text" class="form-control" id="it_pub_date" name="it_pub_date" value="${pageScope.BOOK.item_publication_date}" readonly="readonly">
+													<input type="button" id="pub_date_btn" onclick="unlockElement('it_pub_date',this)" value="잠금 해제">
 												</div>
 											</td>
 										</tr>
@@ -96,22 +96,22 @@
 											<td>
 												<div class="form-group">
 													<label for="page_number">쪽수</label>
-													<input type="text" class="form-control" id="page_number" name="page_number" value="${pageScope.BOOK.item_page_number}" readonly="readonly">
-													<input type="button" id="page_number_btn" onclick="unlockElement('page_number',this)" value="잠금 해제">
+													<input type="text" class="form-control" id="it_page_number" name="it_page_number" value="${pageScope.BOOK.item_page_number}" readonly="readonly">
+													<input type="button" id="page_number_btn" onclick="unlockElement('it_page_number',this)" value="잠금 해제">
 												</div>
 											</td>
 											<td>
 												<div class="form-group">
 													<label for="weight">무게</label>
-													<input type="text" class="form-control" id="weight" name="weight" value="${pageScope.BOOK.item_weight}" readonly="readonly">
-													<input type="button" id="weight_btn" onclick="unlockElement('weight',this)" value="잠금 해제">
+													<input type="text" class="form-control" id="it_weight" name="it_weight" value="${pageScope.BOOK.item_weight}" readonly="readonly">
+													<input type="button" id="weight_btn" onclick="unlockElement('it_weight',this)" value="잠금 해제">
 												</div>
 											</td>
 											<td>
 												<div class="form-group">
 													<label for="size">크기</label>
-													<input type="text" class="form-control" id="size" name="size" value="${pageScope.BOOK.item_size}" readonly="readonly">
-													<input type="button" id="size_btn" onclick="unlockElement('size',this)" value="잠금 해제">
+													<input type="text" class="form-control" id="it_size" name="it_size" value="${pageScope.BOOK.item_size}" readonly="readonly">
+													<input type="button" id="size_btn" onclick="unlockElement('it_size',this)" value="잠금 해제">
 												</div>
 											</td>
 										</tr>
@@ -119,8 +119,8 @@
 											<td>
 												<div class="form-group">
 													<label for="isbn13">ISBN13</label>
-													<input type="text" class="form-control" id="isbn13" name="isbn13" value="${pageScope.BOOK.item_isbn13}" readonly="readonly">
-													<input type="button" id="isbn13_btn" onclick="unlockElement('isbn13',this)" value="잠금 해제">
+													<input type="text" class="form-control" id="it_isbn13" name="it_isbn13" value="${pageScope.BOOK.item_isbn13}" readonly="readonly">
+													<input type="button" id="isbn13_btn" onclick="unlockElement('it_isbn13',this)" value="잠금 해제">
 												</div>
 											</td>
 										</tr>
@@ -128,8 +128,8 @@
 											<td>
 												<div class="form-group">
 													<label for="isbn10">ISBN10</label>
-													<input type="text" class="form-control" id="isbn10" name="isbn10" value="${pageScope.BOOK.item_isbn10}" readonly="readonly">
-													<input type="button" id="isbn10_btn" onclick="unlockElement('isbn10',this)" value="잠금 해제">
+													<input type="text" class="form-control" id="it_isbn10" name="it_isbn10" value="${pageScope.BOOK.item_isbn10}" readonly="readonly">
+													<input type="button" id="isbn10_btn" onclick="unlockElement('it_isbn10',this)" value="잠금 해제">
 												</div>
 											</td>
 										</tr>
@@ -141,17 +141,17 @@
 						<hr>
 						<div>
 							<div class="form-group">
-								<label for="book_introduction">도서 소개</label>
-								<textarea style="resize: none; word-break: break-all;" class="form-control" name="book_introduction" id="book_introduction" rows="12" readonly="readonly">${pageScope.BOOK.item_book_introduction}</textarea>
-								<input type="button" id="book_introduction_btn" onclick="unlockElement('book_introduction',this)" value="잠금 해제">
+								<label for="it_book_introduction">도서 소개</label>
+								<textarea style="resize: none; word-break: break-all;" class="form-control" name="it_book_introduction" id="it_book_introduction" rows="12" readonly="readonly">${pageScope.BOOK.item_book_introduction}</textarea>
+								<input type="button" id="book_introduction_btn" onclick="unlockElement('it_book_introduction',this)" value="잠금 해제">
 							</div>
 						</div>
 						<hr />
 						<div>
 							<div class="form-group">
-								<label for="item_contents_table">목차</label>
-								<textarea style="resize: none; word-break: break-all;" class="form-control" name="item_contents_table" id="item_contents_table" rows="12" readonly="readonly">${pageScope.BOOK.item_contents_table}</textarea>
-								<input type="button" id="item_contents_table_btn" onclick="unlockElement('item_contents_table',this)" value="잠금 해제">
+								<label for="it_item_contents_table">목차</label>
+								<textarea style="resize: none; word-break: break-all;" class="form-control" name="it_item_contents_table" id="it_item_contents_table" rows="12" readonly="readonly">${pageScope.BOOK.item_contents_table}</textarea>
+								<input type="button" id="item_contents_table_btn" onclick="unlockElement('it_item_contents_table',this)" value="잠금 해제">
 							</div>
 						</div>
 						<hr />
@@ -182,9 +182,9 @@
 						<hr>
 						<div>
 							<div class="form-group">
-								<label for="item_publisher_review">출판사 리뷰</label>
-								<textarea style="resize: none; word-break: break-all;" class="form-control" name="item_publisher_review" id="item_publisher_review" rows="12" readonly="readonly">${pageScope.BOOK.item_publisher_review}</textarea>
-								<input type="button" id="item_publisher_review_btn" onclick="unlockElement('item_publisher_review',this)" value="잠금 해제">
+								<label for="it_item_publisher_review">출판사 리뷰</label>
+								<textarea style="resize: none; word-break: break-all;" class="form-control" name="it_item_publisher_review" id="it_item_publisher_review" rows="12" readonly="readonly">${pageScope.BOOK.item_publisher_review}</textarea>
+								<input type="button" id="item_publisher_review_btn" onclick="unlockElement('it_item_publisher_review',this)" value="잠금 해제">
 							</div>
 						</div>
 
@@ -217,24 +217,24 @@
 						<div>
 							<div class="form-row">
 								<div class="form-group col-sm-6">
-									<label for="author_code">저자 코드</label>
-									<input type="text" class="form-control form-control-sm" id="author_code" name="author_code" value="${pageScope.AUTHOR.author_code }" readonly="readonly">
+									<label for="au_author_code">저자 코드</label>
+									<input type="text" class="form-control form-control-sm" id="au_author_code" name="au_author_code" value="${pageScope.AUTHOR.author_code }" readonly="readonly">
 								</div>
 								<div class="form-group col-sm-6">
-									<label for="author_name">저자 명</label>
-									<input type="button" id="author_name_btn" class="btn btn-info" onclick="unlockElement('author_name',this)" value="잠금 해제">
-									<input type="text" class="form-control form-control-sm" id="author_name" name="author_name" value="${pageScope.AUTHOR.author_name }" readonly="readonly">
+									<label for="au_author_name">저자 명</label>
+									<input type="button" id="author_name_btn" class="btn btn-info" onclick="unlockElement('au_author_name',this)" value="잠금 해제">
+									<input type="text" class="form-control form-control-sm" id="au_author_name" name="au_author_name" value="${pageScope.AUTHOR.author_name }" readonly="readonly">
 								</div>
 								<div class="form-group col-sm-6">
-									<label for="author_region">지역</label>
-									<input type="button" id="author_region_btn" class="btn btn-info" onclick="unlockElement('author_region',this)" value="잠금 해제">
-									<input type="text" class="form-control form-control-sm" id="author_region" name="author_region" value="${pageScope.AUTHOR.author_region }" readonly="readonly">
+									<label for="au_author_region">지역</label>
+									<input type="button" id="author_region_btn" class="btn btn-info" onclick="unlockElement('au_author_region',this)" value="잠금 해제">
+									<input type="text" class="form-control form-control-sm" id="au_author_region" name="au_author_region" value="${pageScope.AUTHOR.author_region }" readonly="readonly">
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="author_desc">저자 소개</label>
-								<input type="button" id="author_desc_btn" class="btn btn-info" onclick="unlockElement('author_desc',this)" value="잠금 해제">
-								<textarea style="resize: none; word-break: break-all;" class="form-control form-control-sm" id="author_desc" name="author_desc" rows="3" readonly="readonly">${pageScope.AUTHOR.author_information }</textarea>
+								<label for="au_author_desc">저자 소개</label>
+								<input type="button" id="author_desc_btn" class="btn btn-info" onclick="unlockElement('au_author_desc',this)" value="잠금 해제">
+								<textarea style="resize: none; word-break: break-all;" class="form-control form-control-sm" id="au_author_desc" name="au_author_desc" rows="3" readonly="readonly">${pageScope.AUTHOR.author_information }</textarea>
 							</div>
 						</div>
 						<div>
@@ -286,18 +286,18 @@
 						<div>
 							<div class="form-row">
 								<div class="form-group col-sm-6">
-									<label for="publisher_code">출판사 코드</label>
-									<input type="text" class="form-control form-control-sm" id="publisher_code" name="publisher_code" value="${pageScope.PUBLISHER.publisher_code }" readonly="readonly">
+									<label for="pu_publisher_code">출판사 코드</label>
+									<input type="text" class="form-control form-control-sm" id="pu_publisher_code" name="pu_publisher_code" value="${pageScope.PUBLISHER.publisher_code }" readonly="readonly">
 								</div>
 								<div class="form-group col-sm-6">
-									<label for="publisher_name">출판사 명</label>
-									<input type="button" id="publisher_name_btn" class="btn btn-info" onclick="unlockElement('publisher_name',this)" value="잠금 해제">
-									<input type="text" class="form-control form-control-sm" id="publisher_name" name="publisher_name" value="${pageScope.PUBLISHER.publisher_name }" readonly="readonly">
+									<label for="pu_publisher_name">출판사 명</label>
+									<input type="button" id="publisher_name_btn" class="btn btn-info" onclick="unlockElement('pu_publisher_name',this)" value="잠금 해제">
+									<input type="text" class="form-control form-control-sm" id="pu_publisher_name" name="pu_publisher_name" value="${pageScope.PUBLISHER.publisher_name }" readonly="readonly">
 								</div>
 								<div class="form-group col-sm-6">
-									<label for="publisher_region">지역</label>
-									<input type="button" id="publisher_region_btn" class="btn btn-info" onclick="unlockElement('publisher_region',this)" value="잠금 해제">
-									<input type="text" class="form-control form-control-sm" id="publisher_region" name="publisher_region" value="${pageScope.PUBLISHER.publisher_region }" readonly="readonly">
+									<label for="pu_publisher_region">지역</label>
+									<input type="button" id="publisher_region_btn" class="btn btn-info" onclick="unlockElement('pu_publisher_region',this)" value="잠금 해제">
+									<input type="text" class="form-control form-control-sm" id="pu_publisher_region" name="pu_publisher_region" value="${pageScope.PUBLISHER.publisher_region }" readonly="readonly">
 								</div>
 							</div>
 						</div>
@@ -370,27 +370,30 @@
 		var selectedPublisherIndex = 0;
 		var itemCode = '${pageScope.BOOK.item_code}';
 		var itemCategoryCode = '${pageScope.BOOK.item_category_code}';
+		var authorCode = '${pageScope.AUTHOR.author_code}';
+		var publisherCode = '${pageScope.PUBLISHER.publisher_code}';
+
 		const originalData =
 		{
-			item_name : '',
-			pub_date : '',
-			fixed_price : 0,
-			selling_price : 0,
-			page_number : '',
-			weight : '',
-			size : '',
-			isbn13 : '',
-			isbn10 : '',
-			book_introduction : '',
-			item_contents_table : '',
-			item_publisher_review : '',
-			author_code : 0,
-			author_name : '',
-			author_region : '',
-			author_desc : '',
-			publisher_code : 0,
-			publisher_name : '',
-			publisher_region : ''
+			it_item_name : '',
+			it_pub_date : '',
+			it_fixed_price : '',
+			it_selling_price : '',
+			it_page_number : '',
+			it_weight : '',
+			it_size : '',
+			it_isbn13 : '',
+			it_isbn10 : '',
+			it_book_introduction : '',
+			it_item_contents_table : '',
+			it_item_publisher_review : '',
+			au_author_code : '',
+			au_author_name : '',
+			au_author_region : '',
+			au_author_desc : '',
+			pu_publisher_code : '',
+			pu_publisher_name : '',
+			pu_publisher_region : ''
 		};
 
 		(function saveBookData()
@@ -402,7 +405,7 @@
 
 			for (let index = 0; index < inputTags.length; ++index)
 			{
-				originalData[keys[index]] = inputTags[index].value;
+				originalData[keys[index]] = inputTags[index].value.toString();
 			}
 
 			while (dataList.firstChild)
@@ -647,23 +650,33 @@
 			const processingData =
 			{
 				type : 'UPDATE_DATA',
-				item_code : itemCode,
-				item_category_code : itemCategoryCode
+				item_code : itemCode.toString(),
+				item_category_code : itemCategoryCode.toString(),
+				author_code : authorCode.toString(),
+				publisher_code : publisherCode.toString()
 			};
 			modifiedValueList.push(processingData);
-
+			
+			const modifiedData =
+			{
+				data_name : tag.name,
+				data_value : tag.value.toString()
+			};
+			modifiedValueList.push(modifiedData);
+			
 			for (let index = 0; index < originalObjKeys.length; ++index)
 			{
 				// tag의 종류 구별, textarea OR input
 				let tag = document.getElementById(originalObjKeys[index]);
-				let originalValue = originalData[originalObjKeys[index]];
-
+				let originalValue = originalData[originalObjKeys[index]]
+						.toString();
+				
 				if (tag.value != originalValue)
 				{
 					const modifiedData =
 					{
 						data_name : tag.name,
-						data_value : tag.value
+						data_value : tag.value.toString()
 					};
 					modifiedValueList.push(modifiedData);
 				}
