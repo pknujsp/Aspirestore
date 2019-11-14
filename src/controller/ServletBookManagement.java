@@ -270,8 +270,7 @@ public class ServletBookManagement extends HttpServlet
 					break;
 				}
 			}
-// 데이터를 갱신하는 코드 작성
-			request.setAttribute("VIEWURL", "ajax:/");
+			itemsDAO.updateBookData(bookData, processingDataMap);
 		} catch (Exception e)
 		{
 			throw new ServletException(e);

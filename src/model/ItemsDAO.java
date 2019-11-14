@@ -1,5 +1,6 @@
 package model;
 
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -505,6 +506,112 @@ public class ItemsDAO
 			}
 		}
 		return books;
+	}
+
+	public boolean updateBookData(ItemsDTO modifiedData, HashMap<String, String> processingData)
+	{
+		final int icode = Integer.parseInt(processingData.get("icode"));
+		final String ccode = processingData.get("ccode");
+		boolean flag = false;
+
+		String query = "UPDATE items SET";
+		ArrayList<Method> methods = new ArrayList<Method>();
+
+		try
+		{
+			Class<?> itemsDtoClass = modifiedData.getClass();
+
+			if (modifiedData.getItem_publication_date() != null)
+			{
+				query += " item_publication_date = ?,";
+				methods.add(itemsDtoClass.getMethod("getItem_publication_date"));
+			}
+			if (modifiedData.getItem_fixed_price() != 0)
+			{
+				query += " item_fixed_price = ?,";
+				methods.add(itemsDtoClass.getMethod("getItem_fixed_price"));
+			}
+			if (modifiedData.getItem_selling_price() != 0)
+			{
+				query += " item_selling_price = ?,";
+				methods.add(itemsDtoClass.getMethod("getItem_selling_price"));
+			}
+			if (modifiedData.getItem_remaining_quantity() != 0)
+			{
+				query += " item_remaining_quantity = ?,";
+				methods.add(itemsDtoClass.getMethod("getItem_remaining_quantity"));
+			}
+			if (modifiedData.getItem_page_number() != null)
+			{
+				query += " item_the_page_number = ?,";
+				methods.add(itemsDtoClass.getMethod("getItem_page_number"));
+			}
+			if (modifiedData.getItem_weight() != null)
+			{
+				query += " item_weight = ?,";
+				methods.add(itemsDtoClass.getMethod("getItem_weight"));
+			}
+			if (modifiedData.getItem_size() != null)
+			{
+				query += " item_size = ?,";
+				methods.add(itemsDtoClass.getMethod("getItem_size"));
+			}
+			if (modifiedData.getItem_isbn13() != null)
+			{
+				query += " item_isbn13 = ?,";
+				methods.add(itemsDtoClass.getMethod("getItem_isbn13"));
+			}
+			if (modifiedData.getItem_isbn10() != null)
+			{
+				query += " item_isbn10 = ?,";
+				methods.add(itemsDtoClass.getMethod("getItem_isbn10"));
+			}
+			if (modifiedData.getItem_book_introduction() != null)
+			{
+				query += " item_book_introduction = ?,";
+				methods.add(itemsDtoClass.getMethod("getItem_book_introduction"));
+			}
+			if (modifiedData.getItem_contents_table() != null)
+			{
+				query += " item_contents_table = ?,";
+				methods.add(itemsDtoClass.getMethod("getItem_contents_table"));
+			}
+			if (modifiedData.getItem_publisher_review() != null)
+			{
+				query += " item_publisher_review = ?,";
+				methods.add(itemsDtoClass.getMethod("getItem_publisher_review"));
+			}
+			query += " WHERE item_code = ? AND item_category_code = ?";
+		} catch (Exception e)
+		{
+			return false;
+		}
+
+		ResultSet set = null;
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			int index = 1;
+			for (Method method : methods)
+			{
+				if (method.getReturnType().getName().equals("java.lang.String"))
+				{
+					prstmt.setString(index, (String) method.invoke(modifiedData));
+				} else if (method.getReturnType().getName().equals("int"))
+				{
+					prstmt.setInt(index, (int) method.invoke(modifiedData));
+				}
+				++index;
+			}
+			prstmt.setInt(index++, icode);
+			prstmt.setString(index, ccode);
+
+			set = null;
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return flag;
 	}
 
 	private String cutString(String str)
