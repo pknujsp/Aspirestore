@@ -226,8 +226,6 @@ public class ServletBookManagement extends HttpServlet
 			HashMap<String, String> processingDataMap = new HashMap<String, String>();
 			processingDataMap.put("icode", jsonData.getJSONObject(0).getString("item_code"));
 			processingDataMap.put("ccode", jsonData.getJSONObject(0).getString("item_category_code"));
-			processingDataMap.put("acode", jsonData.getJSONObject(0).getString("author_code"));
-			processingDataMap.put("pcode", jsonData.getJSONObject(0).getString("publisher_code"));
 
 			dataList.add(processingDataMap);
 
@@ -237,6 +235,7 @@ public class ServletBookManagement extends HttpServlet
 				dataMap.put("data_type", classifyType(jsonData.getJSONObject(index).getString("data_name")));
 				dataMap.put("data_name", separateName(jsonData.getJSONObject(index).getString("data_name")));
 				dataMap.put("data_value", jsonData.getJSONObject(index).getString("data_value"));
+				dataMap.put("status", jsonData.getJSONObject(index).getString("status"));
 
 				dataList.add(dataMap);
 			}
@@ -244,6 +243,9 @@ public class ServletBookManagement extends HttpServlet
 			ItemsDTO bookData = new ItemsDTO();
 			AuthorDTO authorData = new AuthorDTO();
 			PublisherDTO publisherData = new PublisherDTO();
+
+			String authorStatus = null;
+			String publisherStatus = null;
 
 			for (int index = 1; index < jsonData.length(); ++index)
 			{
@@ -253,14 +255,22 @@ public class ServletBookManagement extends HttpServlet
 					checkBookModification(bookData, dataList.get(index));
 					break;
 				case "author":
-					checkAuthorModification(authorData, dataList.get(index), dataList.get(0).get("acode"));
+					checkAuthorModification(authorData, dataList.get(index));
+					if (authorStatus == null)
+					{
+						authorStatus = dataList.get(index).get("status");
+					}
 					break;
 				case "publisher":
-					checkPublisherModification(publisherData, dataList.get(index), dataList.get(0).get("pcode"));
+					checkPublisherModification(publisherData, dataList.get(index));
+					if (publisherStatus == null)
+					{
+						publisherStatus = dataList.get(index).get("status");
+					}
 					break;
 				}
 			}
-
+// 데이터를 갱신하는 코드 작성
 			request.setAttribute("VIEWURL", "ajax:/");
 		} catch (Exception e)
 		{
@@ -337,7 +347,7 @@ public class ServletBookManagement extends HttpServlet
 		}
 	}
 
-	private void checkAuthorModification(AuthorDTO author, HashMap<String, String> data, String originalAcode)
+	private void checkAuthorModification(AuthorDTO author, HashMap<String, String> data)
 	{
 		String dataName = data.get("data_name");
 		String dataValue = data.get("data_value");
@@ -357,7 +367,7 @@ public class ServletBookManagement extends HttpServlet
 		}
 	}
 
-	private void checkPublisherModification(PublisherDTO publisher, HashMap<String, String> data, String originalPcode)
+	private void checkPublisherModification(PublisherDTO publisher, HashMap<String, String> data)
 	{
 		String dataName = data.get("data_name");
 		String dataValue = data.get("data_value");

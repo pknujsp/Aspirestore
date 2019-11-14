@@ -263,7 +263,7 @@
 								<button type="button" class="btn btn-primary" onclick="getAuthors()">저자 조회</button>
 							</div>
 							<div class="col-auto">
-								<button type="button" class="btn btn-primary" onclick="checkRegion('input_author_region')" data-dismiss="modal">확인</button>
+								<button type="button" class="btn btn-primary" onclick="checkRegion('au_author_region')" data-dismiss="modal">확인</button>
 							</div>
 						</div>
 					</div>
@@ -326,7 +326,7 @@
 								<button type="button" class="btn btn-primary" onclick="getPublishers()">출판사 조회</button>
 							</div>
 							<div class="col-auto">
-								<button type="button" class="btn btn-primary" onclick="checkRegion('input_publisher_region')" data-dismiss="modal">확인</button>
+								<button type="button" class="btn btn-primary" onclick="checkRegion('pu_publisher_region')" data-dismiss="modal">확인</button>
 							</div>
 						</div>
 					</div>
@@ -526,10 +526,10 @@
 		function setAuthorForm(index)
 		{
 			selectedAuthorIndex = index;
-			document.getElementById('input_author_name').value = authorList[index]['author_name'];
-			document.getElementById('input_author_region').value = authorList[index]['author_region'];
-			document.getElementById('textarea_author_desc').value = authorList[index]['author_desc'];
-			document.getElementById('input_author_code').value = authorList[index]['author_code'];
+			document.getElementById('au_author_name').value = authorList[index]['author_name'];
+			document.getElementById('au_author_region').value = authorList[index]['author_region'];
+			document.getElementById('au_author_desc').value = authorList[index]['author_desc'];
+			document.getElementById('au_author_code').value = authorList[index]['author_code'];
 		}
 
 		function convertRegionToChar(region)
@@ -591,7 +591,7 @@
 				{
 					publisher_name : list[index].PUBLISHER.PUBLISHER_NAME,
 					publisher_region : list[index].PUBLISHER.PUBLISHER_REGION,
-					publisher_code : list[index].PUBLISHER.PUBLISHER_CODE,
+					publisher_code : list[index].PUBLISHER.PUBLISHER_CODE
 				};
 				publisherList.push(publisherObj);
 			}
@@ -635,12 +635,11 @@
 		function setPublisherForm(index)
 		{
 			selectedPublisherIndex = index;
-			document.getElementById('input_publisher_name').value = publisherList[index]['publisher_name'];
-			document.getElementById('input_publisher_region').value = publisherList[index]['publisher_region'];
-			document.getElementById('input_publisher_code').value = publisherList[index]['publisher_code'];
+			document.getElementById('pu_publisher_name').value = publisherList[index]['publisher_name'];
+			document.getElementById('pu_publisher_region').value = publisherList[index]['publisher_region'];
+			document.getElementById('pu_publisher_code').value = publisherList[index]['publisher_code'];
 		}
 
-		// 데이터 수정 후 갱신하는 코드 작성 필요, 이후 사진도 수정할 수 있는 기능 추가
 		function getModifiedDataList()
 		{
 			// 변경된 값의 input tag name을 가지는 리스트
@@ -652,33 +651,130 @@
 				type : 'UPDATE_DATA',
 				item_code : itemCode.toString(),
 				item_category_code : itemCategoryCode.toString(),
-				author_code : authorCode.toString(),
-				publisher_code : publisherCode.toString()
 			};
 			modifiedValueList.push(processingData);
-			
-			const modifiedData =
+
+			if (document.getElementById('au_author_code').value == authorCode)
 			{
-				data_name : tag.name,
-				data_value : tag.value.toString()
-			};
-			modifiedValueList.push(modifiedData);
-			
+				let count = 0;
+				// 저자 코드 동일
+				for (let index = 0; index < originalObjKeys.length; ++index)
+				{
+					const tag = document.getElementById(originalObjKeys[index]);
+					const dataType = classifyData(tag.name);
+
+					if (dataType == 'author')
+					{
+						const modifiedData =
+						{
+							data_name : tag.name,
+							data_value : tag.value.toString(),
+							status : 'MODIFIED_AUTHOR_INFO'
+						};
+						modifiedValueList.push(modifiedData);
+						if (++count == 4)
+						{
+							break;
+						}
+					}
+				}
+			} else
+			{
+				// 저자 코드 변경
+				let count = 0;
+				for (let index = 0; index < originalObjKeys.length; ++index)
+				{
+					const tag = document.getElementById(originalObjKeys[index]);
+					const dataType = classifyData(tag.name);
+
+					if (dataType == 'author')
+					{
+						const modifiedData =
+						{
+							data_name : tag.name,
+							data_value : tag.value.toString(),
+							status : 'REPLACED_AUTHOR'
+						};
+						modifiedValueList.push(modifiedData);
+						if (++count == 4)
+						{
+							break;
+						}
+					}
+				}
+			}
+
+			if (document.getElementById('pu_publisher_code').value == publisherCode)
+			{
+				let count = 0;
+				// 출판사 코드 동일
+				for (let index = 0; index < originalObjKeys.length; ++index)
+				{
+					const tag = document.getElementById(originalObjKeys[index]);
+					const dataType = classifyData(tag.name);
+
+					if (dataType == 'publisher')
+					{
+						const modifiedData =
+						{
+							data_name : tag.name,
+							data_value : tag.value.toString(),
+							status : 'MODIFIED_PUBLISHER_INFO'
+						};
+						modifiedValueList.push(modifiedData);
+						if (++count == 3)
+						{
+							break;
+						}
+					}
+				}
+			} else
+			{
+				// 출판사 코드 변경
+				let count = 0;
+				for (let index = 0; index < originalObjKeys.length; ++index)
+				{
+					const tag = document.getElementById(originalObjKeys[index]);
+					const dataType = classifyData(tag.name);
+
+					if (dataType == 'publisher')
+					{
+						const modifiedData =
+						{
+							data_name : tag.name,
+							data_value : tag.value.toString(),
+							status : 'REPLACED_PUBLISHER'
+						};
+						modifiedValueList.push(modifiedData);
+						if (++count == 3)
+						{
+							break;
+						}
+					}
+				}
+			}
+
+			// book
 			for (let index = 0; index < originalObjKeys.length; ++index)
 			{
 				// tag의 종류 구별, textarea OR input
-				let tag = document.getElementById(originalObjKeys[index]);
-				let originalValue = originalData[originalObjKeys[index]]
+				const tag = document.getElementById(originalObjKeys[index]);
+				const originalValue = originalData[originalObjKeys[index]]
 						.toString();
-				
-				if (tag.value != originalValue)
+				const dataType = classifyData(tag.name);
+
+				if (dataType == 'item')
 				{
-					const modifiedData =
+					if (tag.value != originalValue)
 					{
-						data_name : tag.name,
-						data_value : tag.value.toString()
-					};
-					modifiedValueList.push(modifiedData);
+						const modifiedData =
+						{
+							data_name : tag.name,
+							data_value : tag.value.toString(),
+							status : 'MODIFIED_ITEM'
+						};
+						modifiedValueList.push(modifiedData);
+					}
 				}
 			}
 			return modifiedValueList;
@@ -693,7 +789,7 @@
 
 			xhr.onreadystatechange = function()
 			{
-				if (xhr.readyState = XMLHttpRequest.DONE && xgr.status == 200)
+				if (xhr.readyState = XMLHttpRequest.DONE && xhr.status == 200)
 				{
 
 				}
@@ -703,6 +799,21 @@
 					true);
 			xhr.setRequestHeader('Content-type', 'application/json');
 			xhr.send(JSON.stringify(modifiedDataList));
+		}
+
+		function classifyData(dataName)
+		{
+			let dataType = dataName.substring(0, 2);
+			if (dataType == 'it')
+			{
+				return 'item';
+			} else if (dataType == 'au')
+			{
+				return 'author';
+			} else if (dataType == 'pu')
+			{
+				return 'publisher';
+			}
 		}
 	</script>
 </body>
