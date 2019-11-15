@@ -240,9 +240,9 @@ public class ServletBookManagement extends HttpServlet
 				dataList.add(dataMap);
 			}
 
-			ItemsDTO bookData = new ItemsDTO();
-			AuthorDTO authorData = new AuthorDTO();
-			PublisherDTO publisherData = new PublisherDTO();
+			ItemsDTO bookData = null;
+			AuthorDTO authorData = null;
+			PublisherDTO publisherData = null;
 
 			String authorStatus = null;
 			String publisherStatus = null;
@@ -252,9 +252,17 @@ public class ServletBookManagement extends HttpServlet
 				switch (dataList.get(index).get("data_type"))
 				{
 				case "item":
+					if (bookData == null)
+					{
+						bookData = new ItemsDTO();
+					}
 					checkBookModification(bookData, dataList.get(index));
 					break;
 				case "author":
+					if (authorData == null)
+					{
+						authorData = new AuthorDTO();
+					}
 					checkAuthorModification(authorData, dataList.get(index));
 					if (authorStatus == null)
 					{
@@ -262,6 +270,10 @@ public class ServletBookManagement extends HttpServlet
 					}
 					break;
 				case "publisher":
+					if (publisherData == null)
+					{
+						publisherData = new PublisherDTO();
+					}
 					checkPublisherModification(publisherData, dataList.get(index));
 					if (publisherStatus == null)
 					{
@@ -270,7 +282,46 @@ public class ServletBookManagement extends HttpServlet
 					break;
 				}
 			}
-			itemsDAO.updateBookData(bookData, processingDataMap);
+
+			boolean result = false;
+
+			if (bookData != null)
+			{
+				if (itemsDAO.updateBookData(bookData, processingDataMap))
+				{
+					result = true;
+				} else
+				{
+					result = false;
+				}
+			}
+
+			if (authorData != null)
+			{
+				if (authorDAO.updateAuthorData(authorData, processingDataMap, authorStatus))
+				{
+					result = true;
+				} else
+				{
+					result = false;
+				}
+			}
+
+			if (publisherData != null)
+			{
+				if (publisherDAO.updatePublisherData(publisherData, processingDataMap, publisherStatus))
+				{
+					result = true;
+				} else
+				{
+					result = false;
+				}
+			}
+
+			response.setCharacterEncoding("UTF-8");
+			response.setContentType("text/plain");
+			response.getWriter().write(String.valueOf(result));
+			request.setAttribute("VIEWURL", "ajax:/");
 		} catch (Exception e)
 		{
 			throw new ServletException(e);

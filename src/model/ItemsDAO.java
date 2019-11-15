@@ -516,6 +516,7 @@ public class ItemsDAO
 
 		String query = "UPDATE items SET";
 		ArrayList<Method> methods = new ArrayList<Method>();
+		ArrayList<String> varNames = new ArrayList<String>();
 
 		try
 		{
@@ -523,68 +524,78 @@ public class ItemsDAO
 
 			if (modifiedData.getItem_publication_date() != null)
 			{
-				query += " item_publication_date = ?,";
+				varNames.add(" item_publication_date = ?");
 				methods.add(itemsDtoClass.getMethod("getItem_publication_date"));
 			}
 			if (modifiedData.getItem_fixed_price() != 0)
 			{
-				query += " item_fixed_price = ?,";
+				varNames.add(" item_fixed_price = ?");
 				methods.add(itemsDtoClass.getMethod("getItem_fixed_price"));
 			}
 			if (modifiedData.getItem_selling_price() != 0)
 			{
-				query += " item_selling_price = ?,";
+				varNames.add(" item_selling_price = ?");
 				methods.add(itemsDtoClass.getMethod("getItem_selling_price"));
 			}
 			if (modifiedData.getItem_remaining_quantity() != 0)
 			{
-				query += " item_remaining_quantity = ?,";
+				varNames.add(" item_remaining_quantity = ?");
 				methods.add(itemsDtoClass.getMethod("getItem_remaining_quantity"));
 			}
 			if (modifiedData.getItem_page_number() != null)
 			{
-				query += " item_the_page_number = ?,";
+				varNames.add(" item_the_page_number = ?");
 				methods.add(itemsDtoClass.getMethod("getItem_page_number"));
 			}
 			if (modifiedData.getItem_weight() != null)
 			{
-				query += " item_weight = ?,";
+				varNames.add(" item_weight = ?");
 				methods.add(itemsDtoClass.getMethod("getItem_weight"));
 			}
 			if (modifiedData.getItem_size() != null)
 			{
-				query += " item_size = ?,";
+				varNames.add(" item_size = ?");
 				methods.add(itemsDtoClass.getMethod("getItem_size"));
 			}
 			if (modifiedData.getItem_isbn13() != null)
 			{
-				query += " item_isbn13 = ?,";
+				varNames.add(" item_isbn13 = ?");
 				methods.add(itemsDtoClass.getMethod("getItem_isbn13"));
 			}
 			if (modifiedData.getItem_isbn10() != null)
 			{
-				query += " item_isbn10 = ?,";
+				varNames.add(" item_isbn10 = ?");
 				methods.add(itemsDtoClass.getMethod("getItem_isbn10"));
 			}
 			if (modifiedData.getItem_book_introduction() != null)
 			{
-				query += " item_book_introduction = ?,";
+				varNames.add(" item_book_introduction = ?");
 				methods.add(itemsDtoClass.getMethod("getItem_book_introduction"));
 			}
 			if (modifiedData.getItem_contents_table() != null)
 			{
-				query += " item_contents_table = ?,";
+				varNames.add(" item_contents_table = ?");
 				methods.add(itemsDtoClass.getMethod("getItem_contents_table"));
 			}
 			if (modifiedData.getItem_publisher_review() != null)
 			{
-				query += " item_publisher_review = ?,";
+				varNames.add(" item_publisher_review = ?");
 				methods.add(itemsDtoClass.getMethod("getItem_publisher_review"));
 			}
-			query += " WHERE item_code = ? AND item_category_code = ?";
+
+			for (int index = 0; index < varNames.size(); ++index)
+			{
+				if (index == varNames.size() - 1)
+				{
+					query += varNames.get(index) + " WHERE item_code = ? AND item_category_code = ?";
+				} else
+				{
+					query += varNames.get(index) + ",";
+				}
+			}
 		} catch (Exception e)
 		{
-			return false;
+			return flag;
 		}
 
 		ResultSet set = null;
@@ -595,12 +606,11 @@ public class ItemsDAO
 			{
 				if (method.getReturnType().getName().equals("java.lang.String"))
 				{
-					prstmt.setString(index, (String) method.invoke(modifiedData));
+					prstmt.setString(index++, (String) method.invoke(modifiedData));
 				} else if (method.getReturnType().getName().equals("int"))
 				{
-					prstmt.setInt(index, (int) method.invoke(modifiedData));
+					prstmt.setInt(index++, (int) method.invoke(modifiedData));
 				}
-				++index;
 			}
 			prstmt.setInt(index++, icode);
 			prstmt.setString(index, ccode);
@@ -609,8 +619,17 @@ public class ItemsDAO
 		} catch (Exception e)
 		{
 			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+				try
+				{
+					set.close();
+				} catch (Exception e2)
+				{
+					e2.printStackTrace();
+				}
 		}
-
 		return flag;
 	}
 

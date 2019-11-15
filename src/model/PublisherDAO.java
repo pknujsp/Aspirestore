@@ -3,7 +3,9 @@ package model;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.sql.DataSource;
 
@@ -111,6 +113,48 @@ public class PublisherDAO
 		return list;
 	}
 
+	public boolean updatePublisherData(PublisherDTO modifiedData, HashMap<String, String> processingDataMap,
+			String status)
+	{
+		boolean flag = false;
+		String query = null;
+		String itemQuery = null;
+
+		if (status.equals("MODIFIED_PUBLISHER_INFO"))
+		{
+			query = "UPDATE publishers SET publisher_name = ?, publisher_region = ? WHERE publisher_code = ?";
+		} else
+		{
+			// REPLACED_PUBLISHER
+			query = "UPDATE publishers SET publisher_name = ?, publisher_region = ? WHERE publisher_code = ?";
+			itemQuery = "UPDATE items SET item_publisher_code = ? WHERE item_code = ? AND item_category_code = ?";
+		}
+
+		try (Connection connection = ds.getConnection();
+				PreparedStatement prstmt = connection.prepareStatement(query);
+				PreparedStatement itemPrstmt = checkQueryNull(itemQuery, connection);)
+		{
+			prstmt.setString(1, modifiedData.getPublisher_name());
+			prstmt.setString(2, modifiedData.getPublisher_region());
+			prstmt.setInt(3, modifiedData.getPublisher_code());
+
+			if (status.equals("REPLACED_PUBLISHER"))
+			{
+				itemPrstmt.setInt(1, modifiedData.getPublisher_code());
+				itemPrstmt.setInt(2, Integer.parseInt(processingDataMap.get("icode")));
+				itemPrstmt.setString(3, processingDataMap.get("ccode"));
+				flag = true;
+			} else
+			{
+				flag = true;
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return flag;
+	}
+
 	private String convertRegion(String region)
 	{
 		if (region.equals("d"))
@@ -119,6 +163,17 @@ public class PublisherDAO
 		} else
 		{
 			return "해외";
+		}
+	}
+
+	private PreparedStatement checkQueryNull(String itemQuery, Connection connection) throws SQLException
+	{
+		if (itemQuery == null)
+		{
+			return null;
+		} else
+		{
+			return connection.prepareStatement(itemQuery);
 		}
 	}
 }

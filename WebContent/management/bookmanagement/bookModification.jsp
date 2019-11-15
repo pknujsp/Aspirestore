@@ -226,9 +226,16 @@
 									<input type="text" class="form-control form-control-sm" id="au_author_name" name="au_author_name" value="${pageScope.AUTHOR.author_name }" readonly="readonly">
 								</div>
 								<div class="form-group col-sm-6">
-									<label for="au_author_region">지역</label>
-									<input type="button" id="author_region_btn" class="btn btn-info" onclick="unlockElement('au_author_region',this)" value="잠금 해제">
-									<input type="text" class="form-control form-control-sm" id="au_author_region" name="au_author_region" value="${pageScope.AUTHOR.author_region }" readonly="readonly">
+									<label for="au_author_region">지역</label> <select id="au_author_region" name="au_author_region" class="form-control">
+										<c:if test="${pageScope.AUTHOR.author_region == '국내' }">
+											<option value="d" selected="selected">국내</option>
+											<option value="a">국외</option>
+										</c:if>
+										<c:if test="${pageScope.AUTHOR.author_region == '해외' }">
+											<option value="d">국내</option>
+											<option value="a" selected="selected">국외</option>
+										</c:if>
+									</select>
 								</div>
 							</div>
 							<div class="form-group">
@@ -263,7 +270,7 @@
 								<button type="button" class="btn btn-primary" onclick="getAuthors()">저자 조회</button>
 							</div>
 							<div class="col-auto">
-								<button type="button" class="btn btn-primary" onclick="checkRegion('au_author_region')" data-dismiss="modal">확인</button>
+								<button type="button" class="btn btn-primary" onclick="checkRegion('au_author_region')" data-dismiss="modal">수정완료</button>
 							</div>
 						</div>
 					</div>
@@ -295,9 +302,16 @@
 									<input type="text" class="form-control form-control-sm" id="pu_publisher_name" name="pu_publisher_name" value="${pageScope.PUBLISHER.publisher_name }" readonly="readonly">
 								</div>
 								<div class="form-group col-sm-6">
-									<label for="pu_publisher_region">지역</label>
-									<input type="button" id="publisher_region_btn" class="btn btn-info" onclick="unlockElement('pu_publisher_region',this)" value="잠금 해제">
-									<input type="text" class="form-control form-control-sm" id="pu_publisher_region" name="pu_publisher_region" value="${pageScope.PUBLISHER.publisher_region }" readonly="readonly">
+									<label for="pu_publisher_region">지역</label> <select id="pu_publisher_region" name="pu_publisher_region" class="form-control">
+										<c:if test="${pageScope.PUBLISHER.publisher_region == '국내' }">
+											<option value="d" selected="selected">국내</option>
+											<option value="a">국외</option>
+										</c:if>
+										<c:if test="${pageScope.PUBLISHER.publisher_region == '해외' }">
+											<option value="d">국내</option>
+											<option value="a" selected="selected">국외</option>
+										</c:if>
+									</select>
 								</div>
 							</div>
 						</div>
@@ -326,7 +340,7 @@
 								<button type="button" class="btn btn-primary" onclick="getPublishers()">출판사 조회</button>
 							</div>
 							<div class="col-auto">
-								<button type="button" class="btn btn-primary" onclick="checkRegion('pu_publisher_region')" data-dismiss="modal">확인</button>
+								<button type="button" class="btn btn-primary" onclick="checkRegion('pu_publisher_region')" data-dismiss="modal">수정완료</button>
 							</div>
 						</div>
 					</div>
@@ -527,7 +541,7 @@
 		{
 			selectedAuthorIndex = index;
 			document.getElementById('au_author_name').value = authorList[index]['author_name'];
-			document.getElementById('au_author_region').value = authorList[index]['author_region'];
+			document.getElementById('au_author_region').innerText = authorList[index]['author_region'];
 			document.getElementById('au_author_desc').value = authorList[index]['author_desc'];
 			document.getElementById('au_author_code').value = authorList[index]['author_code'];
 		}
@@ -636,7 +650,7 @@
 		{
 			selectedPublisherIndex = index;
 			document.getElementById('pu_publisher_name').value = publisherList[index]['publisher_name'];
-			document.getElementById('pu_publisher_region').value = publisherList[index]['publisher_region'];
+			document.getElementById('pu_publisher_region').innerText = publisherList[index]['publisher_region'];
 			document.getElementById('pu_publisher_code').value = publisherList[index]['publisher_code'];
 		}
 
@@ -654,7 +668,12 @@
 			};
 			modifiedValueList.push(processingData);
 
-			if (document.getElementById('au_author_code').value == authorCode)
+			if ((document.getElementById('au_author_code').value == originalData['au_author_code'])
+					&& (document.getElementById('au_author_name').value == originalData['au_author_name'])
+					&& (document.getElementById('au_author_region').value == originalData['au_author_region'])
+					&& (document.getElementById('au_author_desc').value == originalData['au_author_desc']))
+			{
+			} else if (document.getElementById('au_author_code').value == authorCode)
 			{
 				let count = 0;
 				// 저자 코드 동일
@@ -704,7 +723,11 @@
 				}
 			}
 
-			if (document.getElementById('pu_publisher_code').value == publisherCode)
+			if ((document.getElementById('pu_publisher_code').value == originalData['pu_publisher_code'])
+					&& (document.getElementById('pu_publisher_name').value == originalData['pu_publisher_name'])
+					&& (document.getElementById('pu_publisher_region').value == originalData['pu_publisher_region']))
+			{
+			} else if (document.getElementById('pu_publisher_code').value == publisherCode)
 			{
 				let count = 0;
 				// 출판사 코드 동일
@@ -789,9 +812,16 @@
 
 			xhr.onreadystatechange = function()
 			{
-				if (xhr.readyState = XMLHttpRequest.DONE && xhr.status == 200)
+				if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200)
 				{
-
+					const result = xhr.responseText;
+					if (result == 'true')
+					{
+						alert('수정 완료');
+					} else
+					{
+						alert('수정 실패');
+					}
 				}
 			}
 
