@@ -92,7 +92,7 @@ public class PublisherDAO
 			while (set.next())
 			{
 				list.add(new PublisherDTO().setPublisher_code(set.getInt(1)).setPublisher_name(set.getString(2))
-						.setPublisher_region(convertRegion(set.getString(3))));
+						.setPublisher_region(set.getString(3)));
 			}
 		} catch (Exception e)
 		{

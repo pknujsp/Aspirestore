@@ -135,7 +135,7 @@ public class AuthorDAO
 			while (set.next())
 			{
 				list.add(new AuthorDTO().setAuthor_code(set.getInt(1)).setAuthor_name(set.getString(2))
-						.setAuthor_region(convertRegion(set.getString(3))).setAuthor_information(set.getString(4)));
+						.setAuthor_region(set.getString(3)).setAuthor_information(set.getString(4)));
 			}
 		} catch (Exception e)
 		{

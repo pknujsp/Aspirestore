@@ -122,10 +122,10 @@ public class ItemsDAO
 						.setItem_registration_datetime(set.getString(18)).setItem_category_desc(set.getString(26));
 
 				author = new AuthorDTO().setAuthor_code(set.getInt(22)).setAuthor_name(set.getString(23))
-						.setAuthor_region(convertRegion(set.getString(24))).setAuthor_information(set.getString(25));
+						.setAuthor_region(set.getString(24)).setAuthor_information(set.getString(25));
 
 				publisher = new PublisherDTO().setPublisher_code(set.getInt(19)).setPublisher_name(set.getString(20))
-						.setPublisher_region(convertRegion(set.getString(21)));
+						.setPublisher_region(set.getString(21));
 			}
 		} catch (Exception e)
 		{
@@ -144,6 +144,7 @@ public class ItemsDAO
 			}
 		}
 		Map<String, Object> bookData = new HashMap<String, Object>();
+
 		bookData.put("BOOK", book);
 		bookData.put("AUTHOR", author);
 		bookData.put("PUBLISHER", publisher);

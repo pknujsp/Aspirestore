@@ -1,3 +1,4 @@
+<%@page import="model.FileDTO"%>
 <%@page import="etc.OrderInformation"%>
 <%@page import="model.AuthorDTO"%>
 <%@page import="model.ItemsDTO"%>
@@ -12,8 +13,12 @@
 	ItemsDTO item = (ItemsDTO) request.getAttribute("ITEM");
 	AuthorDTO author = (AuthorDTO) request.getAttribute("AUTHOR");
 	String publisherName = (String) request.getAttribute("PUBLISHER_NAME");
+	FileDTO mainImg = (FileDTO) request.getAttribute("MAIN_IMAGE");
+	FileDTO infoImg = (FileDTO) request.getAttribute("INFO_IMAGE");
 
 	pageContext.setAttribute("ITEM", item);
+	pageContext.setAttribute("MAIN_IMAGE", mainImg);
+	pageContext.setAttribute("INFO_IMAGE", infoImg);
 %>
 <!DOCTYPE html>
 <html>
@@ -37,7 +42,7 @@
 	<div class="container border border-info">
 		<div>
 			<span>
-				<img src="/AspireStore/images/ReactBookImage.jpg" alt="No Image" border="0" style="width: 40%; height: auto;" />
+				<img src="/AspireStore/itemImages/${pageScope.MAIN_IMAGE.file_name }" alt="No Image" width="400px" />
 			</span>
 
 		</div>
@@ -179,7 +184,7 @@
 			</div>
 			<div>
 				<div>
-					<img src="#" border="0" alt="이미지가 없습니다." />
+					<img src="/AspireStore/itemImages/${pageScope.INFO_IMAGE.file_name }" alt="No Image" width="100%" />
 				</div>
 			</div>
 		</div>

@@ -204,6 +204,16 @@
 		<servlet-name>publishermanagementservlet</servlet-name>
 		<url-pattern>/management/publisherManagement</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>bookimgservlet</servlet-name>
+		<servlet-class>controller.ServletBookImgManagement</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>bookimgservlet</servlet-name>
+		<url-pattern>/management/bookImgManagement</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<servlet-name>frontcontroller</servlet-name>

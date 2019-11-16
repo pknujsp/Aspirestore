@@ -17,6 +17,8 @@ import org.json.JSONObject;
 
 import model.AuthorDAO;
 import model.AuthorDTO;
+import model.FileDAO;
+import model.FileDTO;
 import model.ItemsDAO;
 import model.ItemsDTO;
 import model.PublisherDAO;
@@ -195,14 +197,31 @@ public class ServletBookManagement extends HttpServlet
 		{
 			ServletContext sc = this.getServletContext();
 			ItemsDAO itemsDAO = (ItemsDAO) sc.getAttribute("itemsDAO");
+			FileDAO fileDAO = (FileDAO) sc.getAttribute("FILE_DAO");
 
 			int icode = Integer.parseInt(request.getAttribute("ICODE").toString());
 			String ccode = request.getAttribute("CCODE").toString();
+
 			Map<String, Object> bookData = itemsDAO.getBookData(icode, ccode);
+			ArrayList<FileDTO> images = fileDAO.getItemImages(icode, ccode);
+
+			for (int index = 0; index < images.size(); ++index)
+			{
+				if (images.get(index).getImage_position().equals("MAIN"))
+				{
+					bookData.put("MAIN_IMAGE", images.get(index));
+				} else if (images.get(index).getImage_position().equals("INFO"))
+				{
+					bookData.put("INFO_IMAGE", images.get(index));
+				}
+			}
 
 			request.setAttribute("BOOK", bookData.get("BOOK"));
 			request.setAttribute("AUTHOR", bookData.get("AUTHOR"));
 			request.setAttribute("PUBLISHER", bookData.get("PUBLISHER"));
+			request.setAttribute("MAIN_IMAGE", bookData.get("MAIN_IMAGE"));
+			request.setAttribute("INFO_IMAGE", bookData.get("INFO_IMAGE"));
+			
 			request.setAttribute("VIEWURL", "forward:/management/bookmanagement/bookModification.jsp");
 		} catch (Exception e)
 		{

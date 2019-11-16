@@ -13,10 +13,16 @@ public class FileDTO
 	private String file_name;
 	private int file_size;
 	private String uploaded_date_time;
+	private String image_position;
 
 	public int getImage_code()
 	{
 		return image_code;
+	}
+
+	public String getImage_position()
+	{
+		return image_position;
 	}
 
 	public int getQuestion_post_code()
@@ -132,6 +138,12 @@ public class FileDTO
 	public FileDTO setUploaded_date_time(String uploaded_date_time)
 	{
 		this.uploaded_date_time = uploaded_date_time;
+		return this;
+	}
+
+	public FileDTO setImage_position(String image_position)
+	{
+		this.image_position = image_position;
 		return this;
 	}
 }

@@ -1,3 +1,4 @@
+<%@page import="model.FileDTO"%>
 <%@page import="model.PublisherDTO"%>
 <%@page import="model.AuthorDTO"%>
 <%@page import="model.ItemsDTO"%>
@@ -8,10 +9,14 @@
 	ItemsDTO book = (ItemsDTO) request.getAttribute("BOOK");
 	AuthorDTO author = (AuthorDTO) request.getAttribute("AUTHOR");
 	PublisherDTO publisher = (PublisherDTO) request.getAttribute("PUBLISHER");
+	FileDTO mainImg = (FileDTO) request.getAttribute("MAIN_IMAGE");
+	FileDTO infoImg = (FileDTO) request.getAttribute("INFO_IMAGE");
 
 	pageContext.setAttribute("BOOK", book);
 	pageContext.setAttribute("AUTHOR", author);
 	pageContext.setAttribute("PUBLISHER", publisher);
+	pageContext.setAttribute("MAIN_IMAGE", mainImg);
+	pageContext.setAttribute("INFO_IMAGE", infoImg);
 %>
 <!DOCTYPE html>
 <html>
@@ -47,12 +52,30 @@
 
 
 				<div class="container border border-info">
-
 					<div>
-						<span>
-							<img src="/AspireStore/images/ReactBookImage.jpg" alt="No Image" border="0" style="width: 40%; height: auto;" />
-						</span>
-
+						<h6>사진 변경</h6>
+						<table class="table">
+							<thead>
+								<tr>
+									<th>대표 사진</th>
+									<th>썸네일</th>
+									<th>처리</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<img src="/AspireStore/itemImages/${pageScope.MAIN_IMAGE.file_name }" alt="No Image" width="400px" />
+									</td>
+									<td>
+										<img src="/AspireStore/itemImages/${pageScope.MAIN_IMAGE.file_name }" alt="No Image" width="100px" />
+									</td>
+									<td>
+										<input type="button" class="btn btn-primary" id="main_img_btn" name="main_img_btn" data-toggle="modal" data-target="#image_modal" onclick="changeImgModal('MAIN')" value="사진 변경">
+									</td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 					<div>
 						<div class="form-group">
@@ -156,14 +179,22 @@
 						</div>
 						<hr />
 						<div>
-							<div>
-								<h4>상세 정보(이미지)</h4>
-							</div>
-							<div>
-								<div>
-									<img src="#" border="0" alt="이미지가 없습니다." />
-								</div>
-							</div>
+							<h6>상세 정보 사진 변경</h6>
+							<table class="table">
+								<thead>
+									<tr>
+										<th>사진</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											<img src="/AspireStore/itemImages/${pageScope.INFO_IMAGE.file_name }" alt="No Image" width="100%" />
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<input type="button" class="btn btn-primary" id="info_img_btn" name="info_img_btn" data-toggle="modal" data-target="#image_modal" onclick="changeImgModal('INFO')" value="사진 변경">
 						</div>
 						<hr>
 						<div>
@@ -227,11 +258,11 @@
 								</div>
 								<div class="form-group col-sm-6">
 									<label for="au_author_region">지역</label> <select id="au_author_region" name="au_author_region" class="form-control">
-										<c:if test="${pageScope.AUTHOR.author_region == '국내' }">
+										<c:if test="${pageScope.AUTHOR.author_region == 'd' }">
 											<option value="d" selected="selected">국내</option>
 											<option value="a">국외</option>
 										</c:if>
-										<c:if test="${pageScope.AUTHOR.author_region == '해외' }">
+										<c:if test="${pageScope.AUTHOR.author_region == 'a' }">
 											<option value="d">국내</option>
 											<option value="a" selected="selected">국외</option>
 										</c:if>
@@ -303,11 +334,11 @@
 								</div>
 								<div class="form-group col-sm-6">
 									<label for="pu_publisher_region">지역</label> <select id="pu_publisher_region" name="pu_publisher_region" class="form-control">
-										<c:if test="${pageScope.PUBLISHER.publisher_region == '국내' }">
+										<c:if test="${pageScope.PUBLISHER.publisher_region == 'd' }">
 											<option value="d" selected="selected">국내</option>
 											<option value="a">국외</option>
 										</c:if>
-										<c:if test="${pageScope.PUBLISHER.publisher_region == '해외' }">
+										<c:if test="${pageScope.PUBLISHER.publisher_region == 'a' }">
 											<option value="d">국내</option>
 											<option value="a" selected="selected">국외</option>
 										</c:if>
@@ -347,6 +378,9 @@
 				</div>
 			</div>
 		</div>
+
+
+
 		<div id="original_datalist">
 			<input type="hidden" id="original_item_name" name="original_item_name" value="${pageScope.BOOK.item_name}">
 			<input type="hidden" id="original_item_publication_date" name="original_item_publication_date" value="${pageScope.BOOK.item_publication_date}">
@@ -371,6 +405,36 @@
 			<input type="hidden" id="original_publisher_region" name="original_publisher_region" value="${pageScope.PUBLISHER.publisher_region}">
 		</div>
 	</form>
+
+	<!-- 사진 수정 MODAL -->
+	<div class="modal fade" id="image_modal" tabindex="-1" role="dialog" aria-labelledby="modal_label" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="image_modal_title">사진 수정</h5>
+
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body" id="image_modal_body">
+					<form id="img_form" name="img_form" enctype="multipart/form-data">
+						<input type="hidden" id="type" name="type">
+						<input type="hidden" id="icode" name="icode" value="${pageScope.BOOK.item_code }">
+						<input type="hidden" id="code" name="ccode" value="${pageScope.BOOK.item_category_code }">
+						<input type="file" class="form-control-file" id="image" name="image">
+					</form>
+				</div>
+				<div class="modal-footer" id="image_modal_footer">
+					<div class="form-row align-items-right">
+						<div class="col-auto">
+							<button type="button" id="image_modal_cbtn" onclick="requestImgUpdate()" class="btn btn-primary" data-dismiss="modal">수정완료</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<form enctype="application/json" id="confirmation_modification_form" name="confirmation_modification_form" action="/AspireStore/management/bookManagement.aspire" method="POST">
 		<input type="hidden" id="datalist" name="datalist">
@@ -541,7 +605,21 @@
 		{
 			selectedAuthorIndex = index;
 			document.getElementById('au_author_name').value = authorList[index]['author_name'];
-			document.getElementById('au_author_region').innerText = authorList[index]['author_region'];
+
+			let selectElement = document.getElementById('au_author_region');
+
+			if (selectElement[0].value == authorList[index]['author_region'])
+			{
+				// 국내
+				selectElement[0].selected = true;
+				selectElement[1].selected = false;
+			} else
+			{
+				// 국외
+				selectElement[0].selected = false;
+				selectElement[1].selected = true;
+			}
+
 			document.getElementById('au_author_desc').value = authorList[index]['author_desc'];
 			document.getElementById('au_author_code').value = authorList[index]['author_code'];
 		}
@@ -650,7 +728,21 @@
 		{
 			selectedPublisherIndex = index;
 			document.getElementById('pu_publisher_name').value = publisherList[index]['publisher_name'];
-			document.getElementById('pu_publisher_region').innerText = publisherList[index]['publisher_region'];
+
+			let selectElement = document.getElementById('pu_publisher_region');
+
+			if (selectElement[0].value == publisherList[index]['publisher_region'])
+			{
+				// 국내
+				selectElement[0].selected = true;
+				selectElement[1].selected = false;
+			} else
+			{
+				// 국외
+				selectElement[0].selected = false;
+				selectElement[1].selected = true;
+			}
+
 			document.getElementById('pu_publisher_code').value = publisherList[index]['publisher_code'];
 		}
 
@@ -844,6 +936,46 @@
 			{
 				return 'publisher';
 			}
+		}
+
+		function changeImgModal(imgType)
+		{
+			let imgForm = document.img_form;
+
+			if (imgType == 'INFO')
+			{
+				imgForm.type.value = 'UPDATE_INFO_IMG';
+			} else
+			{
+				// MAIN
+				imgForm.type.value = 'UPDATE_MAIN_IMG';
+			}
+		}
+
+		function requestImgUpdate()
+		{
+			let xhr = new XMLHttpRequest();
+
+			xhr.onreadystatechange = function()
+			{
+				if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200)
+				{
+					if (xhr.responseText == 'true')
+					{
+						alert('사진 변경 완료');
+						location.reload();
+					} else
+					{
+						alert('사진 변경 실패');
+					}
+				}
+			};
+
+			let imgForm = new FormData(document.getElementById('img_form'));
+
+			xhr.open('POST',
+					'/AspireStore/management/bookImgManagement.aspire', false);
+			xhr.send(imgForm);
 		}
 	</script>
 </body>

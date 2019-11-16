@@ -537,7 +537,7 @@ public class ServletDispatcher extends HttpServlet
 						request.setAttribute("ICODE", request.getParameter("book_code"));
 						request.setAttribute("CCODE", request.getParameter("book_category_code"));
 						break;
-					
+
 					case "UPDATE_DATA":
 						break;
 					}
@@ -575,7 +575,28 @@ public class ServletDispatcher extends HttpServlet
 					}
 				}
 				break;
+
+			case "/management/bookImgManagement.aspire":
+				MultipartRequest imgRequest = new MultipartRequest(request, MULTIPART_REQUEST.BOOKIMG_SAVE_FOLDER.getName(),
+						Integer.parseInt(MULTIPART_REQUEST.MAX_SIZE.getName()), MULTIPART_REQUEST.ENC_TYPE.getName(),
+						new ImageFileRenamePolicy());
+
+				String imgType = imgRequest.getParameter("type");
+				request.setAttribute("TYPE", imgType);
+				request.setAttribute("IMG_REQUEST", imgRequest);
+
+				pageControllerPath = "/management/bookImgManagement";
+
+				switch (imgType)
+				{
+				case "UPDATE_INFO_IMG":
+					break;
+				case "UPDATE_MAIN_IMG":
+					break;
+				}
+				break;
 			}
+
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher(pageControllerPath);
 			requestDispatcher.include(request, response);
 			String viewUrl = request.getAttribute("VIEWURL").toString();
