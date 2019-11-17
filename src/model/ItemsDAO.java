@@ -199,19 +199,40 @@ public class ItemsDAO
 		return list;
 	}
 
-	public ArrayList<ItemsDTO> getItemList(int ccode)
+	public ArrayList<ItemsDTO> getItemList(String ccode, String sortType, int startIdx, int endIdx)
 	{
-		Connection connection = null;
-		PreparedStatement prstmt = null;
+
 		ResultSet set = null;
 		ArrayList<ItemsDTO> bookList = new ArrayList<ItemsDTO>();
-		try
-		{
-			String query = "SELECT item_code, item_name, item_author_code, item_publisher_code, item_publication_date, item_selling_price, item_book_introduction FROM items WHERE item_category_code=? ORDER BY item_code ASC";
-			connection = ds.getConnection();
-			prstmt = connection.prepareStatement(query);
 
-			prstmt.setInt(1, ccode);
+		String query = "SELECT item_code, item_name, item_author_code, item_publisher_code, item_publication_date, item_selling_price, item_book_introduction, item_category_code "
+				+ "FROM items WHERE item_category_code = ? ";
+
+		switch (sortType)
+		{
+		case "PUB_DATE_ASC":
+			query += "ORDER BY item_publication_date ASC ";
+			break;
+		case "PUB_DATE_DESC":
+			query += "ORDER BY item_publication_date DESC ";
+			break;
+		case "BEST":
+			query += "ORDER BY item_publication_date ASC ";
+			break;
+		case "PRICE_DESC":
+			query += "ORDER BY item_selling_price DESC ";
+			break;
+		case "PRICE_ASC":
+			query += "ORDER BY item_selling_price ASC ";
+			break;
+		}
+		query += "LIMIT ?, ?";
+
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			prstmt.setString(1, ccode);
+			prstmt.setInt(2, startIdx);
+			prstmt.setInt(3, endIdx);
 
 			set = prstmt.executeQuery();
 
@@ -220,7 +241,7 @@ public class ItemsDAO
 				bookList.add(new ItemsDTO().setItem_code(set.getInt(1)).setItem_name(set.getString(2))
 						.setItem_author_code(set.getInt(3)).setItem_publisher_code(set.getInt(4))
 						.setItem_publication_date(set.getString(5)).setItem_selling_price(set.getInt(6))
-						.setItem_book_introduction(cutString(set.getString(7))));
+						.setItem_book_introduction(cutString(set.getString(7))).setItem_category_code(set.getString(8)));
 			}
 		} catch (Exception e)
 		{
@@ -232,26 +253,6 @@ public class ItemsDAO
 				try
 				{
 					set.close();
-				} catch (SQLException e)
-				{
-					e.printStackTrace();
-				}
-			}
-			if (prstmt != null)
-			{
-				try
-				{
-					prstmt.close();
-				} catch (SQLException e)
-				{
-					e.printStackTrace();
-				}
-			}
-			if (connection != null)
-			{
-				try
-				{
-					connection.close();
 				} catch (SQLException e)
 				{
 					e.printStackTrace();
@@ -507,6 +508,41 @@ public class ItemsDAO
 			}
 		}
 		return books;
+	}
+
+	public int getListSize(String ccode)
+	{
+		String query = "SELECT count(*) FROM items WHERE item_category_code = ?";
+		ResultSet set = null;
+		int size = 0;
+
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			prstmt.setString(1, ccode);
+
+			set = prstmt.executeQuery();
+
+			if (set.next())
+			{
+				size = set.getInt(1);
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return size;
 	}
 
 	public boolean updateBookData(ItemsDTO modifiedData, HashMap<String, String> processingData)

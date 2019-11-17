@@ -32,6 +32,12 @@ public class ServletBookImgManagement extends HttpServlet
 		case "UPDATE_MAIN_IMG":
 			updateBookImg(request, response, "MAIN");
 			break;
+		case "ADD_INFO_IMG":
+			addBookImg(request, response, "INFO");
+			break;
+		case "ADD_MAIN_IMG":
+			addBookImg(request, response, "MAIN");
+			break;
 		}
 	}
 
@@ -62,6 +68,43 @@ public class ServletBookImgManagement extends HttpServlet
 					.setUploaded_date_time(currentTime).setUploader_id(uploaderId).setImage_position(position);
 
 			boolean result = fileDAO.updateItemImage(newImg);
+
+			response.setContentType("UTF-8");
+			response.getWriter().write(String.valueOf(result));
+			request.setAttribute("VIEWURL", "ajax:/");
+		} catch (Exception e)
+		{
+			throw new ServletException(e);
+		}
+	}
+
+	protected void addBookImg(HttpServletRequest request, HttpServletResponse response, String position)
+			throws ServletException, IOException
+	{
+		try
+		{
+			ServletContext sc = this.getServletContext();
+			FileDAO fileDAO = (FileDAO) sc.getAttribute("FILE_DAO");
+
+			MultipartRequest requestedData = (MultipartRequest) request.getAttribute("IMG_REQUEST");
+
+			int icode = Integer.parseInt(requestedData.getParameter("icode"));
+			String ccode = requestedData.getParameter("ccode");
+			String currentTime = Util.getCurrentDateTime();
+			String uploaderId = request.getSession().getAttribute("SESSIONKEY").toString();
+
+			@SuppressWarnings("rawtypes")
+			Enumeration files = requestedData.getFileNames();
+
+			String file = files.nextElement().toString();
+			String fileName = requestedData.getFilesystemName(file);
+
+			FileDTO newImg = new FileDTO().setFile_name(fileName)
+					.setFile_size((int) requestedData.getFile(file).length()).setItem_code(icode)
+					.setItem_category_code(ccode).setFile_uri(MULTIPART_REQUEST.BOOKIMG_SAVE_FOLDER.getName())
+					.setUploaded_date_time(currentTime).setUploader_id(uploaderId).setImage_position(position);
+
+			boolean result = fileDAO.addItemImage(newImg);
 
 			response.setContentType("UTF-8");
 			response.getWriter().write(String.valueOf(result));

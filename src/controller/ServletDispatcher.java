@@ -84,6 +84,8 @@ public class ServletDispatcher extends HttpServlet
 					pageControllerPath = "/items/itemlist";
 					request.setAttribute("CCODE", request.getParameter("ccode"));
 					request.setAttribute("CPCODE", request.getParameter("cpcode"));
+					request.setAttribute("SORT_TYPE", request.getParameter("sort_type"));
+					request.setAttribute("CURRENT_PAGE", request.getParameter("c_page"));
 				}
 				break;
 
@@ -592,6 +594,10 @@ public class ServletDispatcher extends HttpServlet
 				case "UPDATE_INFO_IMG":
 					break;
 				case "UPDATE_MAIN_IMG":
+					break;
+				case "ADD_INFO_IMG":
+					break;
+				case "ADD_MAIN_IMG":
 					break;
 				}
 				break;

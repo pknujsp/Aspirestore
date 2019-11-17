@@ -42,7 +42,7 @@
 	<div class="container border border-info">
 		<div>
 			<span>
-				<img src="/AspireStore/itemImages/${pageScope.MAIN_IMAGE.file_name }" alt="No Image" width="400px" />
+				<img src="/imgfolder/itemImages/${pageScope.MAIN_IMAGE.file_name }" alt="No Image" width="400px" />
 			</span>
 
 		</div>
@@ -184,7 +184,7 @@
 			</div>
 			<div>
 				<div>
-					<img src="/AspireStore/itemImages/${pageScope.INFO_IMAGE.file_name }" alt="No Image" width="100%" />
+					<img src="/imgfolder/itemImages/${pageScope.INFO_IMAGE.file_name }" alt="No Image" width="100%" />
 				</div>
 			</div>
 		</div>

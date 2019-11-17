@@ -206,7 +206,7 @@
 					<a href="/AspireStore/items/itemlist.jsp?ccode=700" tabindex="6" class="dropdown-header dropdown-submenu">웹사이트</a>
 					<ul class="dropdown-menu">
 						<li>
-							<a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=701&cpcode=700">HTML/JAVASCRIPT/CSS</a>
+							<a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=701&cpcode=700&c_page=1&sort_type=BEST">HTML/JAVASCRIPT/CSS</a>
 						</li>
 						<li>
 							<a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=702&cpcode=700">웹디자인</a>

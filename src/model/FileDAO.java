@@ -31,9 +31,6 @@ public class FileDAO
 		} else if (type.equals("DETAIL_REVIEW"))
 		{
 			query = "SELECT * FROM reviewimages_table WHERE reviewimages_post_code = ? AND reviewimages_uploader_id = ?";
-		} else if (type.equals("BOOKS"))
-		{
-			query = "SELECT * FROM itemimages_table WHERE itemimages_item_code = ? AND itemimages_item_category_code = ? AND itemimages_uploader_id = ?";
 		}
 
 		ResultSet set = null;
@@ -49,14 +46,7 @@ public class FileDAO
 			files = new ArrayList<FileDTO>();
 			while (set.next())
 			{
-				if (type.equals("BOOKS"))
-				{
-					files.add(new FileDTO().setImage_code(set.getInt(1)).setItem_code(set.getInt(2))
-							.setItem_category_code(set.getString(3)).setFile_uri(set.getString(4))
-							.setFile_name(set.getString(5)).setFile_size(set.getInt(6))
-							.setUploaded_date_time(set.getString(7)).setUploader_id(set.getString(8))
-							.setImage_position(set.getString(9)));
-				} else if (!type.equals("DETAIL_REVIEW"))
+				if (!type.equals("DETAIL_REVIEW"))
 				{
 					files.add(new FileDTO().setImage_code(set.getInt(1)).setQuestion_post_code(set.getInt(2))
 							.setAnswer_post_code(set.getInt(3)).setUploader_id(set.getString(4))
@@ -112,6 +102,74 @@ public class FileDAO
 						.setFile_name(set.getString(5)).setFile_size(set.getInt(6))
 						.setUploaded_date_time(set.getString(7)).setUploader_id(set.getString(8))
 						.setImage_position(set.getString(9)));
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return images;
+	}
+
+	public ArrayList<FileDTO> getItemImages(String ccode, String sortType, int startIdx, int endIdx)
+	{
+		String query = "SELECT i.itemimages_item_code, i.itemimages_item_category_code, i.itemimages_image_uri, i.itemimages_image_name, i.itemimages_image_size, "
+				+ "i.itemimages_position, b.item_publication_date " + "FROM itemimages_table AS i "
+				+ "INNER JOIN items AS b ON i.itemimages_item_code = b.item_code AND i.itemimages_item_category_code = b.item_category_code "
+				+ "WHERE i.itemimages_item_category_code = ? ";
+
+		switch (sortType)
+		{
+		case "PUB_DATE_ASC":
+			query += "ORDER BY b.item_publication_date ASC ";
+			break;
+		case "PUB_DATE_DESC":
+			query += "ORDER BY b.item_publication_date DESC ";
+			break;
+		case "BEST":
+			query += "ORDER BY b.item_publication_date ASC ";
+			break;
+		case "PRICE_DESC":
+			query += "ORDER BY b.item_selling_price DESC ";
+			break;
+		case "PRICE_ASC":
+			query += "ORDER BY b.item_selling_price ASC ";
+			break;
+		}
+		query += "LIMIT ?, ?";
+
+		ResultSet set = null;
+		ArrayList<FileDTO> images = null;
+
+		try (Connection connection = dataSource.getConnection();
+				PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			prstmt.setString(1, ccode);
+			prstmt.setInt(2, startIdx);
+			prstmt.setInt(3, endIdx);
+
+			set = prstmt.executeQuery();
+			images = new ArrayList<FileDTO>();
+
+			while (set.next())
+			{
+				if (set.getString(6).equals("MAIN"))
+				{
+					images.add(new FileDTO().setItem_code(set.getInt(1)).setItem_category_code(set.getString(2))
+							.setFile_uri(set.getString(3)).setFile_name(set.getString(4)).setFile_size(set.getInt(5))
+							.setImage_position(set.getString(6)).setUploaded_date_time(set.getString(7)));
+				}
 			}
 		} catch (Exception e)
 		{
@@ -227,6 +285,34 @@ public class FileDAO
 			prstmt.setString(5, newImage.getUploader_id());
 			prstmt.setInt(6, newImage.getItem_code());
 			prstmt.setString(7, newImage.getItem_category_code());
+			prstmt.setString(8, newImage.getImage_position());
+
+			if (prstmt.executeUpdate() == 1)
+			{
+				flag = true;
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return flag;
+	}
+
+	public boolean addItemImage(FileDTO newImage)
+	{
+		String query = "INSERT INTO itemimages_table VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?)";
+		boolean flag = false;
+
+		try (Connection connection = dataSource.getConnection();
+				PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			prstmt.setInt(1, newImage.getItem_code());
+			prstmt.setString(2, newImage.getItem_category_code());
+			prstmt.setString(3, newImage.getFile_uri());
+			prstmt.setString(4, newImage.getFile_name());
+			prstmt.setInt(5, newImage.getFile_size());
+			prstmt.setString(6, newImage.getUploaded_date_time());
+			prstmt.setString(7, newImage.getUploader_id());
 			prstmt.setString(8, newImage.getImage_position());
 
 			if (prstmt.executeUpdate() == 1)

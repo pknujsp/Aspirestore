@@ -64,12 +64,22 @@
 							</thead>
 							<tbody>
 								<tr>
-									<td>
-										<img src="/AspireStore/itemImages/${pageScope.MAIN_IMAGE.file_name }" alt="No Image" width="400px" />
-									</td>
-									<td>
-										<img src="/AspireStore/itemImages/${pageScope.MAIN_IMAGE.file_name }" alt="No Image" width="100px" />
-									</td>
+									<c:if test="${pageScope.MAIN_IMAGE != null }">
+										<td>
+											<img src="/imgfolder/itemImages/${pageScope.MAIN_IMAGE.file_name }" id="main_img" alt="No Image" width="400px" />
+										</td>
+										<td>
+											<img src="/imgfolder/itemImages/${pageScope.MAIN_IMAGE.file_name }" id="thumbnail_img" alt="No Image" width="100px" />
+										</td>
+									</c:if>
+									<c:if test="${pageScope.MAIN_IMAGE == null }">
+										<td>
+											<img src="" id="main_img" alt="No Image" width="400px" />
+										</td>
+										<td>
+											<img src="" id="thumbnail_img" alt="No Image" width="100px" />
+										</td>
+									</c:if>
 									<td>
 										<input type="button" class="btn btn-primary" id="main_img_btn" name="main_img_btn" data-toggle="modal" data-target="#image_modal" onclick="changeImgModal('MAIN')" value="사진 변경">
 									</td>
@@ -188,9 +198,16 @@
 								</thead>
 								<tbody>
 									<tr>
-										<td>
-											<img src="/AspireStore/itemImages/${pageScope.INFO_IMAGE.file_name }" alt="No Image" width="100%" />
-										</td>
+										<c:if test="${pageScope.INFO_IMAGE != null }">
+											<td>
+												<img src="/imgfolder/itemImages/${pageScope.INFO_IMAGE.file_name }" id="info_img" alt="No Image" width="100%" />
+											</td>
+										</c:if>
+										<c:if test="${pageScope.INFO_IMAGE == null }">
+											<td>
+												<img src="" id="info_img" alt="No Image" width="100%" />
+											</td>
+										</c:if>
 									</tr>
 								</tbody>
 							</table>
@@ -474,7 +491,7 @@
 			pu_publisher_region : ''
 		};
 
-		(function saveBookData()
+		(function preProcessing()
 		{
 			let dataList = document.getElementById('original_datalist');
 			let inputTags = dataList.getElementsByTagName('input');
@@ -491,6 +508,7 @@
 				// 원본 데이터를 가지고 있는 input tag를 제거
 				dataList.removeChild(dataList.childNodes[0]);
 			}
+			checkImgNull();
 		})()
 
 		$("#menu-toggle").click(function(e)
@@ -952,6 +970,20 @@
 			}
 		}
 
+		function addImgModal(imgType)
+		{
+			let imgForm = document.img_form;
+
+			if (imgType == 'INFO')
+			{
+				imgForm.type.value = 'ADD_INFO_IMG';
+			} else
+			{
+				// MAIN
+				imgForm.type.value = 'ADD_MAIN_IMG';
+			}
+		}
+
 		function requestImgUpdate()
 		{
 			let xhr = new XMLHttpRequest();
@@ -976,6 +1008,27 @@
 			xhr.open('POST',
 					'/AspireStore/management/bookImgManagement.aspire', false);
 			xhr.send(imgForm);
+		}
+
+		function checkImgNull()
+		{
+			let mainImg = document.getElementById('main_img');
+			let infoImg = document.getElementById('info_img');
+			document.getElementById('image_modal_title').innerText = '사진 추가';
+			
+			if (mainImg.currentSrc == '')
+			{
+				let btn = document.getElementById('main_img_btn');
+				btn.setAttribute('onclick','addImgModal(\'MAIN\')');
+				btn.value = '사진 추가';
+			}
+
+			if (infoImg.currentSrc == '')
+			{
+				let btn = document.getElementById('info_img_btn');
+				btn.setAttribute('onclick','addImgModal(\'INFO\')');
+				btn.value = '사진 추가';
+			}
 		}
 	</script>
 </body>
