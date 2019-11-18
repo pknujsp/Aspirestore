@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Set;
+
 public class ItemsDTO
 {
 	private int item_code;
@@ -23,6 +25,12 @@ public class ItemsDTO
 	private String item_contents_table;
 	private String item_publisher_review;
 	private String item_registration_datetime;
+	private String item_rating;
+
+	public String getItem_rating()
+	{
+		return item_rating;
+	}
 
 	public String getItem_author_name()
 	{
@@ -252,6 +260,12 @@ public class ItemsDTO
 	public ItemsDTO setItem_publisher_name(String item_publisher_name)
 	{
 		this.item_publisher_name = item_publisher_name;
+		return this;
+	}
+
+	public ItemsDTO setItem_rating(String item_rating)
+	{
+		this.item_rating = item_rating;
 		return this;
 	}
 

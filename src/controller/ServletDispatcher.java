@@ -194,12 +194,11 @@ public class ServletDispatcher extends HttpServlet
 					case "ONE_ORDER":
 						int itemCode = Integer.parseInt(request.getParameter("itemCode"));
 						String itemCategory = request.getParameter("itemCategory");
-						int itemPrice = Integer.parseInt(request.getParameter("itemPrice"));
 						int quantity = Integer.parseInt(request.getParameter("quantity"));
+						int itemPrice = Integer.parseInt(request.getParameter("itemPrice"));
 
-						orderInformations
-								.add(new OrderInformation().setItem_code(itemCode).setItem_category(itemCategory)
-										.setItem_price(itemPrice).setOrder_quantity(quantity).setTotal_price());
+						orderInformations.add(new OrderInformation().setItem_code(itemCode).setItem_price(itemPrice)
+								.setItem_category(itemCategory).setOrder_quantity(quantity).setTotal_price());
 
 						orderInformations.trimToSize();
 					}
@@ -579,7 +578,8 @@ public class ServletDispatcher extends HttpServlet
 				break;
 
 			case "/management/bookImgManagement.aspire":
-				MultipartRequest imgRequest = new MultipartRequest(request, MULTIPART_REQUEST.BOOKIMG_SAVE_FOLDER.getName(),
+				MultipartRequest imgRequest = new MultipartRequest(request,
+						MULTIPART_REQUEST.BOOKIMG_SAVE_FOLDER.getName(),
 						Integer.parseInt(MULTIPART_REQUEST.MAX_SIZE.getName()), MULTIPART_REQUEST.ENC_TYPE.getName(),
 						new ImageFileRenamePolicy());
 

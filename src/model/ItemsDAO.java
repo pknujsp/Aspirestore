@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -205,8 +206,12 @@ public class ItemsDAO
 		ResultSet set = null;
 		ArrayList<ItemsDTO> bookList = new ArrayList<ItemsDTO>();
 
-		String query = "SELECT item_code, item_name, item_author_code, item_publisher_code, item_publication_date, item_selling_price, item_book_introduction, item_category_code "
-				+ "FROM items WHERE item_category_code = ? ";
+		String query = "SELECT i.item_code, i.item_name, i.item_author_code, i.item_publisher_code, i.item_publication_date, i.item_selling_price"
+				+ ", i.item_book_introduction, i.item_category_code, a.author_name, p.publisher_name, r.rinfo_sreview_num, r.rinfo_dreview_num, r.rinfo_total_rating "
+				+ "FROM items AS i " + "INNER JOIN authors AS a ON a.author_code = i.item_author_code "
+				+ "INNER JOIN publishers AS p ON p.publisher_code = i.item_publisher_code "
+				+ "INNER JOIN itemreviewinfo_table AS r ON r.rinfo_item_code = i.item_code AND r.rinfo_item_category_code = i.item_category_code "
+				+ "WHERE i.item_category_code = ? ";
 
 		switch (sortType)
 		{
@@ -238,10 +243,14 @@ public class ItemsDAO
 
 			while (set.next())
 			{
+				double rating = ((double) set.getInt(13) / (double) (set.getInt(11) + set.getInt(12)));
+
 				bookList.add(new ItemsDTO().setItem_code(set.getInt(1)).setItem_name(set.getString(2))
 						.setItem_author_code(set.getInt(3)).setItem_publisher_code(set.getInt(4))
 						.setItem_publication_date(set.getString(5)).setItem_selling_price(set.getInt(6))
-						.setItem_book_introduction(cutString(set.getString(7))).setItem_category_code(set.getString(8)));
+						.setItem_book_introduction(cutString(set.getString(7))).setItem_category_code(set.getString(8))
+						.setItem_author_name(set.getString(9)).setItem_publisher_name(set.getString(10))
+						.setItem_rating(new DecimalFormat("#.#").format(rating)));
 			}
 		} catch (Exception e)
 		{

@@ -33,6 +33,7 @@ public class ServletShowItems extends HttpServlet
 			FileDAO fileDAO = (FileDAO) servletContext.getAttribute("FILE_DAO");
 
 			String ccode = request.getAttribute("CCODE").toString();
+			String cpcode = request.getAttribute("CPCODE").toString();
 			String sortType = request.getAttribute("SORT_TYPE").toString();
 			int currentPage = Integer.parseInt(request.getAttribute("CURRENT_PAGE").toString());
 
@@ -65,6 +66,8 @@ public class ServletShowItems extends HttpServlet
 			request.setAttribute("PAGE_DATA", pageData);
 			request.setAttribute("BOOKLIST", bookList);
 			request.setAttribute("THUMBNAILS", thumbnails);
+			request.setAttribute("CCODE", ccode);
+			request.setAttribute("CPCODE", cpcode);
 			request.setAttribute("VIEWURL", "forward:/items/itemlist.jsp");
 		} catch (Exception e)
 		{
