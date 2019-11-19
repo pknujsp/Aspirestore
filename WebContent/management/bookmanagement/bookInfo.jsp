@@ -1,3 +1,4 @@
+<%@page import="model.FileDTO"%>
 <%@page import="model.PublisherDTO"%>
 <%@page import="model.AuthorDTO"%>
 <%@page import="model.ItemsDTO"%>
@@ -8,6 +9,11 @@
 	ItemsDTO book = (ItemsDTO) request.getAttribute("BOOK");
 	AuthorDTO author = (AuthorDTO) request.getAttribute("AUTHOR");
 	PublisherDTO publisher = (PublisherDTO) request.getAttribute("PUBLISHER");
+	FileDTO mainImg = (FileDTO) request.getAttribute("MAIN_IMAGE");
+	FileDTO infoImg = (FileDTO) request.getAttribute("INFO_IMAGE");
+
+	pageContext.setAttribute("MAIN_IMAGE", mainImg);
+	pageContext.setAttribute("INFO_IMAGE", infoImg);
 
 	pageContext.setAttribute("BOOK", book);
 	pageContext.setAttribute("AUTHOR", author);
@@ -32,7 +38,6 @@
 <body>
 	<div class="d-flex" id="wrapper">
 		<div class="bg-light border-right" id="sidebar-wrapper">
-			<!-- <div class="sidebar-heading">Start Bootstrap</div> -->
 			<div class="list-group list-group-flush">
 				<a href="#" class="list-group-item list-group-item-action bg-light">도서 관리</a>
 				<a href="#" class="list-group-item list-group-item-action bg-light">도서 재고</a>
@@ -46,7 +51,7 @@
 			<div class="container border border-info">
 				<div>
 					<span>
-						<img src="/AspireStore/images/ReactBookImage.jpg" alt="No Image" border="0" style="width: 40%; height: auto;" />
+						<img src="/imgfolder/itemImages/${pageScope.MAIN_IMAGE.file_name }" alt="No Image" width="400px" />
 					</span>
 
 				</div>
@@ -168,7 +173,7 @@
 						</div>
 						<div>
 							<div>
-								<img src="#" border="0" alt="이미지가 없습니다." />
+								<img src="/imgfolder/itemImages/${pageScope.INFO_IMAGE.file_name }" alt="No Image" width="100%" />
 							</div>
 						</div>
 					</div>
@@ -216,5 +221,12 @@
 
 	<script src="/AspireStore/jquery/jquery.js"></script>
 	<script src="/AspireStore/js/bootstrap.bundle.js"></script>
+	<script>
+		$("#menu-toggle").click(function(e)
+		{
+			e.preventDefault();
+			$("#wrapper").toggleClass("toggled");
+		});
+	</script>
 </body>
 </html>

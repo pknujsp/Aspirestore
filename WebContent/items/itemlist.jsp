@@ -15,12 +15,14 @@
 	HashMap<String, Integer> pageData = (HashMap<String, Integer>) request.getAttribute("PAGE_DATA");
 	String ccode = request.getAttribute("CCODE").toString();
 	String cpcode = request.getAttribute("CPCODE").toString();
+	String sortType = request.getAttribute("SORT_TYPE").toString();
 
 	pageContext.setAttribute("THUMBNAILS", thumbnails);
 	pageContext.setAttribute("BOOKLIST", itemList);
 	pageContext.setAttribute("PAGE_DATA", pageData);
 	pageContext.setAttribute("CCODE", ccode);
 	pageContext.setAttribute("CPCODE", cpcode);
+	pageContext.setAttribute("SORT_TYPE", sortType);
 %>
 <!DOCTYPE html>
 <html>
@@ -54,16 +56,29 @@
 
 	<br>
 
-	<div class="container border border-info" align="center">
+	<div class="container" align="center">
 		<!-- 책 정보 테이블 -->
-		<ul style="list-style: none; padding-left: 0px;">
+		<div align="left">
+			<span>
+				<em>정렬</em>&ensp;
+				<a href="javascript:sortList('PUB_DATE_DESC')">출간일 순</a>
+				&ensp;
+				<a href="javascript:sortList('BEST')">판매량 순</a>
+				&ensp;
+				<a href="javascript:sortList('PRICE_DESC')">높은 가격 순</a>
+				&ensp;
+				<a href="javascript:sortList('PRICE_ASC')">낮은 가격 순</a>
+			</span>
+		</div>
+		<ul style="list-style: none; padding: 2px;">
+
 			<c:forEach var="book" items="${pageScope.BOOKLIST}" varStatus="status">
 				<li>
-					<table>
+					<table class="table table-bordered">
 						<tr>
 							<td style="width: 20%; text-align: center;">
 								<c:if test="${pageScope.THUMBNAILS[status.index] != null }">
-									<img class="align-self-center img-fluid" height="100px" src="/imgfolder/itemImages/${pageScope.THUMBNAILS[status.index].file_name }" class="card-img" alt="이미지 없음" width="100px" />
+									<img class="card-img-top" src="/imgfolder/itemImages/${pageScope.THUMBNAILS[status.index].file_name }" class="card-img" alt="이미지 없음" width="100px" />
 								</c:if>
 								<c:if test="${pageScope.THUMBNAILS[status.index] == null }">
 									<img class="img-fluid" height="100px" src="" class="card-img" alt="이미지 없음">
@@ -153,11 +168,11 @@
 			</ul>
 		</nav>
 
-		<form action="/AspireStore/items/itemlist.aspire?" method="GET" id="pagination_form" name="pagination_form">
-			<input type="hidden" name="c_page" id="c_page" value="">
+		<form action="/AspireStore/items/itemlist.aspire?" method="get" id="pagination_form" name="pagination_form">
+			<input type="hidden" name="c_page" id="c_page" value="${pageScope.PAGE_DATA['current_page']}">
 			<input type="hidden" name="ccode" id="ccode" value="${pageScope.CCODE }">
 			<input type="hidden" name="cpcode" id="cpcode" value="${pageScope.CPCODE }">
-			<input type="hidden" name="sort_type" id="sort_type" value="BEST">
+			<input type="hidden" name="sort_type" id="sort_type" value="${pageScope.SORT_TYPE }">
 		</form>
 
 	</div>
@@ -175,11 +190,12 @@
 		<input type="hidden" id="type" name="type" value="GET_BASKET">
 	</form>
 
+
 	<!-- Bootstrap core JavaScript -->
 	<script src="/AspireStore/jquery/jquery.min.js"></script>
 	<script src="/AspireStore/js/bootstrap.bundle.min.js"></script>
 
-	<script type="text/javascript">
+	<script>
 	
 	function paging(num)
 	{
@@ -245,6 +261,12 @@
 		document.data_form.quantity.value=document.getElementById(quantityId).value;
 	
 		document.data_form.submit();
+	}
+	
+	function sortList(sort)
+	{
+		document.pagination_form.sort_type.value=sort;
+		document.pagination_form.submit();
 	}
 	</script>
 </body>

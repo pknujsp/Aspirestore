@@ -215,20 +215,17 @@ public class ItemsDAO
 
 		switch (sortType)
 		{
-		case "PUB_DATE_ASC":
-			query += "ORDER BY item_publication_date ASC ";
-			break;
 		case "PUB_DATE_DESC":
-			query += "ORDER BY item_publication_date DESC ";
+			query += "ORDER BY i.item_publication_date DESC ";
 			break;
 		case "BEST":
-			query += "ORDER BY item_publication_date ASC ";
+			query += "ORDER BY i.item_publication_date ASC ";
 			break;
 		case "PRICE_DESC":
-			query += "ORDER BY item_selling_price DESC ";
+			query += "ORDER BY i.item_selling_price DESC ";
 			break;
 		case "PRICE_ASC":
-			query += "ORDER BY item_selling_price ASC ";
+			query += "ORDER BY i.item_selling_price ASC ";
 			break;
 		}
 		query += "LIMIT ?, ?";

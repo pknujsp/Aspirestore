@@ -131,9 +131,6 @@ public class FileDAO
 
 		switch (sortType)
 		{
-		case "PUB_DATE_ASC":
-			query += "ORDER BY b.item_publication_date ASC ";
-			break;
 		case "PUB_DATE_DESC":
 			query += "ORDER BY b.item_publication_date DESC ";
 			break;

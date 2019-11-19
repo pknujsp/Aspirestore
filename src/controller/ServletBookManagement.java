@@ -61,9 +61,9 @@ public class ServletBookManagement extends HttpServlet
 
 			ArrayList<ArrayList<String>> categoryList = new ArrayList<ArrayList<String>>();
 
-			for (int index = 0; index < jsonArr.length() - 1; ++index)
+			for (int index = 1; index < jsonArr.length(); ++index)
 			{
-				String parentCategoryCode = String.valueOf(index * 100 + 100);
+				String parentCategoryCode = String.valueOf(index * 100);
 
 				JSONObject dataObj = jsonArr.getJSONObject(index);
 				JSONArray dataArr = dataObj.getJSONArray(parentCategoryCode);
@@ -108,9 +108,9 @@ public class ServletBookManagement extends HttpServlet
 
 			ArrayList<ArrayList<String>> categoryList = new ArrayList<ArrayList<String>>();
 
-			for (int index = 0; index < jsonArr.length() - 1; ++index)
+			for (int index = 1; index < jsonArr.length(); ++index)
 			{
-				String parentCategoryCode = String.valueOf(index * 100 + 100);
+				String parentCategoryCode = String.valueOf(index * 100);
 
 				JSONObject dataObj = jsonArr.getJSONObject(index);
 				JSONArray dataArr = dataObj.getJSONArray(parentCategoryCode);
@@ -175,10 +175,26 @@ public class ServletBookManagement extends HttpServlet
 		{
 			ServletContext sc = this.getServletContext();
 			ItemsDAO itemsDAO = (ItemsDAO) sc.getAttribute("itemsDAO");
-
+			FileDAO fileDAO = (FileDAO) sc.getAttribute("FILE_DAO");
+			
 			int icode = Integer.parseInt(request.getAttribute("ICODE").toString());
 			String ccode = request.getAttribute("CCODE").toString();
 			Map<String, Object> bookData = itemsDAO.getBookData(icode, ccode);
+			ArrayList<FileDTO> images = fileDAO.getItemImages(icode, ccode);
+
+			for (int index = 0; index < images.size(); ++index)
+			{
+				if (images.get(index).getImage_position().equals("MAIN"))
+				{
+					bookData.put("MAIN_IMAGE", images.get(index));
+				} else if (images.get(index).getImage_position().equals("INFO"))
+				{
+					bookData.put("INFO_IMAGE", images.get(index));
+				}
+			}
+
+			request.setAttribute("MAIN_IMAGE", bookData.get("MAIN_IMAGE"));
+			request.setAttribute("INFO_IMAGE", bookData.get("INFO_IMAGE"));
 
 			request.setAttribute("BOOK", bookData.get("BOOK"));
 			request.setAttribute("AUTHOR", bookData.get("AUTHOR"));
@@ -221,7 +237,7 @@ public class ServletBookManagement extends HttpServlet
 			request.setAttribute("PUBLISHER", bookData.get("PUBLISHER"));
 			request.setAttribute("MAIN_IMAGE", bookData.get("MAIN_IMAGE"));
 			request.setAttribute("INFO_IMAGE", bookData.get("INFO_IMAGE"));
-			
+
 			request.setAttribute("VIEWURL", "forward:/management/bookmanagement/bookModification.jsp");
 		} catch (Exception e)
 		{

@@ -68,6 +68,7 @@ public class ServletShowItems extends HttpServlet
 			request.setAttribute("THUMBNAILS", thumbnails);
 			request.setAttribute("CCODE", ccode);
 			request.setAttribute("CPCODE", cpcode);
+			request.setAttribute("SORT_TYPE", sortType);
 			request.setAttribute("VIEWURL", "forward:/items/itemlist.jsp");
 		} catch (Exception e)
 		{
