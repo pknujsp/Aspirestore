@@ -1,6 +1,11 @@
+<%@page import="java.util.HashMap"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-
+<%
+	@SuppressWarnings("unchecked")
+	HashMap<String, HashMap<String, String>> categoryData = (HashMap<String, HashMap<String, String>>) request
+			.getAttribute("CATEGORY_DATA");
+%>
 
 <!DOCTYPE html>
 <html>
@@ -65,6 +70,12 @@
 						<div class="form-group">
 							<label for="it_item_name">도서 명</label>
 							<input type="text" class="form-control col-5" id="it_item_name" name="it_item_name">
+						</div>
+
+						<div class="form-group">
+							<label for="it_item_category_code">도서 카테고리</label> <select class="form-control col-5" id="it_item_category_code" name="it_item_category_code">
+								<option></option>
+							</select>
 						</div>
 
 						<hr>
@@ -202,7 +213,6 @@
 					<div class="modal-body">
 						<ul id="author_list" style="list-style: none; padding: 2px; margin: 2px;" class="list-group">
 							<li id="author[]" class="list-group-item">
-								<h6>저자1</h6>
 								<div class="form-row">
 									<div class="form-group col-sm-6">
 										<label for="au_author_code">저자 코드</label>
@@ -221,7 +231,7 @@
 								</div>
 								<div class="form-group">
 									<label for="au_author_desc">저자 소개</label>
-									<textarea style="resize: none; word-break: break-all;" class="form-control form-control-sm" id="au_author_desc" name="au_author_desc" rows="3"></textarea>
+									<textarea style="resize: none; word-break: break-all;" class="form-control form-control-sm" id="au_author_desc[]" name="au_author_desc[]" rows="3"></textarea>
 								</div>
 							</li>
 						</ul>
@@ -347,7 +357,7 @@
 		var publisherList = [];
 		var selectedAuthorIndex = 0;
 		var selectedPublisherIndex = 0;
-		const authorFormList = document.getElementById('author_list');
+		var authorFormList = document.getElementById('author_list');
 
 		$("#menu-toggle").click(function(e)
 		{
@@ -438,12 +448,22 @@
 			document.getElementById('checkbox_new_author').checked = false;
 			newAuthor('checkbox_new_author');
 
+			let listLength = authorFormList.getElementsByTagName('li').length;
+
+			let authorNameElements = document
+					.getElementsByName('au_author_name[]');
+			let authorRegionElements = document
+					.getElementsByName('au_author_region[]');
+			let authorDescElements = document
+					.getElementsByName('au_author_desc[]');
+			let authorCodeElements = document
+					.getElementsByName('au_author_code[]');
+
 			selectedAuthorIndex = index;
-			document.getElementById('au_author_name').value = authorList[index]['author_name'];
 
-			let selectElement = document.getElementById('au_author_region');
+			let selectElement = authorRegionElements[listLength - 1];
 
-			if (selectElement[0].value == authorList[index]['author_region'])
+			if ('d' == authorList[index]['author_region'])
 			{
 				// 국내
 				selectElement[0].selected = true;
@@ -455,8 +475,9 @@
 				selectElement[1].selected = true;
 			}
 
-			document.getElementById('au_author_desc').value = authorList[index]['author_desc'];
-			document.getElementById('au_author_code').value = authorList[index]['author_code'];
+			authorDescElements[listLength - 1].value = authorList[index]['author_desc'];
+			authorNameElements[listLength - 1].value = authorList[index]['author_name'];
+			authorCodeElements[listLength - 1].value = authorList[index]['author_code'];
 		}
 
 		function convertRegionToChar(region)
@@ -586,23 +607,27 @@
 
 		function newAuthor(obj)
 		{
-			let authorNameElements = authorFormList
+			let authorNameElements = document
 					.getElementsByName('au_author_name[]');
-			let authorRegionElements = authorFormList
+			let authorRegionElements = document
 					.getElementsByName('au_author_region[]');
-			let authorDescElements = authorFormList
+			let authorDescElements = document
 					.getElementsByName('au_author_desc[]');
+			let authorCodeElements = document
+					.getElementsByName('au_author_code[]');
+
+			let listLength = authorFormList.getElementsByTagName('li').length;
 
 			if (obj.checked == true)
 			{
 				// 신규 추가
-				for (let index = 0; index < authorFormList
-						.getElementsByTagName('li').length; ++index)
+				for (let index = 0; index < listLength; ++index)
 				{
 					authorNameElements[index].readOnly = false;
 					authorRegionElements[index].readOnly = false;
 					authorDescElements[index].readOnly = false;
 
+					authorCodeElements[index].value = '';
 					authorNameElements[index].value = '';
 
 					authorRegionElements[index].setAttribute('onFocus', '');
@@ -612,8 +637,7 @@
 				}
 			} else
 			{
-				for (let index = 0; index < authorFormList
-						.getElementsByTagName('li').length; ++index)
+				for (let index = 0; index < listLength; ++index)
 				{
 					authorNameElements[index].readOnly = true;
 					authorDescElements[index].readOnly = true;
@@ -632,6 +656,8 @@
 					.getElementById('pu_publisher_name');
 			let publisherRegionElement = document
 					.getElementById('pu_publisher_region');
+			let publisherCodeElement = document
+					.getElementById('pu_publisher_code');
 
 			if (obj.checked == true)
 			{
@@ -639,6 +665,7 @@
 				publisherNameElement.readOnly = false;
 				publisherRegionElement.readOnly = false;
 
+				publisherCodeElement.value = '';
 				publisherNameElement.value = '';
 
 				publisherRegionElement.setAttribute('onFocus', '');
@@ -676,9 +703,9 @@
 					+ '</div>'
 					+ '<div class=\"form-group\">'
 					+ '<label for=\"au_author_desc\">저자 소개</label>'
-					+ '<textarea style=\"resize: none; word-break: break-all;\" class=\"form-control form-control-sm\" id=\"au_author_desc\" name=\"au_author_desc[]\" rows=\"3\"></textarea>'
+					+ '<textarea style=\"resize: none; word-break: break-all;\" class=\"form-control form-control-sm\" id=\"au_author_desc[]\" name=\"au_author_desc[]\" rows=\"3\"></textarea>'
 					+ '</div>'
-					+ '<input type=\"button\" value=\"삭제\" class=\"btn btn-secondary\" onclick=\"javascript:this.parentNode.remove();\"';
+					+ '<input type=\"button\" value=\"삭제\" class=\"btn btn-secondary\" onclick=\"javascript:this.parentNode.remove();\">';
 
 			const newElement = document.createElement('li');
 			newElement.setAttribute('class', 'list-group-item');

@@ -551,6 +551,64 @@ public class ItemsDAO
 		return size;
 	}
 
+	public int insertNewBook(ItemsDTO bookData, String currentTime)
+	{
+		String query = "INSERT INTO items VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String codeQuery = "SELECT item_code FROM items WHERE item_name = ? AND item_category_code = ?";
+		int itemCode = 0;
+		ResultSet set = null;
+
+		try (Connection connection = ds.getConnection();
+				PreparedStatement prstmt = connection.prepareStatement(query);
+				PreparedStatement prstmt2 = connection.prepareStatement(codeQuery);)
+		{
+			prstmt.setString(1, bookData.getItem_name());
+			prstmt.setString(2, bookData.getItem_publisher_name());
+			prstmt.setString(3, bookData.getItem_publication_date());
+			prstmt.setInt(4, bookData.getItem_fixed_price());
+			prstmt.setInt(5, bookData.getItem_selling_price());
+			prstmt.setInt(6, bookData.getItem_remaining_quantity());
+			prstmt.setString(7, bookData.getItem_category_code());
+			prstmt.setString(8, bookData.getItem_page_number());
+			prstmt.setString(9, bookData.getItem_weight());
+			prstmt.setString(10, bookData.getItem_size());
+			prstmt.setString(11, bookData.getItem_isbn13());
+			prstmt.setString(12, bookData.getItem_isbn10());
+			prstmt.setString(13, bookData.getItem_book_introduction());
+			prstmt.setString(14, bookData.getItem_contents_table());
+			prstmt.setString(15, bookData.getItem_publisher_review());
+			prstmt.setString(16, currentTime);
+
+			if (prstmt.executeUpdate() == 1)
+			{
+				prstmt2.setString(1, bookData.getItem_name());
+				prstmt2.setString(2, bookData.getItem_category_code());
+
+				set = prstmt2.executeQuery();
+				if (set.next())
+				{
+					itemCode = set.getInt(1);
+				}
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return itemCode;
+	}
+
 	public boolean updateBookData(ItemsDTO modifiedData, HashMap<String, String> processingData)
 	{
 		final int icode = Integer.parseInt(processingData.get("icode"));

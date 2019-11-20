@@ -36,6 +36,7 @@ public class ServletShowItems extends HttpServlet
 			String cpcode = request.getAttribute("CPCODE").toString();
 			String sortType = request.getAttribute("SORT_TYPE").toString();
 			int currentPage = Integer.parseInt(request.getAttribute("CURRENT_PAGE").toString());
+			HashMap<String, HashMap<String, String>> categoryMap = new HashMap<String, HashMap<String, String>>();
 
 			// 전체 레코드의 개수를 가져온다.
 			int listSize = itemsDAO.getListSize(ccode);
@@ -69,6 +70,7 @@ public class ServletShowItems extends HttpServlet
 			request.setAttribute("CCODE", ccode);
 			request.setAttribute("CPCODE", cpcode);
 			request.setAttribute("SORT_TYPE", sortType);
+
 			request.setAttribute("VIEWURL", "forward:/items/itemlist.jsp");
 		} catch (Exception e)
 		{

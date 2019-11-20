@@ -601,6 +601,17 @@ public class ServletDispatcher extends HttpServlet
 					break;
 				}
 				break;
+
+			case "/management/bookRegistration.aspire":
+				pageControllerPath = "/management/bookRegistration";
+
+				MultipartRequest bookRequest = new MultipartRequest(request,
+						MULTIPART_REQUEST.BOOKIMG_SAVE_FOLDER.getName(),
+						Integer.parseInt(MULTIPART_REQUEST.MAX_SIZE.getName()), MULTIPART_REQUEST.ENC_TYPE.getName(),
+						new ImageFileRenamePolicy());
+				request.setAttribute("BOOK_REQUEST", bookRequest);
+
+				break;
 			}
 
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher(pageControllerPath);
