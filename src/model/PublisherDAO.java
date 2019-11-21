@@ -155,6 +155,70 @@ public class PublisherDAO
 		return flag;
 	}
 
+	public boolean insertPublisher(PublisherDTO publisherData, int icode, String ccode)
+	{
+		String insertNewPubQuery = null;
+		String selectNewPubCodeQuery = null;
+		String insertExistingPubQuery = "UPDATE items SET item_publisher_code = ? WHERE item_code = ? AND item_category_code = ?";
+		ResultSet set = null;
+		boolean flag = false;
+
+		if (publisherData.getPublisher_code() == -1)
+		{
+			// 새로운 출판사
+			insertNewPubQuery = "INSERT INTO publishers VALUES (null, ?, ?)";
+			selectNewPubCodeQuery = "SELECT publisher_code FROM publishers WHERE publisher_name = ? AND publisher_region = ?";
+		}
+
+		try (Connection connection = ds.getConnection();
+				PreparedStatement prstmt1 = checkQueryNull(insertNewPubQuery, connection);
+				PreparedStatement prstmt2 = checkQueryNull(selectNewPubCodeQuery, connection);
+				PreparedStatement prstmt3 = connection.prepareStatement(insertExistingPubQuery);)
+		{
+			if (insertNewPubQuery != null)
+			{
+				prstmt1.setString(1, publisherData.getPublisher_name());
+				prstmt1.setString(2, publisherData.getPublisher_region());
+
+				if (prstmt1.executeUpdate() == 1)
+				{
+					prstmt2.setString(1, publisherData.getPublisher_name());
+					prstmt2.setString(2, publisherData.getPublisher_region());
+
+					set = prstmt2.executeQuery();
+					if (set.next())
+					{
+						publisherData.setPublisher_code(set.getInt(1));
+					}
+				}
+			}
+			prstmt3.setInt(1, publisherData.getPublisher_code());
+			prstmt3.setInt(2, icode);
+			prstmt3.setString(3, ccode);
+
+			if (prstmt3.executeUpdate() == 1)
+			{
+				flag = true;
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return flag;
+	}
+
 	private String convertRegion(String region)
 	{
 		if (region.equals("d"))

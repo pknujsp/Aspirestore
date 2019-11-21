@@ -198,6 +198,87 @@ public class AuthorDAO
 		return flag;
 	}
 
+	public boolean insertAuthors(ArrayList<AuthorDTO> authorList, int icode, String ccode)
+	{
+		String createAuthorQuery = "INSERT INTO authors VALUES (null, ?, ?, ?)";
+		String selectAuthorQuery = "SELECT author_code FROM authors WHERE author_name = ? AND author_region = ? AND author_information = ?";
+		String addBookAuthorQuery = "INSERT INTO bookauthors_table VALUES(null, ?, ?, ?)";
+		boolean flag = false;
+		ResultSet set = null;
+
+		try (Connection connection = ds.getConnection();
+				PreparedStatement prstmt1 = connection.prepareStatement(createAuthorQuery);
+				PreparedStatement prstmt2 = connection.prepareStatement(selectAuthorQuery);
+				PreparedStatement prstmt3 = connection.prepareStatement(addBookAuthorQuery);)
+		{
+			ArrayList<Integer> newAuthors = new ArrayList<Integer>();
+
+			for (int index = 0; index < authorList.size(); ++index)
+			{
+				if (authorList.get(index).getAuthor_code() == -1)
+				{
+					// 새 저자 정보를 DB에 추가
+					prstmt1.setString(1, authorList.get(index).getAuthor_name());
+					prstmt1.setString(2, authorList.get(index).getAuthor_region());
+					prstmt1.setString(3, authorList.get(index).getAuthor_information());
+					newAuthors.add(index);
+
+					prstmt1.addBatch();
+				}
+			}
+
+			if (prstmt1.executeBatch().length == newAuthors.size())
+			{
+				for (int index = 0; index < newAuthors.size(); ++index)
+				{
+					// 새 저자 정보를 DB에 추가
+					set = null;
+					int listIndex = newAuthors.get(index).intValue();
+
+					prstmt2.setString(1, authorList.get(listIndex).getAuthor_name());
+					prstmt2.setString(2, authorList.get(listIndex).getAuthor_region());
+					prstmt2.setString(3, authorList.get(listIndex).getAuthor_information());
+
+					set = prstmt2.executeQuery();
+
+					if (set.next())
+					{
+						authorList.get(listIndex).setAuthor_code(set.getInt(1));
+					}
+				}
+			}
+
+			for (int index = 0; index < authorList.size(); ++index)
+			{
+				prstmt3.setInt(1, authorList.get(index).getAuthor_code());
+				prstmt3.setInt(2, icode);
+				prstmt3.setString(3, ccode);
+
+				prstmt3.addBatch();
+			}
+			if (prstmt3.executeBatch().length == authorList.size())
+			{
+				flag = true;
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return flag;
+	}
+
 	private String convertRegion(String region)
 	{
 		if (region.equals("d"))

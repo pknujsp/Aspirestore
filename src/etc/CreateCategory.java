@@ -38,7 +38,7 @@ public class CreateCategory
 		String[] separatedStr = str.split("\t");
 		int categoryCode = Integer.parseInt(separatedStr[2].substring(1, separatedStr[2].length() - 1));
 
-		return setCode(separatedStr[0].substring(1, separatedStr[0].length() - 1), separatedStr[1].substring(1, separatedStr[1].length() - 1), categoryCode);
+		return setCode(separatedStr[0].substring(1, separatedStr[0].length() - 1), separatedStr[1], categoryCode);
 	}
 
 	static private String setCode(String name, String parentCode, int categoryCode)
@@ -47,10 +47,10 @@ public class CreateCategory
 		if (parentCode.equals("\\N"))
 		{
 			// parentCode
-			result = name + " : " + String.valueOf(categoryCode);
+			result = "</optgroup>" + "<optgroup label=\"" + name + "\">" + String.valueOf(categoryCode);
 		} else
 		{
-			result = name + " : " + parentCode + ", " + String.valueOf(categoryCode);
+			result = "<option value=\"" + String.valueOf(categoryCode) + "\">" + name + "</option>";
 		}
 		return result;
 	}

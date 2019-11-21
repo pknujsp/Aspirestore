@@ -184,7 +184,7 @@
 		<servlet-name>bookmanagementservlet</servlet-name>
 		<url-pattern>/management/bookManagement</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>authormanagementservlet</servlet-name>
 		<servlet-class>controller.ServletAuthorManagement</servlet-class>
@@ -194,7 +194,7 @@
 		<servlet-name>authormanagementservlet</servlet-name>
 		<url-pattern>/management/authorManagement</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>publishermanagementservlet</servlet-name>
 		<servlet-class>controller.ServletPublisherManagement</servlet-class>
@@ -204,15 +204,26 @@
 		<servlet-name>publishermanagementservlet</servlet-name>
 		<url-pattern>/management/publisherManagement</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>bookimgservlet</servlet-name>
 		<servlet-class>controller.ServletBookImgManagement</servlet-class>
 	</servlet>
-	
+
 	<servlet-mapping>
 		<servlet-name>bookimgservlet</servlet-name>
 		<url-pattern>/management/bookImgManagement</url-pattern>
+	</servlet-mapping>
+
+
+	<servlet>
+		<servlet-name>bookregistrationservlet</servlet-name>
+		<servlet-class>controller.ServletBookRegistration</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>bookregistrationservlet</servlet-name>
+		<url-pattern>/management/bookRegistration</url-pattern>
 	</servlet-mapping>
 
 	<servlet>

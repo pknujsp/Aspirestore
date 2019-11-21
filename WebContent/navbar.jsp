@@ -127,7 +127,7 @@
 							<a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=401&cpcode=400">아이폰</a>
 						</li>
 						<li>
-							<a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=402&cpcode=400">안드로이드폰</a>
+							<a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=402&cpcode=400&c_page=1&sort_type=BEST">안드로이드폰</a>
 						</li>
 						<li>
 							<a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=403&cpcode=400">윈도우폰</a>

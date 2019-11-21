@@ -1,119 +1,119 @@
-게임 : , 100
-게임 기획 : 100, 101
-게임 개발 : 100, 102
-게임 가이드북 : 100, 103
-모바일 게임 : 100, 104
-그래픽/디자인/멀티미디어 : , 200
-3DS/MAX : 200, 201
-건축CG : 200, 202
-그래픽일반/자료집 : 200, 203
-그래픽툴/저작툴 : 200, 204
-디렉터 : 200, 205
-라이트룸 : 200, 206
-베가스 : 200, 207
-인디자인 : 200, 208
-일러스트레이터 : 200, 209
-캐릭터/애니메이션 : 200, 210
-페인터 : 200, 211
-포토샵 : 200, 212
-프리미어 : 200, 213
-플래시 : 200, 214
-애프터 이펙트 : 200, 215
-오토캐드 : 200, 216
-멀티미디어/컴퓨터 : 200, 217
-디지털 카메라 : 200, 218
-네트워크/해킹/보안 : , 300
-네트워크 일반 : 300, 301
-TCP/IP : 300, 302
-보안/해킹 : 300, 303
-모바일 프로그래밍 : , 400
-아이폰 : 400, 401
-안드로이드폰 : 400, 402
-윈도우폰 : 400, 403
-모바일 게임 : 400, 404
-모바일/태블릿/SNS : , 500
-아이패드 : 500, 501
-아이폰 : 500, 502
-안드로이드태블릿 : 500, 503
-안드로이드폰 : 500, 504
-트위터 : 500, 505
-페이스북 : 500, 506
-유튜브 : 500, 507
-앱가이드 : 500, 508
-오피스 활용 : , 600
-한글 : 600, 601
-엑셀 : 600, 602
-파워포인트 : 600, 603
-워드 : 600, 604
-액세스 : 600, 605
-아웃룩 : 600, 606
-프레젠테이션 : 600, 607
-오피스 : 600, 608
-웹사이트 : , 700
-HTML/JAVASCRIPT/CSS : 700, 701
-웹디자인 : 700, 702
-웹기획 : 700, 703
-UI/UX : 700, 704
-블로그/홈페이지 : 700, 705
-인터넷 비즈니스 : , 800
-쇼핑몰/창업 : 800, 801
-인터넷 마케팅 : 800, 802
-공공정책/자료 : 800, 803
-컴퓨터 공학 : , 900
-컴퓨터 교육 : 900, 901
-네트워크/데이터 통신 : 900, 902
-마이크로 프로세서 : 900, 903
-소프트웨어 공학 : 900, 904
-취미 공학 : 900, 905
-인공지능 : 900, 906
-컴퓨터구조 : 900, 907
-운영체제 : 900, 908
-데이터베이스 : 900, 909
-개발방법론 : 900, 910
-블록체인 : 900, 911
-자료구조/알고리즘 : 900, 912
-전산수학 : 900, 913
-정보통신 : 900, 914
-컴퓨터 수험서 : , 1000
-컴퓨터활용능력 : 1000, 1001
-워드프로세서 : 1000, 1002
-그래픽 관련 : 1000, 1003
-사무자동화 : 1000, 1004
-DIAT : 1000, 1005
-ITQ : 1000, 1006
-MOS : 1000, 1007
-ICDL : 1000, 1008
-상공회의소 : 1000, 1009
-정보처리/보안 : 1000, 1010
-신규자격증/기타 : 1000, 1011
-컴퓨터 입문/활용 : , 1100
-어른을 위한 컴퓨터 : 1100, 1101
-어린이 컴퓨터 : 1100, 1102
-윈도우 입문서/활용 : 1100, 1103
-인터넷 입문서 : 1100, 1104
-컴퓨터 조립/수리 : 1100, 1105
-프로그래밍 : , 1200
-.NET : 1200, 1201
-JAVA : 1200, 1202
-PYTHON : 1200, 1203
-C : 1200, 1204
-C# : 1200, 1205
-C++ : 1200, 1206
-JAVASCRIPT : 1200, 1207
-JSP : 1200, 1208
-PHP : 1200, 1209
-RUBY : 1200, 1210
-XML : 1200, 1211
-VB : 1200, 1212
-프로그래밍 교육 : 1200, 1213
-OS/DB : , 1300
-윈도우 : 1300, 1301
-MAC : 1300, 1302
-리눅스 : 1300, 1303
-유닉스 : 1300, 1304
-Access : 1300, 1305
-MySQL : 1300, 1306
-ORACLE : 1300, 1307
-SQL Server : 1300, 1308
-클라우드/빅데이터 : 1300, 1309
-시스템관리/서버 : 1300, 1310
+</optgroup><optgroup label="게임">100
+<option value="101">게임 기획</option>
+<option value="102">게임 개발</option>
+<option value="103">게임 가이드북</option>
+<option value="104">모바일 게임</option>
+</optgroup><optgroup label="그래픽/디자인/멀티미디어">200
+<option value="201">3DS/MAX</option>
+<option value="202">건축CG</option>
+<option value="203">그래픽일반/자료집</option>
+<option value="204">그래픽툴/저작툴</option>
+<option value="205">디렉터</option>
+<option value="206">라이트룸</option>
+<option value="207">베가스</option>
+<option value="208">인디자인</option>
+<option value="209">일러스트레이터</option>
+<option value="210">캐릭터/애니메이션</option>
+<option value="211">페인터</option>
+<option value="212">포토샵</option>
+<option value="213">프리미어</option>
+<option value="214">플래시</option>
+<option value="215">애프터 이펙트</option>
+<option value="216">오토캐드</option>
+<option value="217">멀티미디어/컴퓨터</option>
+<option value="218">디지털 카메라</option>
+</optgroup><optgroup label="네트워크/해킹/보안">300
+<option value="301">네트워크 일반</option>
+<option value="302">TCP/IP</option>
+<option value="303">보안/해킹</option>
+</optgroup><optgroup label="모바일 프로그래밍">400
+<option value="401">아이폰</option>
+<option value="402">안드로이드폰</option>
+<option value="403">윈도우폰</option>
+<option value="404">모바일 게임</option>
+</optgroup><optgroup label="모바일/태블릿/SNS">500
+<option value="501">아이패드</option>
+<option value="502">아이폰</option>
+<option value="503">안드로이드태블릿</option>
+<option value="504">안드로이드폰</option>
+<option value="505">트위터</option>
+<option value="506">페이스북</option>
+<option value="507">유튜브</option>
+<option value="508">앱가이드</option>
+</optgroup><optgroup label="오피스 활용">600
+<option value="601">한글</option>
+<option value="602">엑셀</option>
+<option value="603">파워포인트</option>
+<option value="604">워드</option>
+<option value="605">액세스</option>
+<option value="606">아웃룩</option>
+<option value="607">프레젠테이션</option>
+<option value="608">오피스</option>
+</optgroup><optgroup label="웹사이트">700
+<option value="701">HTML/JAVASCRIPT/CSS</option>
+<option value="702">웹디자인</option>
+<option value="703">웹기획</option>
+<option value="704">UI/UX</option>
+<option value="705">블로그/홈페이지</option>
+</optgroup><optgroup label="인터넷 비즈니스">800
+<option value="801">쇼핑몰/창업</option>
+<option value="802">인터넷 마케팅</option>
+<option value="803">공공정책/자료</option>
+</optgroup><optgroup label="컴퓨터 공학">900
+<option value="901">컴퓨터 교육</option>
+<option value="902">네트워크/데이터 통신</option>
+<option value="903">마이크로 프로세서</option>
+<option value="904">소프트웨어 공학</option>
+<option value="905">취미 공학</option>
+<option value="906">인공지능</option>
+<option value="907">컴퓨터구조</option>
+<option value="908">운영체제</option>
+<option value="909">데이터베이스</option>
+<option value="910">개발방법론</option>
+<option value="911">블록체인</option>
+<option value="912">자료구조/알고리즘</option>
+<option value="913">전산수학</option>
+<option value="914">정보통신</option>
+</optgroup><optgroup label="컴퓨터 수험서">1000
+<option value="1001">컴퓨터활용능력</option>
+<option value="1002">워드프로세서</option>
+<option value="1003">그래픽 관련</option>
+<option value="1004">사무자동화</option>
+<option value="1005">DIAT</option>
+<option value="1006">ITQ</option>
+<option value="1007">MOS</option>
+<option value="1008">ICDL</option>
+<option value="1009">상공회의소</option>
+<option value="1010">정보처리/보안</option>
+<option value="1011">신규자격증/기타</option>
+</optgroup><optgroup label="컴퓨터 입문/활용">1100
+<option value="1101">어른을 위한 컴퓨터</option>
+<option value="1102">어린이 컴퓨터</option>
+<option value="1103">윈도우 입문서/활용</option>
+<option value="1104">인터넷 입문서</option>
+<option value="1105">컴퓨터 조립/수리</option>
+</optgroup><optgroup label="프로그래밍">1200
+<option value="1201">.NET</option>
+<option value="1202">JAVA</option>
+<option value="1203">PYTHON</option>
+<option value="1204">C</option>
+<option value="1205">C#</option>
+<option value="1206">C++</option>
+<option value="1207">JAVASCRIPT</option>
+<option value="1208">JSP</option>
+<option value="1209">PHP</option>
+<option value="1210">RUBY</option>
+<option value="1211">XML</option>
+<option value="1212">VB</option>
+<option value="1213">프로그래밍 교육</option>
+</optgroup><optgroup label="OS/DB">1300
+<option value="1301">윈도우</option>
+<option value="1302">MAC</option>
+<option value="1303">리눅스</option>
+<option value="1304">유닉스</option>
+<option value="1305">Access</option>
+<option value="1306">MySQL</option>
+<option value="1307">ORACLE</option>
+<option value="1308">SQL Server</option>
+<option value="1309">클라우드/빅데이터</option>
+<option value="1310">시스템관리/서버</option>

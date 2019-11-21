@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -433,7 +434,7 @@ public class ItemsDAO
 	public ArrayList<ItemsDTO> getRecords(ArrayList<ArrayList<String>> categoryList)
 	{
 		// JOIN 작성 필요
-		String query = "SELECT i.item_code, i.item_name, i.item_category_code, c.category_name ,i.item_author_code, a.author_name, i.item_publisher_code, "
+		String query = "SELECT i.item_code, i.item_name, i.item_category_code, c.category_name, i.item_author_code, a.author_name, i.item_publisher_code, "
 				+ "p.publisher_name, i.item_selling_price, i.item_remaining_quantity, i.item_registration_datetime "
 				+ "FROM items AS i " + "INNER JOIN itemcategory AS c ON i.item_category_code = c.category_code "
 				+ "INNER JOIN authors AS a ON i.item_author_code = a.author_code "
@@ -555,7 +556,7 @@ public class ItemsDAO
 	{
 		String query = "INSERT INTO items VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		String codeQuery = "SELECT item_code FROM items WHERE item_name = ? AND item_category_code = ?";
-		int itemCode = 0;
+		int itemCode = -1;
 		ResultSet set = null;
 
 		try (Connection connection = ds.getConnection();
@@ -563,7 +564,7 @@ public class ItemsDAO
 				PreparedStatement prstmt2 = connection.prepareStatement(codeQuery);)
 		{
 			prstmt.setString(1, bookData.getItem_name());
-			prstmt.setString(2, bookData.getItem_publisher_name());
+			prstmt.setNull(2, Types.INTEGER);
 			prstmt.setString(3, bookData.getItem_publication_date());
 			prstmt.setInt(4, bookData.getItem_fixed_price());
 			prstmt.setInt(5, bookData.getItem_selling_price());
