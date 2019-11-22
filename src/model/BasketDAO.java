@@ -100,6 +100,51 @@ public class BasketDAO
 		return list;
 	}
 
+	public ArrayList<ItemsDTO> getBooksFromBasket(String userId)
+	{
+		String query = "SELECT i.item_code, i.item_name, i.item_selling_price, i.item_publisher_code, p.publisher_name"
+				+ ", i.item_category_code, c.category_name, b.basket_quantity " + "FROM basket AS b "
+				+ "INNER JOIN items AS i ON b.basket_user_id = ? AND b.basket_item_code = i.item_code AND b.basket_item_category = i.item_category_code "
+				+ "INNER JOIN publishers AS p ON p.publisher_code = i.item_publisher_code "
+				+ "INNER JOIN itemcategory AS c ON c.category_code = i.item_category_code "
+				+ "WHERE b.basket_user_id = ? ORDER BY b.basket_added_datetime ASC";
+
+		ArrayList<ItemsDTO> books = null;
+		ResultSet set = null;
+
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			books = new ArrayList<ItemsDTO>();
+
+			prstmt.setString(1, userId);
+			set = prstmt.executeQuery();
+
+			while (set.next())
+			{
+				books.add(new ItemsDTO().setItem_code(set.getInt(1)).setItem_name(set.getString(2))
+						.setItem_selling_price(set.getInt(3)).setItem_publisher_code(set.getInt(4))
+						.setItem_publisher_name(set.getString(5)).setItem_category_code(set.getString(6))
+						.setItem_category_desc(set.getString(7)).setOrder_quantity(set.getInt(8)));
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return books;
+	}
+
 	public boolean checkDuplication(String userId, int itemCode)
 	{
 		String query = "SELECT count(basket_item_code) FROM basket WHERE basket_user_id = ? AND basket_item_code = ?";

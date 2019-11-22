@@ -1,13 +1,13 @@
 package model;
 
+import java.util.HashMap;
 import java.util.Set;
 
 public class ItemsDTO
 {
 	private int item_code;
 	private String item_name;
-	private int item_author_code;
-	private String item_author_name;
+	private HashMap<Integer, String> authors;
 	private int item_publisher_code;
 	private String item_publisher_name;
 	private String item_publication_date;
@@ -26,15 +26,17 @@ public class ItemsDTO
 	private String item_publisher_review;
 	private String item_registration_datetime;
 	private String item_rating;
+	private int order_quantity;
+	private int total_price;
 
 	public String getItem_rating()
 	{
 		return item_rating;
 	}
 
-	public String getItem_author_name()
+	public int getOrder_quantity()
 	{
-		return item_author_name;
+		return order_quantity;
 	}
 
 	public String getItem_category_desc()
@@ -66,17 +68,6 @@ public class ItemsDTO
 	public ItemsDTO setItem_name(String item_name)
 	{
 		this.item_name = item_name;
-		return this;
-	}
-
-	public int getItem_author_code()
-	{
-		return item_author_code;
-	}
-
-	public ItemsDTO setItem_author_code(int item_author_code)
-	{
-		this.item_author_code = item_author_code;
 		return this;
 	}
 
@@ -245,12 +236,6 @@ public class ItemsDTO
 		return this;
 	}
 
-	public ItemsDTO setItem_author_name(String item_author_name)
-	{
-		this.item_author_name = item_author_name;
-		return this;
-	}
-
 	public ItemsDTO setItem_category_desc(String item_category_desc)
 	{
 		this.item_category_desc = item_category_desc;
@@ -269,33 +254,41 @@ public class ItemsDTO
 		return this;
 	}
 
-	public ItemsDTO()
+	public ItemsDTO setAuthors(int aCode, String aName)
 	{
+		this.authors.put(aCode, aName);
+		return this;
 	}
 
-	public ItemsDTO(int item_code, String item_name, int item_author_code, int item_publisher_code,
-			String item_publication_date, int item_fixed_price, int item_selling_price, int item_remaining_quantity,
-			String item_category_code, String item_page_number, String item_weight, String item_size,
-			String item_isbn13, String item_isbn10, String item_book_introduction, String item_contents_table,
-			String item_publisher_review, String item_registration_datetime)
+	public HashMap<Integer, String> getAuthors()
 	{
-		this.item_code = item_code;
-		this.item_name = item_name;
-		this.item_author_code = item_author_code;
-		this.item_publisher_code = item_publisher_code;
-		this.item_publication_date = item_publication_date;
-		this.item_fixed_price = item_fixed_price;
-		this.item_selling_price = item_selling_price;
-		this.item_remaining_quantity = item_remaining_quantity;
-		this.item_category_code = item_category_code;
-		this.item_page_number = item_page_number;
-		this.item_weight = item_weight;
-		this.item_size = item_size;
-		this.item_isbn13 = item_isbn13;
-		this.item_isbn10 = item_isbn10;
-		this.item_book_introduction = item_book_introduction;
-		this.item_contents_table = item_contents_table;
-		this.item_publisher_review = item_publisher_review;
-		this.item_registration_datetime = item_registration_datetime;
+		return authors;
+	}
+
+	public String getAuthorName(int aCode)
+	{
+		return this.authors.get(Integer.valueOf(aCode));
+	}
+
+	public ItemsDTO setOrder_quantity(int order_quantity)
+	{
+		this.order_quantity = order_quantity;
+		return this;
+	}
+
+	public ItemsDTO setTotal_price()
+	{
+		this.total_price = this.item_selling_price * this.order_quantity;
+		return this;
+	}
+
+	public int getTotal_price()
+	{
+		return total_price;
+	}
+
+	public ItemsDTO()
+	{
+		this.authors = new HashMap<Integer, String>();
 	}
 }

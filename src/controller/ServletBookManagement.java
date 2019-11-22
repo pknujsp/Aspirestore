@@ -145,8 +145,6 @@ public class ServletBookManagement extends HttpServlet
 				book.put("ITEM_NAME", books.get(i).getItem_name());
 				book.put("CATEGORY_CODE", books.get(i).getItem_category_code());
 				book.put("CATEGORY_DESC", books.get(i).getItem_category_desc());
-				book.put("AUTHOR_CODE", books.get(i).getItem_author_code());
-				book.put("AUTHOR_NAME", books.get(i).getItem_author_name());
 				book.put("PUBLISHER_CODE", books.get(i).getItem_publisher_code());
 				book.put("PUBLISHER_NAME", books.get(i).getItem_publisher_name());
 				book.put("SELLING_PRICE", books.get(i).getItem_selling_price());

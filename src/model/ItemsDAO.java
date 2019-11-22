@@ -14,8 +14,6 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import etc.OrderInformation;
-
 public class ItemsDAO
 {
 	private DataSource ds;
@@ -27,16 +25,13 @@ public class ItemsDAO
 
 	public ItemsDTO getItem(String ccode, int icode)
 	{
-		Connection connection = null;
-		PreparedStatement prstmt = null;
+		String query = "SELECT * FROM items WHERE item_code= ? AND item_category_code= ?";
 		ResultSet set = null;
 		ItemsDTO item = null;
 
-		try
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
 		{
-			String query = "SELECT * FROM items WHERE item_code= ? AND item_category_code= ?";
-			connection = ds.getConnection();
-			prstmt = connection.prepareStatement(query);
+			// 저자 정보를 가져오는 코드 작성 필요
 
 			prstmt.setInt(1, icode);
 			prstmt.setString(2, ccode);
@@ -44,14 +39,20 @@ public class ItemsDAO
 
 			if (set.next())
 			{
-				item = new ItemsDTO(set.getInt("item_code"), set.getString("item_name"), set.getInt("item_author_code"),
-						set.getInt("item_publisher_code"), set.getString("item_publication_date"),
-						set.getInt("item_fixed_price"), set.getInt("item_selling_price"),
-						set.getInt("item_remaining_quantity"), set.getString("item_category_code"),
-						set.getString("item_the_page_number"), set.getString("item_weight"), set.getString("item_size"),
-						set.getString("item_isbn13"), set.getString("item_isbn10"),
-						set.getString("item_book_introduction"), set.getString("item_contents_table"),
-						set.getString("item_publisher_review"), set.getString("item_registration_datetime"));
+				item = new ItemsDTO().setItem_code(set.getInt("item_code")).setItem_name(set.getString("item_name"))
+						.setItem_publisher_code(set.getInt("item_publisher_code"))
+						.setItem_publication_date(set.getString("item_publication_date"))
+						.setItem_fixed_price(set.getInt("item_fixed_price"))
+						.setItem_selling_price(set.getInt("item_selling_price"))
+						.setItem_remaining_quantity(set.getInt("item_remaining_quantity"))
+						.setItem_category_code(set.getString("item_category_code"))
+						.setItem_page_number(set.getString("item_the_page_number"))
+						.setItem_weight(set.getString("item_weight")).setItem_size(set.getString("item_size"))
+						.setItem_isbn13(set.getString("item_isbn13")).setItem_isbn10(set.getString("item_isbn10"))
+						.setItem_book_introduction(set.getString("item_book_introduction"))
+						.setItem_contents_table(set.getString("item_contents_table"))
+						.setItem_publisher_review(set.getString("item_publisher_review"))
+						.setItem_registration_datetime(set.getString("item_registration_datetime"));
 			}
 		} catch (Exception e)
 		{
@@ -68,26 +69,6 @@ public class ItemsDAO
 					e.printStackTrace();
 				}
 			}
-			if (prstmt != null)
-			{
-				try
-				{
-					prstmt.close();
-				} catch (SQLException e)
-				{
-					e.printStackTrace();
-				}
-			}
-			if (connection != null)
-			{
-				try
-				{
-					connection.close();
-				} catch (SQLException e)
-				{
-					e.printStackTrace();
-				}
-			}
 		}
 		return item;
 	}
@@ -96,7 +77,6 @@ public class ItemsDAO
 	{
 		String query = "SELECT * FROM items as i "
 				+ "INNER JOIN publishers p ON i.item_publisher_code = p.publisher_code "
-				+ "INNER JOIN authors a ON i.item_author_code = a.author_code "
 				+ "INNER JOIN itemcategory AS c ON i.item_category_code = c.category_code "
 				+ "WHERE i.item_code = ? AND i.item_category_code = ?";
 
@@ -114,21 +94,20 @@ public class ItemsDAO
 			if (set.next())
 			{
 				book = new ItemsDTO().setItem_code(set.getInt(1)).setItem_name(set.getString(2))
-						.setItem_publisher_code(set.getInt(4)).setItem_publication_date(set.getString(5))
-						.setItem_fixed_price(set.getInt(6)).setItem_selling_price(set.getInt(7))
-						.setItem_remaining_quantity(set.getInt(8)).setItem_category_code(set.getString(9))
-						.setItem_page_number(set.getString(10)).setItem_weight(set.getString(11))
-						.setItem_size(set.getString(12)).setItem_isbn13(set.getString(13))
-						.setItem_isbn10(set.getString(14)).setItem_book_introduction(set.getString(15))
-						.setItem_contents_table(set.getString(16)).setItem_publisher_review(set.getString(17))
-						.setItem_registration_datetime(set.getString(18)).setItem_category_desc(set.getString(26));
+						.setItem_publisher_code(set.getInt(3)).setItem_publication_date(set.getString(4))
+						.setItem_fixed_price(set.getInt(5)).setItem_selling_price(set.getInt(6))
+						.setItem_remaining_quantity(set.getInt(7)).setItem_category_code(set.getString(8))
+						.setItem_page_number(set.getString(9)).setItem_weight(set.getString(10))
+						.setItem_size(set.getString(11)).setItem_isbn13(set.getString(12))
+						.setItem_isbn10(set.getString(13)).setItem_book_introduction(set.getString(14))
+						.setItem_contents_table(set.getString(15)).setItem_publisher_review(set.getString(16))
+						.setItem_registration_datetime(set.getString(17)).setItem_category_desc(set.getString(21));
 
-				author = new AuthorDTO().setAuthor_code(set.getInt(22)).setAuthor_name(set.getString(23))
-						.setAuthor_region(set.getString(24)).setAuthor_information(set.getString(25));
+				publisher = new PublisherDTO().setPublisher_code(set.getInt(18)).setPublisher_name(set.getString(19))
+						.setPublisher_region(set.getString(20));
 
-				publisher = new PublisherDTO().setPublisher_code(set.getInt(19)).setPublisher_name(set.getString(20))
-						.setPublisher_region(set.getString(21));
 			}
+			// 저자 정보를 가져오는 코드 작성 필요
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -153,19 +132,19 @@ public class ItemsDAO
 		return bookData;
 	}
 
-	public ArrayList<OrderedItemsDTO> getItemAuthorPublisher(ArrayList<SalehistoryDTO> saleHistory)
+	public ArrayList<ItemsDTO> getItemAuthorPublisher(ArrayList<SalehistoryDTO> saleHistory)
 	{
-		ArrayList<OrderedItemsDTO> list = null;
-		String query = "SELECT a.author_name, p.publisher_name, i.item_name, i.item_code, i.item_category_code, "
-				+ "i.item_selling_price " + "FROM items as i "
-				+ "INNER JOIN publishers p ON i.item_publisher_code = p.publisher_code "
-				+ "INNER JOIN authors a ON i.item_author_code = a.author_code "
-				+ "WHERE i.item_code = ? AND i.item_category_code = ? ORDER BY i.item_code ASC";
+		ArrayList<ItemsDTO> list = null;
 		ResultSet set = null;
+		String query = "SELECT p.publisher_name, i.item_name, i.item_code, i.item_category_code, "
+				+ "i.item_selling_price " + "FROM items AS i "
+				+ "INNER JOIN publishers AS p ON i.item_publisher_code = p.publisher_code "
+				+ "WHERE i.item_code = ? AND i.item_category_code = ? ORDER BY i.item_code ASC";
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
 		{
-			list = new ArrayList<OrderedItemsDTO>(saleHistory.size());
+			list = new ArrayList<ItemsDTO>(saleHistory.size());
+
 			for (int i = 0; i < saleHistory.size(); ++i)
 			{
 				set = null;
@@ -178,8 +157,9 @@ public class ItemsDAO
 
 				if (set.next())
 				{
-					list.add(new OrderedItemsDTO(set.getString(3), set.getString(1), set.getString(2), set.getInt(4),
-							set.getString(5), set.getInt(6)));
+					list.add(new ItemsDTO().setItem_publisher_name(set.getString(1)).setItem_name(set.getString(2))
+							.setItem_code(set.getInt(3)).setItem_category_code(set.getString(4))
+							.setItem_selling_price(set.getInt(5)));
 				}
 			}
 		} catch (Exception e)
@@ -207,10 +187,9 @@ public class ItemsDAO
 		ResultSet set = null;
 		ArrayList<ItemsDTO> bookList = new ArrayList<ItemsDTO>();
 
-		String query = "SELECT i.item_code, i.item_name, i.item_author_code, i.item_publisher_code, i.item_publication_date, i.item_selling_price"
-				+ ", i.item_book_introduction, i.item_category_code, a.author_name, p.publisher_name, r.rinfo_sreview_num, r.rinfo_dreview_num, r.rinfo_total_rating "
-				+ "FROM items AS i " + "INNER JOIN authors AS a ON a.author_code = i.item_author_code "
-				+ "INNER JOIN publishers AS p ON p.publisher_code = i.item_publisher_code "
+		String query = "SELECT i.item_code, i.item_name, i.item_publisher_code, i.item_publication_date, i.item_selling_price"
+				+ ", i.item_book_introduction, i.item_category_code, p.publisher_name, r.rinfo_sreview_num, r.rinfo_dreview_num, r.rinfo_total_rating "
+				+ "FROM items AS i " + "INNER JOIN publishers AS p ON p.publisher_code = i.item_publisher_code "
 				+ "INNER JOIN itemreviewinfo_table AS r ON r.rinfo_item_code = i.item_code AND r.rinfo_item_category_code = i.item_category_code "
 				+ "WHERE i.item_category_code = ? ";
 
@@ -241,13 +220,12 @@ public class ItemsDAO
 
 			while (set.next())
 			{
-				double rating = ((double) set.getInt(13) / (double) (set.getInt(11) + set.getInt(12)));
+				double rating = ((double) set.getInt(11) / (double) (set.getInt(9) + set.getInt(10)));
 
 				bookList.add(new ItemsDTO().setItem_code(set.getInt(1)).setItem_name(set.getString(2))
-						.setItem_author_code(set.getInt(3)).setItem_publisher_code(set.getInt(4))
-						.setItem_publication_date(set.getString(5)).setItem_selling_price(set.getInt(6))
-						.setItem_book_introduction(cutString(set.getString(7))).setItem_category_code(set.getString(8))
-						.setItem_author_name(set.getString(9)).setItem_publisher_name(set.getString(10))
+						.setItem_publisher_code(set.getInt(3)).setItem_publication_date(set.getString(4))
+						.setItem_selling_price(set.getInt(5)).setItem_book_introduction(cutString(set.getString(6)))
+						.setItem_category_code(set.getString(7)).setItem_publisher_name(set.getString(8))
 						.setItem_rating(new DecimalFormat("#.#").format(rating)));
 			}
 		} catch (Exception e)
@@ -271,7 +249,7 @@ public class ItemsDAO
 
 	public ArrayList<ItemsDTO> getitemsForBasket(Map<Integer, String> codeMap)
 	{
-		String query = "SELECT item_name, item_code, item_category_code, item_author_code, item_publisher_code, item_selling_price FROM items WHERE item_code = ? AND item_category_code = ? ORDER BY item_code ASC";
+		String query = "SELECT item_name, item_code, item_category_code, item_publisher_code, item_selling_price FROM items WHERE item_code = ? AND item_category_code = ? ORDER BY item_code ASC";
 		ResultSet set = null;
 		ArrayList<ItemsDTO> list = null;
 
@@ -293,8 +271,8 @@ public class ItemsDAO
 				if (set.next())
 				{
 					list.add(new ItemsDTO().setItem_name(set.getString(1)).setItem_code(set.getInt(2))
-							.setItem_category_code(set.getString(3)).setItem_author_code(set.getInt(4))
-							.setItem_publisher_code(set.getInt(5)).setItem_selling_price(set.getInt(6)));
+							.setItem_category_code(set.getString(3)).setItem_publisher_code(set.getInt(4))
+							.setItem_selling_price(set.getInt(5)));
 				}
 			}
 		} catch (Exception e)
@@ -316,7 +294,51 @@ public class ItemsDAO
 		return list;
 	}
 
-	public ArrayList<Integer> getBookSellingPrice(ArrayList<OrderInformation> books)
+	public boolean getBookForOrderForm(ItemsDTO book)
+	{
+		String query = "SELECT i.item_name, i.item_selling_price, i.item_publisher_code, p.publisher_name"
+				+ ", c.category_name " + "FROM items AS i "
+				+ "INNER JOIN publishers AS p ON p.publisher_code = i.item_publisher_code "
+				+ "INNER JOIN itemcategory AS c ON c.category_code = i.item_category_code "
+				+ "WHERE i.item_code = ? AND i.item_category_code = ?";
+
+		ResultSet set = null;
+		boolean flag = false;
+
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			prstmt.setInt(1, book.getItem_code());
+			prstmt.setString(2, book.getItem_category_code());
+
+			set = prstmt.executeQuery();
+
+			if (set.next())
+			{
+				book.setItem_name(set.getString(1)).setItem_selling_price(set.getInt(2))
+						.setItem_publisher_code(set.getInt(3)).setItem_publisher_name(set.getString(4))
+						.setItem_category_desc(set.getString(5));
+				flag = true;
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return flag;
+	}
+
+	public ArrayList<Integer> getBookSellingPrice(ArrayList<ItemsDTO> books)
 	{
 		String query = "SELECT item_selling_price FROM items WHERE item_code = ? AND item_category_code = ? ORDER BY item_code ASC";
 		ResultSet set = null;
@@ -331,7 +353,7 @@ public class ItemsDAO
 				set = null;
 
 				prstmt.setInt(1, books.get(i).getItem_code());
-				prstmt.setString(2, books.get(i).getItem_category());
+				prstmt.setString(2, books.get(i).getItem_category_code());
 				set = prstmt.executeQuery();
 				if (set.next())
 				{
@@ -434,10 +456,9 @@ public class ItemsDAO
 	public ArrayList<ItemsDTO> getRecords(ArrayList<ArrayList<String>> categoryList)
 	{
 		// JOIN 작성 필요
-		String query = "SELECT i.item_code, i.item_name, i.item_category_code, c.category_name, i.item_author_code, a.author_name, i.item_publisher_code, "
+		String query = "SELECT i.item_code, i.item_name, i.item_category_code, c.category_name, i.item_publisher_code, "
 				+ "p.publisher_name, i.item_selling_price, i.item_remaining_quantity, i.item_registration_datetime "
 				+ "FROM items AS i " + "INNER JOIN itemcategory AS c ON i.item_category_code = c.category_code "
-				+ "INNER JOIN authors AS a ON i.item_author_code = a.author_code "
 				+ "INNER JOIN publishers AS p ON i.item_publisher_code = p.publisher_code WHERE ";
 
 		boolean firstValue = true;
@@ -493,10 +514,9 @@ public class ItemsDAO
 			{
 				books.add(new ItemsDTO().setItem_code(set.getInt(1)).setItem_name(set.getString(2))
 						.setItem_category_code(set.getString(3)).setItem_category_desc(set.getString(4))
-						.setItem_author_code(set.getInt(5)).setItem_author_name(set.getString(6))
-						.setItem_publisher_code(set.getInt(7)).setItem_publisher_name(set.getString(8))
-						.setItem_selling_price(set.getInt(9)).setItem_remaining_quantity(set.getInt(10))
-						.setItem_registration_datetime(set.getString(11)));
+						.setItem_publisher_code(set.getInt(5)).setItem_publisher_name(set.getString(6))
+						.setItem_selling_price(set.getInt(7)).setItem_remaining_quantity(set.getInt(8))
+						.setItem_registration_datetime(set.getString(9)));
 			}
 		} catch (Exception e)
 		{

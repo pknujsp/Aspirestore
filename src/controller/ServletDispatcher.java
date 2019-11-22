@@ -147,12 +147,12 @@ public class ServletDispatcher extends HttpServlet
 					String[] categoryCodes = request.getParameterValues("categoryCode[]");
 					String[] quantity = request.getParameterValues("quantity[]");
 
-					ArrayList<OrderInformation> books = new ArrayList<OrderInformation>(itemCodes.length);
+					ArrayList<ItemsDTO> books = new ArrayList<ItemsDTO>(itemCodes.length);
 
 					for (int idx = 0; idx < itemCodes.length; ++idx)
 					{
-						books.add(new OrderInformation().setItem_code(Integer.parseInt(itemCodes[idx]))
-								.setItem_category(categoryCodes[idx])
+						books.add(new ItemsDTO().setItem_code(Integer.parseInt(itemCodes[idx]))
+								.setItem_category_code(categoryCodes[idx])
 								.setOrder_quantity(Integer.parseInt(quantity[idx])));
 					}
 
@@ -180,7 +180,7 @@ public class ServletDispatcher extends HttpServlet
 					String type = request.getParameter("type");
 					request.setAttribute("TYPE", type);
 
-					ArrayList<OrderInformation> orderInformations = new ArrayList<OrderInformation>();
+					ArrayList<ItemsDTO> orderInformations = new ArrayList<ItemsDTO>();
 					switch (type)
 					{
 					case "BASKET_ORDER":
@@ -197,8 +197,8 @@ public class ServletDispatcher extends HttpServlet
 						int quantity = Integer.parseInt(request.getParameter("quantity"));
 						int itemPrice = Integer.parseInt(request.getParameter("itemPrice"));
 
-						orderInformations.add(new OrderInformation().setItem_code(itemCode).setItem_price(itemPrice)
-								.setItem_category(itemCategory).setOrder_quantity(quantity).setTotal_price());
+						orderInformations.add(new ItemsDTO().setItem_code(itemCode).setItem_selling_price(itemPrice)
+								.setItem_category_code(itemCategory).setOrder_quantity(quantity).setTotal_price());
 
 						orderInformations.trimToSize();
 					}

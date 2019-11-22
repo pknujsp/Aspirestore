@@ -20,17 +20,12 @@ public class AuthorDAO
 
 	public AuthorDTO getAuthorInformation(int acode)
 	{
-		Connection connection = null;
-		PreparedStatement prstmt = null;
+		String query = "SELECT * FROM authors WHERE author_code=?";
 		ResultSet set = null;
 		AuthorDTO authorData = null;
 
-		try
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
 		{
-			String query = "SELECT * FROM authors WHERE author_code=?";
-			connection = ds.getConnection();
-			prstmt = connection.prepareStatement(query);
-
 			prstmt.setInt(1, acode);
 			set = prstmt.executeQuery();
 
@@ -55,26 +50,7 @@ public class AuthorDAO
 					e.printStackTrace();
 				}
 			}
-			if (prstmt != null)
-			{
-				try
-				{
-					prstmt.close();
-				} catch (SQLException e)
-				{
-					e.printStackTrace();
-				}
-			}
-			if (connection != null)
-			{
-				try
-				{
-					connection.close();
-				} catch (SQLException e)
-				{
-					e.printStackTrace();
-				}
-			}
+
 		}
 		return authorData;
 	}
@@ -168,8 +144,8 @@ public class AuthorDAO
 		} else
 		{
 			// REPLACED_AUTHOR
+			// items 테이블이 아닌 bookAuthors 테이블의 데이터를 수정
 			query = "UPDATE authors SET author_name = ?, author_region = ?, author_information = ? WHERE author_code = ?";
-			itemQuery = "UPDATE items SET item_author_code = ? WHERE item_code = ? AND item_category_code = ?";
 		}
 
 		try (Connection connection = ds.getConnection();
@@ -259,6 +235,9 @@ public class AuthorDAO
 			if (prstmt3.executeBatch().length == authorList.size())
 			{
 				flag = true;
+			} else
+			{
+				flag = false;
 			}
 		} catch (Exception e)
 		{
