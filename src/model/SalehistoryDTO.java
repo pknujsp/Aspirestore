@@ -6,9 +6,14 @@ public class SalehistoryDTO
 	private int order_code;
 	private String user_id;
 	private int item_code;
-	private String item_category;
+	private String item_name;
+	private String item_category_code;
+	private String item_category_desc;
+	private int publisher_code;
+	private String publisher_name;
 	private String sale_date;
 	private int sale_quantity;
+	private int item_price;
 	private int total_price;
 	private String status;
 
@@ -22,6 +27,50 @@ public class SalehistoryDTO
 		return order_code;
 	}
 
+	public String getItem_name()
+	{
+		return item_name;
+	}
+
+	public String getItem_category_code()
+	{
+		return item_category_code;
+	}
+
+	public String getItem_category_desc()
+	{
+		return item_category_desc;
+	}
+
+	public int getItem_price()
+	{
+		return item_price;
+	}
+
+	public SalehistoryDTO setItem_name(String item_name)
+	{
+		this.item_name = item_name;
+		return this;
+	}
+
+	public SalehistoryDTO setItem_category_code(String item_category_code)
+	{
+		this.item_category_code = item_category_code;
+		return this;
+	}
+
+	public SalehistoryDTO setItem_category_desc(String item_category_desc)
+	{
+		this.item_category_desc = item_category_desc;
+		return this;
+	}
+
+	public SalehistoryDTO setItem_price(int item_price)
+	{
+		this.item_price = item_price;
+		return this;
+	}
+
 	public String getUser_id()
 	{
 		return user_id;
@@ -30,11 +79,6 @@ public class SalehistoryDTO
 	public int getItem_code()
 	{
 		return item_code;
-	}
-
-	public String getItem_category()
-	{
-		return item_category;
 	}
 
 	public String getSale_date()
@@ -81,12 +125,6 @@ public class SalehistoryDTO
 		return this;
 	}
 
-	public SalehistoryDTO setItem_category(String item_category)
-	{
-		this.item_category = item_category;
-		return this;
-	}
-
 	public SalehistoryDTO setSale_date(String sale_date)
 	{
 		this.sale_date = sale_date;
@@ -110,6 +148,30 @@ public class SalehistoryDTO
 		this.status = status;
 		return this;
 	}
+
+	public int getPublisher_code()
+	{
+		return publisher_code;
+	}
+
+	public String getPublisher_name()
+	{
+		return publisher_name;
+	}
+
+	public SalehistoryDTO setPublisher_code(int publisher_code)
+	{
+		this.publisher_code = publisher_code;
+		return this;
+	}
+
+	public SalehistoryDTO setPublisher_name(String publisher_name)
+	{
+		this.publisher_name = publisher_name;
+		return this;
+	}
+
+
 
 	public SalehistoryDTO()
 	{

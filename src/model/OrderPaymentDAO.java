@@ -16,7 +16,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
-import etc.OrderInformation;
 import etc.Util;
 
 public class OrderPaymentDAO
@@ -28,98 +27,78 @@ public class OrderPaymentDAO
 		this.ds = ds;
 	}
 
-	public void requestOrderProcessing(OrderhistoryDTO orderFormData, String userId)
+	public boolean requestOrderProcessing(OrderhistoryDTO orderFormData, ArrayList<ItemsDTO> books)
 	{
-		final String currentTime = Util.getCurrentDateTime();
+		String currentTime = Util.getCurrentDateTime();
+		String orderQuery = "INSERT INTO orderhistory VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String saleQuery = "INSERT INTO salehistory VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?)";
+		boolean flag = false;
 
-		try (Connection connection = ds.getConnection();)
+		try (Connection connection = ds.getConnection();
+				PreparedStatement prstmt1 = connection.prepareStatement(orderQuery);
+				PreparedStatement prstmt2 = connection.prepareStatement(saleQuery);)
 		{
-			String query = "INSERT INTO orderhistory VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-			PreparedStatement prstmt = connection.prepareStatement(query);
+			prstmt1.setString(1, orderFormData.getUser_id());
+			prstmt1.setString(2, orderFormData.getOrderer_name());
+			prstmt1.setString(3, orderFormData.getOrderer_mobile1());
+			prstmt1.setString(4, orderFormData.getOrderer_mobile2());
+			prstmt1.setString(5, orderFormData.getOrderer_mobile3());
+			prstmt1.setString(6, orderFormData.getOrderer_general1());
+			prstmt1.setString(7, orderFormData.getOrderer_general2());
+			prstmt1.setString(8, orderFormData.getOrderer_general3());
+			prstmt1.setString(9, orderFormData.getOrderer_email());
+			prstmt1.setString(10, orderFormData.getRecepient_name());
+			prstmt1.setString(11, orderFormData.getRecepient_mobile1());
+			prstmt1.setString(12, orderFormData.getRecepient_mobile2());
+			prstmt1.setString(13, orderFormData.getRecepient_mobile3());
+			prstmt1.setString(14, orderFormData.getRecepient_general1());
+			prstmt1.setString(15, orderFormData.getRecepient_general2());
+			prstmt1.setString(16, orderFormData.getRecepient_general3());
+			prstmt1.setString(17, orderFormData.getPostal_code());
+			prstmt1.setString(18, orderFormData.getRoad());
+			prstmt1.setString(19, orderFormData.getNumber());
+			prstmt1.setString(20, orderFormData.getDetail());
+			prstmt1.setString(21, orderFormData.getRequested_term());
+			prstmt1.setInt(22, orderFormData.getTotal_price());
+			prstmt1.setString(23, orderFormData.getPayment_method_code());
+			prstmt1.setString(24, orderFormData.getDelivery_method_code());
+			prstmt1.setString(25, currentTime);
+			prstmt1.setString(26, "n");
 
-			prstmt.setString(1, orderFormData.getUser_id());
-			prstmt.setString(2, orderFormData.getOrderer_name());
-			prstmt.setString(3, orderFormData.getOrderer_mobile1());
-			prstmt.setString(4, orderFormData.getOrderer_mobile2());
-			prstmt.setString(5, orderFormData.getOrderer_mobile3());
-			prstmt.setString(6, orderFormData.getOrderer_general1());
-			prstmt.setString(7, orderFormData.getOrderer_general2());
-			prstmt.setString(8, orderFormData.getOrderer_general3());
-			prstmt.setString(9, orderFormData.getOrderer_email());
-			prstmt.setString(10, orderFormData.getRecepient_name());
-			prstmt.setString(11, orderFormData.getRecepient_mobile1());
-			prstmt.setString(12, orderFormData.getRecepient_mobile2());
-			prstmt.setString(13, orderFormData.getRecepient_mobile3());
-			prstmt.setString(14, orderFormData.getRecepient_general1());
-			prstmt.setString(15, orderFormData.getRecepient_general2());
-			prstmt.setString(16, orderFormData.getRecepient_general3());
-			prstmt.setString(17, orderFormData.getPostal_code());
-			prstmt.setString(18, orderFormData.getRoad());
-			prstmt.setString(19, orderFormData.getNumber());
-			prstmt.setString(20, orderFormData.getDetail());
-			prstmt.setString(21, orderFormData.getRequested_term());
-			prstmt.setInt(22, orderFormData.getTotal_price());
-			prstmt.setString(23, orderFormData.getPayment_method());
-			prstmt.setString(24, orderFormData.getDelivery_method());
-			prstmt.setString(25, currentTime);
-			prstmt.setString(26, "n");
-
-			if (prstmt.executeUpdate() == 1)
+			if (prstmt1.executeUpdate() == 1)
 			{
-				connection.commit();
-				int orderCode = getOrderOrSaleCode(currentTime, orderFormData.getUser_id(), -1); // ordercode
-				prstmt.clearBatch();
+				int orderCode = getOrderCode(currentTime, orderFormData.getUser_id());
 
-				query = "INSERT INTO salehistory VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?)";
-				prstmt = connection.prepareStatement(query);
-
-				for (int i = 0; i < ordered_items.size(); ++i)
+				for (int i = 0; i < books.size(); ++i)
 				{
-					prstmt.setInt(1, orderCode);
-					prstmt.setString(2, userId);
-					prstmt.setInt(3, ordered_items.get(i).getItem_code());
-					prstmt.setString(4, ordered_items.get(i).getItem_category());
-					prstmt.setString(5, currentTime);
-					prstmt.setInt(6, ordered_items.get(i).getOrder_quantity());
-					prstmt.setInt(7, ordered_items.get(i).getOrder_quantity() * ordered_items.get(i).getItem_price());
-					prstmt.setString(8, "n");
+					prstmt2.setInt(1, orderCode);
+					prstmt2.setString(2, orderFormData.getUser_id());
+					prstmt2.setInt(3, books.get(i).getItem_code());
+					prstmt2.setString(4, books.get(i).getItem_category_code());
+					prstmt2.setString(5, currentTime);
+					prstmt2.setInt(6, books.get(i).getOrder_quantity());
+					prstmt2.setInt(7, books.get(i).getOrder_quantity() * books.get(i).getItem_selling_price());
+					prstmt2.setString(8, "n");
 
-					prstmt.addBatch();
-
+					prstmt2.addBatch();
 				}
-				if (prstmt.executeBatch().length == ordered_items.size())
+				if (prstmt2.executeBatch().length == books.size())
 				{
 					connection.commit();
+					flag = true;
 				}
-			}
-			if (prstmt != null)
-			{
-				try
-				{
-					prstmt.close();
-				} catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-
 			}
 		} catch (Exception e)
 		{
 			e.printStackTrace();
 		}
+		return flag;
 	}
 
-	public int getOrderOrSaleCode(String date, String userId, int itemCode)
+	public int getOrderCode(String date, String userId)
 	{
-		String query = null;
+		String query = "SELECT orderhistory_order_code FROM orderhistory WHERE orderhistory_order_date = ? AND orderhistory_user_id = ?";
 
-		if (itemCode == -1) // true 면 ordercode
-		{
-			query = "SELECT orderhistory_order_code FROM orderhistory WHERE orderhistory_order_date = ? AND orderhistory_user_id = ?";
-		} else
-		{
-			query = "SELECT salehistory_sale_code FROM salehistory WHERE salehistory_sale_date = ? AND salehistory_user_id = ? AND salehistory_item_code = ? ORDER BY salehistory_item_code ASC";
-		}
 		ResultSet set = null;
 		int code = 0;
 
@@ -128,13 +107,8 @@ public class OrderPaymentDAO
 			prstmt.setString(1, date);
 			prstmt.setString(2, userId);
 
-			if (itemCode != -1)
-			{
-				prstmt.setInt(3, itemCode);
-			}
-
 			set = prstmt.executeQuery();
-			while (set.next())
+			if (set.next())
 			{
 				code = set.getInt(1);
 			}
@@ -155,7 +129,6 @@ public class OrderPaymentDAO
 			}
 
 		}
-
 		return code;
 	}
 
@@ -184,8 +157,8 @@ public class OrderPaymentDAO
 						.setRecepient_general2(set.getString(16)).setRecepient_general3(set.getString(17))
 						.setPostal_code(set.getString(18)).setRoad(set.getString(19)).setNumber(set.getString(20))
 						.setDetail(set.getString(21)).setRequested_term(set.getString(22))
-						.setTotal_price(set.getInt(23)).setPayment_method(set.getString(24))
-						.setDelivery_method(set.getString(25)).setOrder_date(set.getString(26));
+						.setTotal_price(set.getInt(23)).setPayment_method_code(set.getString(24))
+						.setDelivery_method_code(set.getString(25)).setOrder_date(set.getString(26));
 			}
 		} catch (Exception e)
 		{
@@ -208,7 +181,11 @@ public class OrderPaymentDAO
 
 	public ArrayList<SalehistoryDTO> getSaleHistory(int orderCode, String userId)
 	{
-		String query = "SELECT * FROM salehistory WHERE salehistory_order_code = ? AND salehistory_user_id = ? ORDER BY salehistory_sale_date DESC, salehistory_item_code ASC";
+		String query = "SELECT * FROM salehistory AS s "
+				+ "INNER JOIN items AS i ON i.item_code = s.salehistory_item_code AND i.item_category_code = s.salehistory_item_category "
+				+ "INNER JOIN itemcategory AS c ON c.category_code = s.salehistory_item_category "
+				+ "INNER JOIN publishers AS p ON p.publisher_code = i.item_publisher_code "
+				+ "WHERE s.salehistory_order_code = ? AND s.salehistory_user_id = ? ORDER BY s.salehistory_item_code ASC";
 		ArrayList<SalehistoryDTO> list = null;
 		ResultSet set = null;
 
@@ -223,9 +200,11 @@ public class OrderPaymentDAO
 			while (set.next())
 			{
 				list.add(new SalehistoryDTO().setSale_code(set.getInt(1)).setOrder_code(set.getInt(2))
-						.setUser_id(set.getString(3)).setItem_code(set.getInt(4)).setItem_category(set.getString(5))
-						.setSale_date(set.getString(6)).setSale_quantity(set.getInt(7)).setTotal_price(set.getInt(8))
-						.setStatus(set.getString(9)));
+						.setUser_id(set.getString(3)).setItem_code(set.getInt(4))
+						.setItem_category_code(set.getString(5)).setSale_date(set.getString(6))
+						.setSale_quantity(set.getInt(7)).setTotal_price(set.getInt(8)).setStatus(set.getString(9))
+						.setItem_name(set.getString(11)).setItem_category_desc(set.getString(27))
+						.setPublisher_code(set.getInt(30)).setPublisher_name(set.getString(31)));
 			}
 		} catch (Exception e)
 		{
@@ -246,62 +225,12 @@ public class OrderPaymentDAO
 		return list;
 	}
 
-	public String[] getOrderMethod(String delivery, String payment)
-	{
-		String query1 = "SELECT paymentmethod FROM paymentmethod WHERE paymentmethod_code = \'" + payment + "\'";
-		String query2 = "SELECT deliverymethod FROM deliverymethod WHERE deliverymethod_code = \'" + delivery + "\'";
-		String[] methods = new String[2];
-
-		ResultSet set1 = null;
-		ResultSet set2 = null;
-
-		try (Connection connection = ds.getConnection(); Statement stmt = connection.createStatement();)
-		{
-
-			set1 = stmt.executeQuery(query1);
-			set2 = stmt.executeQuery(query2);
-
-			while (set1.next())
-			{
-				methods[0] = set1.getString(1); // payment
-			}
-			while (set2.next())
-			{
-				methods[1] = set2.getString(1); // delivery
-			}
-
-		} catch (Exception e)
-		{
-			e.printStackTrace();
-		} finally
-		{
-			if (set1 != null)
-			{
-				try
-				{
-					set1.close();
-				} catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-			}
-			if (set2 != null)
-			{
-				try
-				{
-					set2.close();
-				} catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-			}
-		}
-		return methods;
-	}
-
 	public OrderhistoryDTO getLatestOrderInfo(String userId)
 	{
-		String query = "SELECT * FROM orderhistory WHERE orderhistory_user_id = ? ORDER BY orderhistory_order_date DESC LIMIT 1";
+		String query = "SELECT * FROM orderhistory AS o "
+				+ "INNER JOIN deliverymethod AS d ON d.deliverymethod_code = o.orderhistory_delivery_method "
+				+ "INNER JOIN paymentmethod AS p ON p.paymentmethod_code = o.orderhistory_payment_method "
+				+ "WHERE o.orderhistory_user_id = ? ORDER BY o.orderhistory_order_date DESC LIMIT 1";
 		ResultSet set = null;
 		OrderhistoryDTO data = null;
 
@@ -323,7 +252,7 @@ public class OrderPaymentDAO
 						.setRecepient_general3(set.getString(17)).setPostal_code(set.getString(18))
 						.setRoad(set.getString(19)).setNumber(set.getString(20)).setDetail(set.getString(21))
 						.setRequested_term(set.getString(22)).setTotal_price(set.getInt(23))
-						.setPayment_method(set.getString(24)).setDelivery_method(set.getString(25))
+						.setPayment_method_desc(set.getString(31)).setDelivery_method_desc(set.getString(29))
 						.setOrder_date(set.getString(26));
 			}
 		} catch (Exception e)

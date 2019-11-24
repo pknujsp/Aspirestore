@@ -30,5 +30,6 @@ public class CategoryDAO
 		{
 			e.printStackTrace();
 		}
+		return categoryMap;
 	}
 }

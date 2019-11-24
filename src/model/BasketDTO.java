@@ -1,30 +1,22 @@
 package model;
 
+import java.util.ArrayList;
+
 public class BasketDTO
 {
 	private String user_id;
-	private int item_code;
-	private String category_code;
-	private int quantity;
+	private int total_price;
+	private int total_quantity;
+	private ArrayList<ItemsDTO> books;
 
 	public String getUser_id()
 	{
 		return user_id;
 	}
 
-	public int getItem_code()
+	public ArrayList<ItemsDTO> getBooks()
 	{
-		return item_code;
-	}
-
-	public String getCategory_code()
-	{
-		return category_code;
-	}
-
-	public int getQuantity()
-	{
-		return quantity;
+		return books;
 	}
 
 	public BasketDTO setUser_id(String user_id)
@@ -33,21 +25,37 @@ public class BasketDTO
 		return this;
 	}
 
-	public BasketDTO setItem_code(int item_code)
+	public int getTotal_price()
 	{
-		this.item_code = item_code;
+		return total_price;
+	}
+
+	public BasketDTO setTotal_price()
+	{
+		for (int index = 0; index < books.size(); ++index)
+		{
+			this.total_price += (books.get(index).getItem_selling_price() * books.get(index).getOrder_quantity());
+		}
 		return this;
 	}
 
-	public BasketDTO setCategory_code(String category_code)
+	public int getTotal_quantity()
 	{
-		this.category_code = category_code;
+		return this.total_quantity;
+	}
+
+	public BasketDTO setTotal_quantity()
+	{
+		for (int index = 0; index < books.size(); ++index)
+		{
+			this.total_quantity += books.get(index).getOrder_quantity();
+		}
 		return this;
 	}
 
-	public BasketDTO setQuantity(int quantity)
+	public BasketDTO setBooks(ItemsDTO book)
 	{
-		this.quantity = quantity;
+		books.add(book);
 		return this;
 	}
 }

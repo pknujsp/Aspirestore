@@ -25,7 +25,10 @@ public class ItemsDAO
 
 	public ItemsDTO getItem(String ccode, int icode)
 	{
-		String query = "SELECT * FROM items WHERE item_code= ? AND item_category_code= ?";
+		String query = "SELECT * FROM items AS i "
+				+ "INNER JOIN itemcategory AS c ON i.item_category_code = c.category_code "
+				+ "INNER JOIN publishers AS p ON i.item_publisher_code = p.publisher_code "
+				+ "WHERE item_code= ? AND item_category_code= ?";
 		ResultSet set = null;
 		ItemsDTO item = null;
 
@@ -52,7 +55,9 @@ public class ItemsDAO
 						.setItem_book_introduction(set.getString("item_book_introduction"))
 						.setItem_contents_table(set.getString("item_contents_table"))
 						.setItem_publisher_review(set.getString("item_publisher_review"))
-						.setItem_registration_datetime(set.getString("item_registration_datetime"));
+						.setItem_registration_datetime(set.getString("item_registration_datetime"))
+						.setItem_category_desc(set.getString("category_name"))
+						.setItem_publisher_name(set.getString("publisher_name"));
 			}
 		} catch (Exception e)
 		{
@@ -149,7 +154,7 @@ public class ItemsDAO
 			{
 				set = null;
 				int itemCode = saleHistory.get(i).getItem_code();
-				String categoryCode = saleHistory.get(i).getItem_category();
+				String categoryCode = saleHistory.get(i).getItem_category_code();
 
 				prstmt.setInt(1, itemCode);
 				prstmt.setString(2, categoryCode);
@@ -220,13 +225,23 @@ public class ItemsDAO
 
 			while (set.next())
 			{
-				double rating = ((double) set.getInt(11) / (double) (set.getInt(9) + set.getInt(10)));
+				double rating = 0.0;
+				String ratingStr = null;
+
+				if (set.getInt(11) != 0)
+				{
+					rating = ((double) set.getInt(11) / (double) (set.getInt(9) + set.getInt(10)));
+					ratingStr = new DecimalFormat("#.#").format(rating) + "/5";
+				} else
+				{
+					ratingStr = "리뷰 없음";
+				}
 
 				bookList.add(new ItemsDTO().setItem_code(set.getInt(1)).setItem_name(set.getString(2))
 						.setItem_publisher_code(set.getInt(3)).setItem_publication_date(set.getString(4))
 						.setItem_selling_price(set.getInt(5)).setItem_book_introduction(cutString(set.getString(6)))
 						.setItem_category_code(set.getString(7)).setItem_publisher_name(set.getString(8))
-						.setItem_rating(new DecimalFormat("#.#").format(rating)));
+						.setItem_rating(ratingStr));
 			}
 		} catch (Exception e)
 		{
@@ -247,9 +262,12 @@ public class ItemsDAO
 		return bookList;
 	}
 
-	public ArrayList<ItemsDTO> getitemsForBasket(Map<Integer, String> codeMap)
+	public ArrayList<ItemsDTO> getitemsForBasket(HashMap<Integer, String> codeMap)
 	{
-		String query = "SELECT item_name, item_code, item_category_code, item_publisher_code, item_selling_price FROM items WHERE item_code = ? AND item_category_code = ? ORDER BY item_code ASC";
+		String query = "SELECT * FROM items AS i "
+				+ "INNER JOIN itemcategory AS c ON i.item_category_code = c.category_code "
+				+ "INNER JOIN publishers AS p ON i.item_publisher_code = p.publisher_code "
+				+ "WHERE item_code= ? AND item_category_code= ?";
 		ResultSet set = null;
 		ArrayList<ItemsDTO> list = null;
 
@@ -270,9 +288,13 @@ public class ItemsDAO
 				set = prstmt.executeQuery();
 				if (set.next())
 				{
-					list.add(new ItemsDTO().setItem_name(set.getString(1)).setItem_code(set.getInt(2))
-							.setItem_category_code(set.getString(3)).setItem_publisher_code(set.getInt(4))
-							.setItem_selling_price(set.getInt(5)));
+					list.add(new ItemsDTO().setItem_code(set.getInt("item_code"))
+							.setItem_name(set.getString("item_name"))
+							.setItem_publisher_code(set.getInt("item_publisher_code"))
+							.setItem_selling_price(set.getInt("item_selling_price"))
+							.setItem_category_code(set.getString("item_category_code"))
+							.setItem_category_desc(set.getString("category_name"))
+							.setItem_publisher_name(set.getString("publisher_name")));
 				}
 			}
 		} catch (Exception e)

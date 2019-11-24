@@ -28,6 +28,7 @@ public class ItemsDTO
 	private String item_rating;
 	private int order_quantity;
 	private int total_price;
+	private String basket_added_datetime;
 
 	public String getItem_rating()
 	{
@@ -290,5 +291,16 @@ public class ItemsDTO
 	public ItemsDTO()
 	{
 		this.authors = new HashMap<Integer, String>();
+	}
+
+	public ItemsDTO setBasket_added_datetime(String basket_added_datetime)
+	{
+		this.basket_added_datetime = basket_added_datetime;
+		return this;
+	}
+
+	public String getBasket_added_datetime()
+	{
+		return basket_added_datetime;
 	}
 }

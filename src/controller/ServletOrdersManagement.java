@@ -122,8 +122,8 @@ public class ServletOrdersManagement extends HttpServlet
 
 				jsonObject.put("ORDER_CODE", orderDataList.get(index).getOrder_code());
 				jsonObject.put("ORDERER_ID", orderDataList.get(index).getUser_id());
-				jsonObject.put("PAYMENT_METHOD", orderDataList.get(index).getPayment_method());
-				jsonObject.put("DELIVERY_METHOD", orderDataList.get(index).getDelivery_method());
+				jsonObject.put("PAYMENT_METHOD", orderDataList.get(index).getPayment_method_desc());
+				jsonObject.put("DELIVERY_METHOD", orderDataList.get(index).getDelivery_method_desc());
 				jsonObject.put("FINAL_TOTAL_PRICE", orderDataList.get(index).getTotal_price());
 				jsonObject.put("ORDER_DATE", orderDataList.get(index).getOrder_date());
 

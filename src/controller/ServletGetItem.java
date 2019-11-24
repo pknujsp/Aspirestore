@@ -27,21 +27,14 @@ public class ServletGetItem extends HttpServlet
 		{
 			ServletContext servletContext = this.getServletContext();
 
-			String ccode = request.getAttribute("CCODE").toString();
-			int icode = Integer.parseInt(request.getAttribute("ICODE").toString());
-			ItemsDAO dao = (ItemsDAO) servletContext.getAttribute("itemsDAO");
+			final String ccode = request.getAttribute("CCODE").toString();
+			final int icode = Integer.parseInt(request.getAttribute("ICODE").toString());
+
+			ItemsDAO itemsDAO = (ItemsDAO) servletContext.getAttribute("itemsDAO");
 			FileDAO fileDAO = (FileDAO) servletContext.getAttribute("FILE_DAO");
-			
-			ItemsDTO item = dao.getItem(ccode, icode);
 
-			AuthorDAO authordao = (AuthorDAO) servletContext.getAttribute("authorDAO");
-			int acode = item.getItem_author_code();
+			ItemsDTO item = itemsDAO.getItem(ccode, icode);
 
-			AuthorDTO author = authordao.getAuthorInformation(acode);
-
-			PublisherDAO publisherDAO = (PublisherDAO) servletContext.getAttribute("PUBLISHER_DAO");
-			String publisherName = publisherDAO.getPublisherName(item.getItem_publisher_code());
-			
 			ArrayList<FileDTO> images = fileDAO.getItemImages(icode, ccode);
 
 			for (int index = 0; index < images.size(); ++index)
@@ -54,9 +47,6 @@ public class ServletGetItem extends HttpServlet
 					request.setAttribute("INFO_IMAGE", images.get(index));
 				}
 			}
-
-			request.setAttribute("PUBLISHER_NAME", publisherName);
-			request.setAttribute("AUTHOR", author);
 			request.setAttribute("ITEM", item);
 			request.setAttribute("VIEWURL", "forward:/items/item.jsp");
 		} catch (Exception e)
@@ -64,7 +54,7 @@ public class ServletGetItem extends HttpServlet
 			throw new ServletException(e);
 		}
 	}
-	
+
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{

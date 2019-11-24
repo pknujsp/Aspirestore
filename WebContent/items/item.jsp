@@ -1,5 +1,4 @@
 <%@page import="model.FileDTO"%>
-<%@page import="etc.OrderInformation"%>
 <%@page import="model.AuthorDTO"%>
 <%@page import="model.ItemsDTO"%>
 <%@page import="java.util.ArrayList"%>
@@ -8,11 +7,8 @@
 
 <%
 	request.setCharacterEncoding("UTF-8");
-	String sessionKey = (String) session.getAttribute("SESSIONKEY");
 
 	ItemsDTO item = (ItemsDTO) request.getAttribute("ITEM");
-	AuthorDTO author = (AuthorDTO) request.getAttribute("AUTHOR");
-	String publisherName = (String) request.getAttribute("PUBLISHER_NAME");
 	FileDTO mainImg = (FileDTO) request.getAttribute("MAIN_IMAGE");
 	FileDTO infoImg = (FileDTO) request.getAttribute("INFO_IMAGE");
 
@@ -29,7 +25,7 @@
 <meta name="description" content="">
 <meta name="author" content="">
 
-<title><%=item.getItem_name()%></title>
+<title>${pageScope.ITEM.item_name}</title>
 
 <link href="/AspireStore/css/bootstrap.css" rel="stylesheet">
 <link href="/AspireStore/css/shop-homepage.css" rel="stylesheet">
@@ -47,19 +43,19 @@
 
 		</div>
 		<div>
-			<h4><%=item.getItem_name()%></h4>
+			<h4>${pageScope.ITEM.item_name}</h4>
 		</div>
 		<hr />
 		<span>
 			<span>
-				<a href="#" target="_blank"><%=author.getAuthor_name()%></a>
+				<a href="#" target="_blank">${pageScope.ITEM.item_name}</a>
 			</span>
 			<em>|</em>
 			<span>
-				<a href="#" target="_blank"><%=publisherName%></a>
+				<a href="#" target="_blank">${pageScope.ITEM.item_publisher_name}</a>
 			</span>
 			<em>|</em>
-			<span><%=item.getItem_publication_date()%></span>
+			<span>${pageScope.ITEM.item_publication_date}</span>
 		</span>
 
 
@@ -75,7 +71,7 @@
 						<th scope="row">정가</th>
 						<td>
 							<span>
-								<em><%=item.getItem_fixed_price()%> 원</em>
+								<em>${pageScope.ITEM.item_fixed_price} 원</em>
 							</span>
 						</td>
 					</tr>
@@ -84,7 +80,7 @@
 						<th scope="row">판매가</th>
 						<td>
 							<span>
-								<em><%=item.getItem_selling_price()%> 원</em>
+								<em>${pageScope.ITEM.item_selling_price} 원</em>
 							</span>
 						</td>
 					</tr>
@@ -98,9 +94,9 @@
 				<span>
 					수량
 					<input type="number" name="quantity" id="quantity" value="1" min="1" />
-					<input type="hidden" name="itemPrice" id="itemPrice" value="<%=item.getItem_selling_price()%>" />
-					<input type="hidden" name="itemCategory" id="itemCategory" value="<%=item.getItem_category_code()%>" />
-					<input type="hidden" name="itemCode" id="itemCode" value="<%=item.getItem_code()%>" />
+					<input type="hidden" name="itemPrice" id="itemPrice" value="${pageScope.ITEM.item_selling_price}" />
+					<input type="hidden" name="itemCategory" id="itemCategory" value="${pageScope.ITEM.item_category_code}" />
+					<input type="hidden" name="itemCode" id="itemCode" value="${pageScope.ITEM.item_code}" />
 				</span>
 				<span>
 					<button class="btn btn-primary" type="button" onclick="javascript:addBookToTheBasket('/AspireStore/basket.aspire')">장바구니에 추가</button>
@@ -127,23 +123,19 @@
 						<tbody class="b_size">
 							<tr>
 								<th scope="row">출간일</th>
-								<td><%=item.getItem_publication_date()%></td>
+								<td>${pageScope.ITEM.item_publication_date}</td>
 							</tr>
 							<tr>
 								<th scope="row">쪽수, 무게, 크기</th>
-								<td><%=item.getItem_page_number()%>
-									,
-									<%=item.getItem_weight()%>
-									,
-									<%=item.getItem_size()%></td>
+								<td>${pageScope.ITEM.item_page_number}&nbsp;|&nbsp;${pageScope.ITEM.item_weight}&nbsp;|&nbsp;${pageScope.ITEM.item_size}</td>
 							</tr>
 							<tr>
 								<th scope="row">ISBN13</th>
-								<td><%=item.getItem_isbn13()%></td>
+								<td>${pageScope.ITEM.item_isbn13}</td>
 							</tr>
 							<tr>
 								<th scope="row">ISBN10</th>
-								<td><%=item.getItem_isbn10()%></td>
+								<td>${pageScope.ITEM.item_isbn10}</td>
 							</tr>
 					</table>
 				</div>
@@ -158,7 +150,7 @@
 			<div>
 				<div>
 					<pre style="white-space: pre-wrap;">
-					<%=item.getItem_book_introduction()%>
+					${pageScope.ITEM.item_book_introduction}
 					</pre>
 				</div>
 			</div>
@@ -172,7 +164,7 @@
 			<div>
 				<div>
 					<pre style="white-space: pre-wrap;">
-					<%=item.getItem_contents_table()%>
+				${pageScope.ITEM.item_contents_table}
 					</pre>
 				</div>
 			</div>
@@ -195,14 +187,11 @@
 			</div>
 			<div>
 				<div>
-					<div>
-						저자 명 :
-						<%=author.getAuthor_name()%>
-					</div>
+					<div>저자 명 : ${pageScope.ITEM.item_isbn13}</div>
 					<div>
 						저자 소개 :
 						<pre style="white-space: pre-wrap;">
-						<%=author.getAuthor_information()%>
+				${pageScope.ITEM.item_isbn13}
 						</pre>
 					</div>
 				</div>
@@ -216,7 +205,7 @@
 				</div>
 				<div>
 					<pre style="white-space: pre-wrap;">
-					<%=item.getItem_publisher_review()%>
+				${pageScope.ITEM.item_publisher_review}
 					</pre>
 				</div>
 			</div>

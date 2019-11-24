@@ -25,8 +25,10 @@ public class OrderhistoryDTO
 	private String detail;
 	private String requested_term;
 	private int total_price;
-	private String payment_method;
-	private String delivery_method;
+	private String payment_method_code;
+	private String payment_method_desc;
+	private String delivery_method_code;
+	private String delivery_method_desc;
 	private String order_date;
 
 	public int getOrder_code()
@@ -142,16 +144,6 @@ public class OrderhistoryDTO
 	public int getTotal_price()
 	{
 		return total_price;
-	}
-
-	public String getPayment_method()
-	{
-		return payment_method;
-	}
-
-	public String getDelivery_method()
-	{
-		return delivery_method;
 	}
 
 	public String getOrder_date()
@@ -297,21 +289,53 @@ public class OrderhistoryDTO
 		return this;
 	}
 
-	public OrderhistoryDTO setPayment_method(String payment_method)
-	{
-		this.payment_method = payment_method;
-		return this;
-	}
-
-	public OrderhistoryDTO setDelivery_method(String delivery_method)
-	{
-		this.delivery_method = delivery_method;
-		return this;
-	}
-
 	public OrderhistoryDTO setOrder_date(String order_date)
 	{
 		this.order_date = order_date;
+		return this;
+	}
+
+	public String getPayment_method_code()
+	{
+		return payment_method_code;
+	}
+
+	public String getPayment_method_desc()
+	{
+		return payment_method_desc;
+	}
+
+	public String getDelivery_method_code()
+	{
+		return delivery_method_code;
+	}
+
+	public String getDelivery_method_desc()
+	{
+		return delivery_method_desc;
+	}
+
+	public OrderhistoryDTO setPayment_method_code(String payment_method_code)
+	{
+		this.payment_method_code = payment_method_code;
+		return this;
+	}
+
+	public OrderhistoryDTO setPayment_method_desc(String payment_method_desc)
+	{
+		this.payment_method_desc = payment_method_desc;
+		return this;
+	}
+
+	public OrderhistoryDTO setDelivery_method_code(String delivery_method_code)
+	{
+		this.delivery_method_code = delivery_method_code;
+		return this;
+	}
+
+	public OrderhistoryDTO setDelivery_method_desc(String delivery_method_desc)
+	{
+		this.delivery_method_desc = delivery_method_desc;
 		return this;
 	}
 

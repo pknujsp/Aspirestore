@@ -121,7 +121,7 @@
 				<li class="dropdown-divider"></li>
 
 				<li class="dropdown-submenu">
-					<a href="/AspireStore/items/itemlist.jsp?ccode=400" tabindex="3" class="dropdown-header dropdown-submenu"> 모바일 프로그래밍</a>
+					<a href="/AspireStore/items/itemlist.jsp?ccode=400" tabindex="3" class="dropdown-header dropdown-submenu">모바일 프로그래밍</a>
 					<ul class="dropdown-menu">
 						<li>
 							<a class="dropdown-item" href="/AspireStore/items/itemlist.aspire?ccode=401&cpcode=400">아이폰</a>

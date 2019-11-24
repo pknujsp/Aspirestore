@@ -32,14 +32,13 @@ public class ServletShowItems extends HttpServlet
 			ItemsDAO itemsDAO = (ItemsDAO) servletContext.getAttribute("itemsDAO");
 			FileDAO fileDAO = (FileDAO) servletContext.getAttribute("FILE_DAO");
 
-			String ccode = request.getAttribute("CCODE").toString();
-			String cpcode = request.getAttribute("CPCODE").toString();
-			String sortType = request.getAttribute("SORT_TYPE").toString();
-			int currentPage = Integer.parseInt(request.getAttribute("CURRENT_PAGE").toString());
-			HashMap<String, HashMap<String, String>> categoryMap = new HashMap<String, HashMap<String, String>>();
+			final String ccode = request.getAttribute("CCODE").toString();
+			final String cpcode = request.getAttribute("CPCODE").toString();
+			final String sortType = request.getAttribute("SORT_TYPE").toString();
+			final int currentPage = Integer.parseInt(request.getAttribute("CURRENT_PAGE").toString());
 
 			// 전체 레코드의 개수를 가져온다.
-			int listSize = itemsDAO.getListSize(ccode);
+			final int listSize = itemsDAO.getListSize(ccode);
 			HashMap<String, Integer> pageData = new HashMap<String, Integer>();
 
 			pageData.put("total_page", 0);

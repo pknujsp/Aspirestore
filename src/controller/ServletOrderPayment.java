@@ -10,8 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import etc.OrderInformation;
 import model.AddressDAO;
 import model.AddressDTO;
 import model.AuthorDAO;
@@ -19,7 +17,6 @@ import model.AuthorDTO;
 import model.ItemsDAO;
 import model.ItemsDTO;
 import model.OrderPaymentDAO;
-import model.OrderedItemsDTO;
 import model.OrderhistoryDTO;
 import model.PublisherDAO;
 import model.PublisherDTO;
@@ -35,7 +32,7 @@ public class ServletOrderPayment extends HttpServlet
 		try
 		{
 			ServletContext servletContext = this.getServletContext();
-			String userId = request.getSession().getAttribute("SESSIONKEY").toString();
+			final String userId = request.getSession().getAttribute("SESSIONKEY").toString();
 			// orderform페이지에서 전달받은 주문자 정보 데이터
 			UserDTO requestUserData = (UserDTO) request.getAttribute("USER_INFO_REQUEST");
 
@@ -43,12 +40,11 @@ public class ServletOrderPayment extends HttpServlet
 			UserDTO sessionUserData = (UserDTO) request.getSession().getAttribute("USER_INFO_SESSION");
 
 			// 주문할 도서목록 (코드, 수량)
-			ArrayList<OrderInformation> books = (ArrayList<OrderInformation>) request.getAttribute("BOOKS");
+			ArrayList<ItemsDTO> books = (ArrayList<ItemsDTO>) request.getAttribute("BOOKS");
 
 			UserDAO userDao = (UserDAO) servletContext.getAttribute("USER_DAO");
 			AddressDAO addressDAO = (AddressDAO) servletContext.getAttribute("ADDRESS_DAO");
 			OrderPaymentDAO orderPaymentDAO = (OrderPaymentDAO) servletContext.getAttribute("ORDER_PAYMENT_DAO");
-			ItemsDAO itemsDAO = (ItemsDAO) servletContext.getAttribute("itemsDAO");
 
 			if (sessionUserData != null)
 			{
@@ -88,61 +84,35 @@ public class ServletOrderPayment extends HttpServlet
 			// 수령자 정보, 배송지 정보, 주문자 정보, 배송 수단, 결제 수단 데이터
 			OrderhistoryDTO orderFormData = (OrderhistoryDTO) request.getAttribute("ORDER_FORM_DATA");
 
-			if (checkTotalPrice(orderFormData, itemsDAO.getBookSellingPrice(books), books))
+			if (checkTotalPrice(orderFormData, books))
 			{
 				// orderhistory, salehistory 테이블에 주문 정보 저장
-				orderPaymentDAO.requestOrderProcessing(orderFormData, books, userId);
+				orderPaymentDAO.requestOrderProcessing(orderFormData, books);
 			}
 
-			// 주문 정보, 판매 정보, 저자 정보, 출판사 정보 세션 저장소에 저장
+			// 주문 정보, 도서 정보 세션 저장소에 저장
+			OrderhistoryDTO orderHistory = orderPaymentDAO.getLatestOrderInfo(userId);
+			ArrayList<SalehistoryDTO> saleHistory = orderPaymentDAO.getSaleHistory(orderHistory.getOrder_code(), userId);
 
-			OrderhistoryDTO orderHistory = getOrderHistory(userId, orderPaymentDAO);
-			ArrayList<SalehistoryDTO> saleHistory = getSaleHistory(orderHistory.getOrder_code(), userId,
-					orderPaymentDAO);
-
-			ArrayList<OrderedItemsDTO> booksAuthorPublisherData = itemsDAO.getItemAuthorPublisher(saleHistory);
-			String[] methods = orderPaymentDAO.getOrderMethod(orderHistory.getDelivery_method(),
-					orderHistory.getPayment_method());
 			HttpSession session = request.getSession();
 
 			session.setAttribute("ORDER_HISTORY", orderHistory);
 			session.setAttribute("SALE_HISTORY", saleHistory);
-			session.setAttribute("BOOKS_AUTHORS_PUBLISHERS", booksAuthorPublisherData);
-			session.setAttribute("METHODS", methods);
-			request.setAttribute("VIEWURL", "redirect:/AspireStore/confirm/confirmorder.jsp");
+			request.setAttribute("VIEWURL", "redirect:/AspireStore/order/confirmorder.jsp");
 		} catch (Exception e)
 		{
 			throw new ServletException(e);
 		}
 	}
 
-	private OrderhistoryDTO getOrderHistory(String userId, OrderPaymentDAO dao)
-	{
-		return dao.getLatestOrderInfo(userId);
-	}
 
-	private ArrayList<SalehistoryDTO> getSaleHistory(int orderCode, String userId, OrderPaymentDAO dao)
-	{
-		return dao.getSaleHistory(orderCode, userId);
-	}
 
-	private ArrayList<AuthorDTO> getAuthors(ArrayList<Integer> codes, AuthorDAO dao)
-	{
-		return dao.getAuthors(codes);
-	}
-
-	private ArrayList<PublisherDTO> getPublishers(ArrayList<Integer> codes, PublisherDAO dao)
-	{
-		return dao.getPublishers(codes);
-	}
-
-	private boolean checkTotalPrice(OrderhistoryDTO orderhistoryDTO, ArrayList<Integer> bookPriceList,
-			ArrayList<OrderInformation> books)
+	private boolean checkTotalPrice(OrderhistoryDTO orderhistoryDTO, ArrayList<ItemsDTO> books)
 	{
 		int totalPrice = 0;
-		for (int i = 0; i < bookPriceList.size(); ++i)
+		for (int i = 0; i < books.size(); ++i)
 		{
-			totalPrice += (bookPriceList.get(i).intValue() * books.get(i).getOrder_quantity());
+			totalPrice += (books.get(i).getItem_selling_price() * books.get(i).getOrder_quantity());
 		}
 
 		if (totalPrice == orderhistoryDTO.getTotal_price())

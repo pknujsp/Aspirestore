@@ -16,25 +16,43 @@ public class BasketDAO
 		this.ds = ds;
 	}
 
-	public ArrayList<BasketDTO> getBasket(String userId)
+	public BasketDTO getBasket(String userId)
 	{
-		String query = "SELECT basket_item_code, basket_item_category, basket_quantity FROM basket WHERE basket_user_id = ? ORDER BY basket_item_code ASC";
+		String selectQuery = "SELECT b.basket_item_code, i.item_name, b.basket_item_category, c.category_name"
+				+ ", p.publisher_code, p.publisher_name, b.basket_quantity, b.basket_added_datetime, i.item_selling_price "
+				+ "FROM basket AS b "
+				+ "INNER JOIN items AS i ON i.item_category_code = b.basket_item_category AND i.item_code = b.basket_item_code "
+				+ "INNER JOIN itemcategory AS c ON b.basket_item_category = c.category_code "
+				+ "INNER JOIN publishers AS p ON i.item_publisher_code = p.publisher_code "
+				+ "WHERE b.basket_user_id = ? ORDER BY b.basket_item_code ASC";
 
 		ResultSet set = null;
-		ArrayList<BasketDTO> list = null;
+		BasketDTO basket = null;
 
-		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		try (Connection connection = ds.getConnection();
+				PreparedStatement prstmt = connection.prepareStatement(selectQuery);)
 		{
 			prstmt.setString(1, userId);
 			set = prstmt.executeQuery();
 
-			list = new ArrayList<BasketDTO>();
+			basket = new BasketDTO();
 
-			while (set.next())
+			for (int index = 0; set.next(); ++index)
 			{
-				list.add(new BasketDTO().setItem_code(set.getInt(1)).setCategory_code(set.getString(2))
-						.setQuantity(set.getInt(3)));
+				if (index == 0)
+				{
+					basket.setUser_id(userId);
+				} else
+				{
+
+					basket.setBooks(new ItemsDTO().setItem_code(set.getInt(1)).setItem_name(set.getString(2))
+							.setItem_category_code(set.getString(3)).setItem_category_desc(set.getString(4))
+							.setItem_publisher_code(set.getInt(5)).setItem_publisher_name(set.getString(6))
+							.setOrder_quantity(set.getInt(7)).setBasket_added_datetime(set.getString(8))
+							.setItem_selling_price(set.getInt(9)));
+				}
 			}
+			basket.setTotal_price().setTotal_quantity();
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -51,53 +69,7 @@ public class BasketDAO
 				}
 			}
 		}
-		return list;
-	}
-
-	public ArrayList<BasketDTO> getBasket(String userId, String[] bookCodes, String[] categoryCodes)
-	{
-		String query = "SELECT basket_item_code, basket_item_category, basket_quantity FROM basket WHERE basket_user_id = ? AND basket_item_code = ? AND basket_item_category = ?";
-
-		ResultSet set = null;
-		ArrayList<BasketDTO> list = null;
-
-		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
-		{
-			list = new ArrayList<BasketDTO>();
-			for (int index = 0; index < bookCodes.length; ++index)
-			{
-				set = null;
-
-				prstmt.setString(1, userId);
-				prstmt.setInt(2, Integer.parseInt(bookCodes[index]));
-				prstmt.setString(3, categoryCodes[index]);
-				set = prstmt.executeQuery();
-
-				if (set.next())
-				{
-					list.add(new BasketDTO().setItem_code(set.getInt(1)).setCategory_code(set.getString(2))
-							.setQuantity(set.getInt(3)));
-				}
-			}
-		} catch (
-
-		Exception e)
-		{
-			e.printStackTrace();
-		} finally
-		{
-			if (set != null)
-			{
-				try
-				{
-					set.close();
-				} catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-			}
-		}
-		return list;
+		return basket;
 	}
 
 	public ArrayList<ItemsDTO> getBooksFromBasket(String userId)
@@ -183,17 +155,18 @@ public class BasketDAO
 		return flag;
 	}
 
-	public boolean addBookToTheBasket(BasketDTO data)
+	public boolean addBookToTheBasket(ItemsDTO book, String userId, String currentTime)
 	{
-		String query = "INSERT INTO basket VALUES (?, ?, ?, ?)";
+		String query = "INSERT INTO basket VALUES (?, ?, ?, ?, ?)";
 		boolean flag = false;
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
 		{
-			prstmt.setString(1, data.getUser_id());
-			prstmt.setInt(2, data.getItem_code());
-			prstmt.setString(3, data.getCategory_code());
-			prstmt.setInt(4, data.getQuantity());
+			prstmt.setString(1, userId);
+			prstmt.setInt(2, book.getItem_code());
+			prstmt.setString(3, book.getItem_category_code());
+			prstmt.setInt(4, book.getOrder_quantity());
+			prstmt.setString(5, currentTime);
 
 			if (prstmt.executeUpdate() == 1)
 			{
@@ -206,22 +179,22 @@ public class BasketDAO
 		return flag;
 	}
 
-	public boolean deleteBooksFromBasket(ArrayList<BasketDTO> books)
+	public boolean deleteBooksFromBasket(BasketDTO basket)
 	{
 		String query = "DELETE FROM basket WHERE basket_user_id = ? AND basket_item_code = ? AND basket_item_category = ?";
 		boolean flag = false;
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
 		{
-			for (int i = 0; i < books.size(); ++i)
+			for (int index = 0; index < basket.getBooks().size(); ++index)
 			{
-				prstmt.setString(1, books.get(i).getUser_id());
-				prstmt.setInt(2, books.get(i).getItem_code());
-				prstmt.setString(3, books.get(i).getCategory_code());
+				prstmt.setString(1, basket.getUser_id());
+				prstmt.setInt(2, basket.getBooks().get(index).getItem_code());
+				prstmt.setString(3, basket.getBooks().get(index).getItem_category_code());
 
 				prstmt.addBatch();
 			}
-			if (prstmt.executeBatch().length == books.size())
+			if (prstmt.executeBatch().length == basket.getBooks().size())
 			{
 				flag = true;
 				connection.commit();

@@ -13,6 +13,7 @@
 	ArrayList<FileDTO> thumbnails = (ArrayList<FileDTO>) request.getAttribute("THUMBNAILS");
 	@SuppressWarnings("unchecked")
 	HashMap<String, Integer> pageData = (HashMap<String, Integer>) request.getAttribute("PAGE_DATA");
+
 	String ccode = request.getAttribute("CCODE").toString();
 	String cpcode = request.getAttribute("CPCODE").toString();
 	String sortType = request.getAttribute("SORT_TYPE").toString();
@@ -92,7 +93,7 @@
 
 								<br>
 
-								<span style="font: bold; font-family: Arial; font-weight: 400; font-size: small; color: gray;">${book.item_author_name } | ${book.item_publisher_name } | ${book.item_publication_date } </span>
+								<span style="font: bold; font-family: Arial; font-weight: 400; font-size: small; color: gray;"> ${book.item_publisher_name } | ${book.item_publication_date } </span>
 
 								<hr>
 
@@ -101,7 +102,7 @@
 										<td>
 											${book.item_book_introduction }
 											<hr>
-											가격 : ${book.item_selling_price }원 | 평점 : ${book.item_rating }/5
+											가격 : ${book.item_selling_price }원 | 평점 : ${book.item_rating }
 										</td>
 									</tr>
 								</table>

@@ -22,18 +22,19 @@ public class OrdersManagementDAO
 
 	public ArrayList<OrderhistoryDTO> getUnprocessedOrderList(int startIndex, int endIndex)
 	{
-		String query = "SELECT * " + "FROM orderhistory as o "
-				+ "INNER JOIN paymentmethod p ON p.paymentmethod_code = o.orderhistory_payment_method "
-				+ "INNER JOIN deliverymethod d ON d.deliverymethod_code = o.orderhistory_delivery_method "
-				+ "WHERE o.orderhistory_status = \'n\' ORDER BY o.orderhistory_order_date ASC LIMIT ?, ?";
+		String query = "SELECT * " + "FROM orderhistory AS o "
+				+ "INNER JOIN paymentmethod AS p ON p.paymentmethod_code = o.orderhistory_payment_method "
+				+ "INNER JOIN deliverymethod AS d ON d.deliverymethod_code = o.orderhistory_delivery_method "
+				+ "WHERE o.orderhistory_status = ? ORDER BY o.orderhistory_order_date ASC LIMIT ?, ?";
 		;
 		ResultSet set = null;
 		ArrayList<OrderhistoryDTO> list = null;
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
 		{
-			prstmt.setInt(1, startIndex);
-			prstmt.setInt(2, endIndex);
+			prstmt.setString(1, "n");
+			prstmt.setInt(2, startIndex);
+			prstmt.setInt(3, endIndex);
 			set = prstmt.executeQuery();
 
 			list = new ArrayList<OrderhistoryDTO>();
@@ -50,8 +51,8 @@ public class OrdersManagementDAO
 						.setRecepient_general3(set.getString(17)).setPostal_code(set.getString(18))
 						.setRoad(set.getString(19)).setNumber(set.getString(20)).setDetail(set.getString(21))
 						.setRequested_term(set.getString(22)).setTotal_price(set.getInt(23))
-						.setOrder_date(set.getString(26)).setPayment_method(set.getString(29))
-						.setDelivery_method(set.getString(31)));
+						.setOrder_date(set.getString(26)).setPayment_method_desc(set.getString(29))
+						.setDelivery_method_desc(set.getString(31)));
 			}
 		} catch (Exception e)
 		{
@@ -78,11 +79,10 @@ public class OrdersManagementDAO
 		// 도서 명, 저자 , 출판사, 주문 수량, 판매가, 총 금액, 결제 수단, 배송 수단 데이터 저장
 		ArrayList<ArrayList<Map<String, String>>> list = null;
 
-		String query = "SELECT item.item_name, author.author_name, publisher.publisher_name, sale.salehistory_sale_quantity, item.item_selling_price, sale.salehistory_total_price "
+		String query = "SELECT item.item_name, publisher.publisher_name, sale.salehistory_sale_quantity, item.item_selling_price, sale.salehistory_total_price "
 				+ "FROM salehistory as sale "
 				+ "INNER JOIN items item ON item.item_code = sale.salehistory_item_code AND item.item_category_code = sale.salehistory_item_category "
 				+ "INNER JOIN orderhistory orders ON orders.orderhistory_order_code = sale.salehistory_order_code "
-				+ "INNER JOIN authors author ON author.author_code = item.item_author_code "
 				+ "INNER JOIN publishers publisher ON publisher.publisher_code = item.item_publisher_code "
 				+ "INNER JOIN paymentmethod payment ON payment.paymentmethod_code = orders.orderhistory_payment_method "
 				+ "INNER JOIN deliverymethod delivery ON delivery.deliverymethod_code = orders.orderhistory_delivery_method "
@@ -108,11 +108,10 @@ public class OrdersManagementDAO
 
 					// map에 데이터 삽입 필요
 					map.put("book_name", set.getString(1));
-					map.put("author_name", set.getString(2));
-					map.put("publisher_name", set.getString(3));
-					map.put("sale_quantity", String.valueOf(set.getInt(4)));
-					map.put("selling_price", String.valueOf(set.getInt(5)));
-					map.put("total_price", String.valueOf(set.getInt(6)));
+					map.put("publisher_name", set.getString(2));
+					map.put("sale_quantity", String.valueOf(set.getInt(3)));
+					map.put("selling_price", String.valueOf(set.getInt(4)));
+					map.put("total_price", String.valueOf(set.getInt(5)));
 
 					node.add(map);
 				}

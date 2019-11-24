@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import etc.Util;
 import model.AuthorDAO;
 import model.AuthorDTO;
 import model.BasketDAO;
@@ -54,14 +55,16 @@ public class ServletBasket extends HttpServlet
 			ServletContext sc = this.getServletContext();
 
 			BasketDAO basketDAO = (BasketDAO) sc.getAttribute("BASKET_DAO");
-			BasketDTO data = (BasketDTO) request.getAttribute("BOOK_TO_ADD");
+			ItemsDTO book = (ItemsDTO) request.getAttribute("BOOK_TO_ADD");
+			final String userId = request.getSession().getAttribute("SESSIONKEY").toString();
+			final String currentTime = Util.getCurrentDateTime();
 
 			JSONArray jsonArr = new JSONArray();
 			JSONObject result = new JSONObject();
 
-			if (!basketDAO.checkDuplication(data.getUser_id(), data.getItem_code())) // 중복X
+			if (!basketDAO.checkDuplication(userId, book.getItem_code())) // 중복X
 			{
-				basketDAO.addBookToTheBasket(data);
+				basketDAO.addBookToTheBasket(book, userId, currentTime);
 				result.put("MESSAGE", "장바구니에 추가되었습니다.");
 				result.put("RESULT", "true");
 			} else
@@ -90,8 +93,8 @@ public class ServletBasket extends HttpServlet
 			BasketDAO basketDAO = (BasketDAO) sc.getAttribute("BASKET_DAO");
 
 			@SuppressWarnings("unchecked")
-			ArrayList<BasketDTO> list = (ArrayList<BasketDTO>) request.getAttribute("BOOKS_TO_BE_DELETED");
-			basketDAO.deleteBooksFromBasket(list);
+			BasketDTO basket = (BasketDTO) request.getAttribute("BOOKS_TO_BE_DELETED");
+			basketDAO.deleteBooksFromBasket(basket);
 
 			request.setAttribute("VIEWURL", "ajax:/");
 		} catch (Exception e)
@@ -109,34 +112,11 @@ public class ServletBasket extends HttpServlet
 
 			BasketDAO basketDAO = (BasketDAO) sc.getAttribute("BASKET_DAO");
 			ItemsDAO itemsDAO = (ItemsDAO) sc.getAttribute("itemsDAO");
-			AuthorDAO authorDAO = (AuthorDAO) sc.getAttribute("authorDAO");
-			PublisherDAO publisherDAO = (PublisherDAO) sc.getAttribute("PUBLISHER_DAO");
+			final String userId = request.getSession().getAttribute("SESSIONKEY").toString();
 
-			ArrayList<BasketDTO> basket = basketDAO
-					.getBasket(request.getSession().getAttribute("SESSIONKEY").toString()); // 장바구니
-
-			Map<Integer, String> codeMap = new HashMap<Integer, String>(basket.size()); // itemCode, categoryCode
-
-			for (int i = 0; i < basket.size(); ++i)
-			{
-				codeMap.put(basket.get(i).getItem_code(), basket.get(i).getCategory_code()); // Map에 키 : 도서코드, 값 : 카테고리
-			}
-
-			ArrayList<ItemsDTO> items = itemsDAO.getitemsForBasket(codeMap); // 아이템 정보
-			ArrayList<Integer> authorCodes = new ArrayList<Integer>(basket.size()); // 저자 코드 리스트
-			ArrayList<Integer> publisherCodes = new ArrayList<Integer>(basket.size()); // 출판사 코드 리스트
-
-			for (int i = 0; i < basket.size(); ++i)
-			{
-				authorCodes.add(items.get(i).getItem_author_code());
-				publisherCodes.add(items.get(i).getItem_publisher_code());
-			}
-			ArrayList<AuthorDTO> authors = authorDAO.getAuthors(authorCodes); // 저자 정보
-			ArrayList<PublisherDTO> publishers = publisherDAO.getPublishers(publisherCodes); // 출판사 정보
+			BasketDTO basket = basketDAO.getBasket(userId); // 장바구니
 
 			request.setAttribute("ITEMS", items);
-			request.setAttribute("AUTHORS", authors);
-			request.setAttribute("PUBLISHERS", publishers);
 			request.setAttribute("BASKET", basket);
 			request.setAttribute("VIEWURL", "forward:/basket.jsp");
 		} catch (Exception e)

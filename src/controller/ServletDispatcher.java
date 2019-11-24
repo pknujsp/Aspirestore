@@ -23,7 +23,6 @@ import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
 import etc.ImageFileRenamePolicy;
 import etc.MULTIPART_REQUEST;
-import etc.OrderInformation;
 import model.AddressDTO;
 import model.BasketDTO;
 import model.ItemsDTO;
@@ -138,8 +137,8 @@ public class ServletDispatcher extends HttpServlet
 									.setRoad(request.getParameter("road_name_address"))
 									.setNumber(request.getParameter("number_address"))
 									.setDetail(request.getParameter("detail_address"))
-									.setPayment_method(request.getParameter("payment_method"))
-									.setDelivery_method(request.getParameter("delivery_method"))
+									.setPayment_method_code(request.getParameter("payment_method"))
+									.setDelivery_method_code(request.getParameter("delivery_method"))
 									.setRequested_term(request.getParameter("requested_term")).setUser_id(userId)
 									.setTotal_price(Integer.parseInt(request.getParameter("total_price"))));
 
