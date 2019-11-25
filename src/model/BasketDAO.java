@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -36,21 +39,19 @@ public class BasketDAO
 			set = prstmt.executeQuery();
 
 			basket = new BasketDTO();
-
-			for (int index = 0; set.next(); ++index)
+			int index = 0;
+			while (set.next())
 			{
 				if (index == 0)
 				{
 					basket.setUser_id(userId);
-				} else
-				{
-
-					basket.setBooks(new ItemsDTO().setItem_code(set.getInt(1)).setItem_name(set.getString(2))
-							.setItem_category_code(set.getString(3)).setItem_category_desc(set.getString(4))
-							.setItem_publisher_code(set.getInt(5)).setItem_publisher_name(set.getString(6))
-							.setOrder_quantity(set.getInt(7)).setBasket_added_datetime(set.getString(8))
-							.setItem_selling_price(set.getInt(9)));
 				}
+				basket.setBooks(new ItemsDTO().setItem_code(set.getInt(1)).setItem_name(set.getString(2))
+						.setItem_category_code(set.getString(3)).setItem_category_desc(set.getString(4))
+						.setItem_publisher_code(set.getInt(5)).setItem_publisher_name(set.getString(6))
+						.setOrder_quantity(set.getInt(7)).setBasket_added_datetime(set.getString(8))
+						.setItem_selling_price(set.getInt(9)));
+				++index;
 			}
 			basket.setTotal_price().setTotal_quantity();
 		} catch (Exception e)
@@ -72,32 +73,52 @@ public class BasketDAO
 		return basket;
 	}
 
-	public ArrayList<ItemsDTO> getBooksFromBasket(String userId)
+	public BasketDTO getBasket(String userId, HashMap<Integer, String> bookCodeMap)
 	{
-		String query = "SELECT i.item_code, i.item_name, i.item_selling_price, i.item_publisher_code, p.publisher_name"
-				+ ", i.item_category_code, c.category_name, b.basket_quantity " + "FROM basket AS b "
-				+ "INNER JOIN items AS i ON b.basket_user_id = ? AND b.basket_item_code = i.item_code AND b.basket_item_category = i.item_category_code "
-				+ "INNER JOIN publishers AS p ON p.publisher_code = i.item_publisher_code "
-				+ "INNER JOIN itemcategory AS c ON c.category_code = i.item_category_code "
-				+ "WHERE b.basket_user_id = ? ORDER BY b.basket_added_datetime ASC";
+		String selectQuery = "SELECT b.basket_item_code, i.item_name, b.basket_item_category, c.category_name"
+				+ ", p.publisher_code, p.publisher_name, b.basket_quantity, i.item_selling_price " + "FROM basket AS b "
+				+ "INNER JOIN items AS i ON i.item_category_code = b.basket_item_category AND i.item_code = b.basket_item_code "
+				+ "INNER JOIN itemcategory AS c ON b.basket_item_category = c.category_code "
+				+ "INNER JOIN publishers AS p ON i.item_publisher_code = p.publisher_code "
+				+ "WHERE b.basket_user_id = ? AND b.basket_item_code = ? AND b.basket_item_category = ? ORDER BY b.basket_item_code ASC";
 
-		ArrayList<ItemsDTO> books = null;
 		ResultSet set = null;
+		BasketDTO basket = null;
 
-		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		try (Connection connection = ds.getConnection();
+				PreparedStatement prstmt = connection.prepareStatement(selectQuery);)
 		{
-			books = new ArrayList<ItemsDTO>();
+			Iterator<Integer> iterator = bookCodeMap.keySet().iterator();
 
-			prstmt.setString(1, userId);
+			while (iterator.hasNext())
+			{
+				int icode = iterator.next().intValue();
+				String ccode = bookCodeMap.get(Integer.valueOf(icode));
+
+				prstmt.setString(1, userId);
+				prstmt.setInt(2, icode);
+				prstmt.setString(3, ccode);
+			}
+
 			set = prstmt.executeQuery();
 
-			while (set.next())
+			basket = new BasketDTO();
+
+			for (int index = 0; set.next(); ++index)
 			{
-				books.add(new ItemsDTO().setItem_code(set.getInt(1)).setItem_name(set.getString(2))
-						.setItem_selling_price(set.getInt(3)).setItem_publisher_code(set.getInt(4))
-						.setItem_publisher_name(set.getString(5)).setItem_category_code(set.getString(6))
-						.setItem_category_desc(set.getString(7)).setOrder_quantity(set.getInt(8)));
+				if (index == 0)
+				{
+					basket.setUser_id(userId);
+				} else
+				{
+
+					basket.setBooks(new ItemsDTO().setItem_code(set.getInt(1)).setItem_name(set.getString(2))
+							.setItem_category_code(set.getString(3)).setItem_category_desc(set.getString(4))
+							.setItem_publisher_code(set.getInt(5)).setItem_publisher_name(set.getString(6))
+							.setOrder_quantity(set.getInt(7)).setItem_selling_price(set.getInt(8)));
+				}
 			}
+			basket.setTotal_price().setTotal_quantity();
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -114,7 +135,7 @@ public class BasketDAO
 				}
 			}
 		}
-		return books;
+		return basket;
 	}
 
 	public boolean checkDuplication(String userId, int itemCode)
@@ -157,7 +178,8 @@ public class BasketDAO
 
 	public boolean addBookToTheBasket(ItemsDTO book, String userId, String currentTime)
 	{
-		String query = "INSERT INTO basket VALUES (?, ?, ?, ?, ?)";
+		String query = "INSERT INTO basket " + "SELECT ?, ?, ?, ?, ? FROM DUAL WHERE NOT EXISTS "
+				+ "(SELECT * FROM basket WHERE basket_item_code = ? AND basket_item_category = ? AND basket_user_id = ?)";
 		boolean flag = false;
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
@@ -167,6 +189,9 @@ public class BasketDAO
 			prstmt.setString(3, book.getItem_category_code());
 			prstmt.setInt(4, book.getOrder_quantity());
 			prstmt.setString(5, currentTime);
+			prstmt.setInt(6, book.getItem_code());
+			prstmt.setString(7, book.getItem_category_code());
+			prstmt.setString(8, userId);
 
 			if (prstmt.executeUpdate() == 1)
 			{
@@ -179,22 +204,22 @@ public class BasketDAO
 		return flag;
 	}
 
-	public boolean deleteBooksFromBasket(BasketDTO basket)
+	public boolean deleteBooksFromBasket(ArrayList<ItemsDTO> books, String userId)
 	{
 		String query = "DELETE FROM basket WHERE basket_user_id = ? AND basket_item_code = ? AND basket_item_category = ?";
 		boolean flag = false;
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
 		{
-			for (int index = 0; index < basket.getBooks().size(); ++index)
+			for (int index = 0; index < books.size(); ++index)
 			{
-				prstmt.setString(1, basket.getUser_id());
-				prstmt.setInt(2, basket.getBooks().get(index).getItem_code());
-				prstmt.setString(3, basket.getBooks().get(index).getItem_category_code());
+				prstmt.setString(1, userId);
+				prstmt.setInt(2, books.get(index).getItem_code());
+				prstmt.setString(3, books.get(index).getItem_category_code());
 
 				prstmt.addBatch();
 			}
-			if (prstmt.executeBatch().length == basket.getBooks().size())
+			if (prstmt.executeBatch().length == books.size())
 			{
 				flag = true;
 				connection.commit();

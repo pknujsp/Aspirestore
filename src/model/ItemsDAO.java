@@ -316,7 +316,7 @@ public class ItemsDAO
 		return list;
 	}
 
-	public boolean getBookForOrderForm(ItemsDTO book)
+	public boolean getBookForOrderForm(BasketDTO book)
 	{
 		String query = "SELECT i.item_name, i.item_selling_price, i.item_publisher_code, p.publisher_name"
 				+ ", c.category_name " + "FROM items AS i "
@@ -329,16 +329,19 @@ public class ItemsDAO
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
 		{
-			prstmt.setInt(1, book.getItem_code());
-			prstmt.setString(2, book.getItem_category_code());
+			prstmt.setInt(1, book.getBooks().get(0).getItem_code());
+			prstmt.setString(2, book.getBooks().get(0).getItem_category_code());
 
 			set = prstmt.executeQuery();
 
 			if (set.next())
 			{
-				book.setItem_name(set.getString(1)).setItem_selling_price(set.getInt(2))
-						.setItem_publisher_code(set.getInt(3)).setItem_publisher_name(set.getString(4))
-						.setItem_category_desc(set.getString(5));
+				book.getBooks().get(0).setItem_name((set.getString(1)));
+				book.getBooks().get(0).setItem_selling_price(set.getInt(2));
+				book.getBooks().get(0).setItem_publisher_code(set.getInt(3));
+				book.getBooks().get(0).setItem_publisher_name(set.getString(4));
+				book.getBooks().get(0).setItem_category_desc(set.getString(5));
+
 				flag = true;
 			}
 		} catch (Exception e)

@@ -179,7 +179,6 @@ public class ServletDispatcher extends HttpServlet
 					String type = request.getParameter("type");
 					request.setAttribute("TYPE", type);
 
-					ArrayList<ItemsDTO> orderInformations = new ArrayList<ItemsDTO>();
 					switch (type)
 					{
 					case "BASKET_ORDER":
@@ -196,12 +195,11 @@ public class ServletDispatcher extends HttpServlet
 						int quantity = Integer.parseInt(request.getParameter("quantity"));
 						int itemPrice = Integer.parseInt(request.getParameter("itemPrice"));
 
-						orderInformations.add(new ItemsDTO().setItem_code(itemCode).setItem_selling_price(itemPrice)
-								.setItem_category_code(itemCategory).setOrder_quantity(quantity).setTotal_price());
-
-						orderInformations.trimToSize();
+						request.setAttribute("ORDER_BOOK",
+								new BasketDTO().setBooks(
+										new ItemsDTO().setItem_code(itemCode).setItem_category_code(itemCategory)
+												.setOrder_quantity(quantity).setItem_selling_price(itemPrice)));
 					}
-					request.setAttribute("ORDER_INFORMATIONS", orderInformations);
 				}
 				break;
 
@@ -219,7 +217,6 @@ public class ServletDispatcher extends HttpServlet
 				if (checkNullParameters())
 				{
 					pageControllerPath = "/basket";
-					String userId = request.getSession().getAttribute("SESSIONKEY").toString();
 					String type = request.getParameter("type");
 					request.setAttribute("TYPE", type);
 
@@ -227,24 +224,17 @@ public class ServletDispatcher extends HttpServlet
 					{
 					case "ADD":
 						request.setAttribute("BOOK_TO_ADD",
-								new BasketDTO().setUser_id(request.getSession().getAttribute("SESSIONKEY").toString())
-										.setItem_code(Integer.parseInt(request.getParameter("itemCode")))
-										.setCategory_code(request.getParameter("itemCategory"))
-										.setQuantity(Integer.parseInt(request.getParameter("quantity"))));
+								new ItemsDTO().setItem_code(Integer.parseInt(request.getParameter("itemCode")))
+										.setItem_category_code(request.getParameter("itemCategory"))
+										.setOrder_quantity(Integer.parseInt(request.getParameter("quantity"))));
 						break;
 
 					case "DELETE":
 						String[] checkedCodes = request.getParameterValues("itemCodes");
 						String[] checkedCcodes = request.getParameterValues("categoryCodes");
 
-						ArrayList<BasketDTO> list = new ArrayList<BasketDTO>();
-
-						for (int i = 0; i < checkedCodes.length; ++i)
-						{
-							list.add(new BasketDTO().setUser_id(userId).setItem_code(Integer.parseInt(checkedCodes[i]))
-									.setCategory_code(checkedCcodes[i]));
-						}
-						request.setAttribute("BOOKS_TO_BE_DELETED", list);
+						request.setAttribute("ICODES", checkedCodes);
+						request.setAttribute("CCODES", checkedCcodes);
 						break;
 
 					case "GET_BASKET":

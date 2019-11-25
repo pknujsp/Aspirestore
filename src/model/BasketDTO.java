@@ -7,7 +7,7 @@ public class BasketDTO
 	private String user_id;
 	private int total_price;
 	private int total_quantity;
-	private ArrayList<ItemsDTO> books;
+	private ArrayList<ItemsDTO> books = new ArrayList<ItemsDTO>();
 
 	public String getUser_id()
 	{

@@ -2,6 +2,7 @@ package controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -52,7 +53,16 @@ public class ServletCreateOrderForm extends HttpServlet
 			BasketDAO basketDAO = (BasketDAO) servletContext.getAttribute("BASKET_DAO");
 			UserDAO userDao = (UserDAO) servletContext.getAttribute("USER_DAO");
 
-			ArrayList<ItemsDTO> basketData = basketDAO.getBooksFromBasket(userId);
+			String[] icodes = (String[]) request.getAttribute("BOOK_CODES");
+			String[] ccodes = (String[]) request.getAttribute("CATEGORY_CODES");
+			HashMap<Integer, String> bookCodeMap = new HashMap<Integer, String>();
+
+			for (int i = 0; i < icodes.length; i++)
+			{
+				bookCodeMap.put(Integer.valueOf(icodes[i]), ccodes[i]);
+			}
+
+			BasketDTO books = basketDAO.getBasket(userId, bookCodeMap);
 			UserDTO userData = userDao.getUserInfo(userId);
 
 			if (userData != null) // 최초 주문 X
@@ -60,7 +70,7 @@ public class ServletCreateOrderForm extends HttpServlet
 				request.getSession().setAttribute("USER_INFO_SESSION", userData);
 			}
 
-			request.setAttribute("BOOKS", basketData);
+			request.setAttribute("ORDER_BOOKS", books);
 			request.setAttribute("VIEWURL", "forward:/order/orderform.jsp");
 		} catch (Exception e)
 		{
@@ -76,13 +86,11 @@ public class ServletCreateOrderForm extends HttpServlet
 			ServletContext servletContext = this.getServletContext();
 			String userId = request.getSession().getAttribute("SESSIONKEY").toString();
 			UserDAO userDao = (UserDAO) servletContext.getAttribute("USER_DAO");
-
-			@SuppressWarnings("unchecked")
-			ArrayList<ItemsDTO> orderBooks = (ArrayList<ItemsDTO>) request.getAttribute("ORDER_INFORMATIONS");
+			BasketDTO orderBook = (BasketDTO) request.getAttribute("ORDER_BOOK");
 
 			ItemsDAO itemsDAO = (ItemsDAO) servletContext.getAttribute("itemsDAO");
-			boolean result = itemsDAO.getBookForOrderForm(orderBooks.get(0));
 
+			boolean result = itemsDAO.getBookForOrderForm(orderBook);
 			UserDTO userData = userDao.getUserInfo(userId);
 
 			if (result)
@@ -92,7 +100,7 @@ public class ServletCreateOrderForm extends HttpServlet
 					request.getSession().setAttribute("USER_INFO_SESSION", userData);
 				}
 
-				request.setAttribute("BOOKS", orderBooks);
+				request.setAttribute("ORDER_BOOKS", orderBook);
 				request.setAttribute("VIEWURL", "forward:/order/orderform.jsp");
 			}
 		} catch (Exception e)

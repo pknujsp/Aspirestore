@@ -6,18 +6,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%
-	@SuppressWarnings("unchecked")
-	ArrayList<ItemsDTO> books = (ArrayList<ItemsDTO>) request.getAttribute("ITEMS");
-	@SuppressWarnings("unchecked")
-	ArrayList<AuthorDTO> authors = (ArrayList<AuthorDTO>) request.getAttribute("AUTHORS");
-	@SuppressWarnings("unchecked")
-	ArrayList<PublisherDTO> publishers = (ArrayList<PublisherDTO>) request.getAttribute("PUBLISHERS");
-	@SuppressWarnings("unchecked")
-	ArrayList<BasketDTO> basket = (ArrayList<BasketDTO>) request.getAttribute("BASKET");
+	BasketDTO basket = (BasketDTO) request.getAttribute("BASKET");
 
-	pageContext.setAttribute("bookData", books);
-	pageContext.setAttribute("authorData", authors);
-	pageContext.setAttribute("publisherData", publishers);
 	pageContext.setAttribute("basketData", basket);
 %>
 <!DOCTYPE html>
@@ -55,10 +45,11 @@
 
 						<c:if test="${not empty pageScope.basketData}">
 
-							<c:forEach var="book" items="${pageScope.bookData}" varStatus="status">
+							<c:forEach var="book" items="${pageScope.basketData.books}" varStatus="status">
 								<tr>
 									<td>
-										<input type="checkbox" id="checkBoxCode" name="checkBoxCode" value="${book.item_code}"><input type="hidden" id="checkBoxCcode[]" name="checkBoxCcode[]" value="${book.item_category_code}">
+										<input type="checkbox" id="checkBoxCode" name="checkBoxCode" value="${book.item_code}">
+										<input type="hidden" id="checkBoxCcode[]" name="checkBoxCcode[]" value="${book.item_category_code}">
 									</td>
 									<td>
 										<span>
@@ -69,20 +60,21 @@
 												<c:out value="${book.item_name}" />
 											</a>
 											&nbsp;
-											<c:out value="[${pageScope.authorData[status.index].author_name}]" />
+											<c:out value="${book.item_category_desc }"/>
 											&nbsp;
-											<c:out value="[${pageScope.publisherData[status.index].publisher_name}]" />
+											<c:out value="[${book.item_publisher_name}]" />
 										</span>
-										<input type="hidden" id="bookCategoryCodes[]" name="bookCategoryCodes[]" value="${book.item_category_code}"> <input type="hidden" id="bookCodes[]" name="bookCodes[]" value="${book.item_code}">
+										<input type="hidden" id="bookCategoryCodes[]" name="bookCategoryCodes[]" value="${book.item_category_code}">
+										<input type="hidden" id="bookCodes[]" name="bookCodes[]" value="${book.item_code}">
 									</td>
 									<td>
 										<c:out value="${book.item_selling_price}" />
 									</td>
 									<td>
-										<c:out value="${pageScope.basketData[status.index].quantity}" />
+										<c:out value="${book.order_quantity}" />
 									</td>
 									<td>
-										<c:out value="${book.item_selling_price * pageScope.basketData[status.index].quantity}" />
+										<c:out value="${book.item_selling_price * book.order_quantity}" />
 									</td>
 									<td>
 										<div>
@@ -144,12 +136,14 @@
 	<script src="js/bootstrap.bundle.js"></script>
 
 	<script>
-		function getTotalPrice() {
+		function getTotalPrice()
+		{
 			const tableBasket = document.getElementById('tableBasketList');
 			const rowLength = tableBasket.rows.length;
 			var totalPrice = 0;
 
-			for (var idx = 1; idx < rowLength; ++idx) {
+			for (var idx = 1; idx < rowLength; ++idx)
+			{
 				var price = Number(tableBasket.rows[idx].cells[2].outerText);
 				var quantity = Number(tableBasket.rows[idx].cells[3].outerText);
 				totalPrice += (price * quantity);
@@ -157,29 +151,36 @@
 			return totalPrice;
 		}
 
-		function getTotalDiscount() {
+		function getTotalDiscount()
+		{
 			return 0;
 		}
 
-		function getFinalTotalPrice() {
+		function getFinalTotalPrice()
+		{
 			return getTotalPrice() - getTotalDiscount();
 		}
 
-		(function() {
+		(function()
+		{
 			document.getElementById('totalPrice').innerHTML = getTotalPrice();
 			document.getElementById('totalDiscount').innerHTML = getTotalDiscount();
 			document.getElementById('finalTotalPrice').innerHTML = getFinalTotalPrice();
 		})()
 
-		function removeBooks() {
+		function removeBooks()
+		{
 			var xhttp = new XMLHttpRequest();
 
-			xhttp.onreadystatechange = function() {
+			xhttp.onreadystatechange = function()
+			{
 				if (xhttp.readyState == XMLHttpRequest.DONE
-						&& xhttp.status == 200) {
+						&& xhttp.status == 200)
+				{
 					var data = document.getElementById('bookDataTBody');
 					var indexes = getIndexes();
-					for (var idx = 0; idx < indexes.length; ++idx) {
+					for (var idx = 0; idx < indexes.length; ++idx)
+					{
 						data.deleteRow(indexes[idx]);
 					}
 				}
@@ -191,8 +192,10 @@
 			var categoryCodes = new Array();
 			var dataToBeSended = '';
 
-			for (var idx = 0; idx < checkBoxCode.length; ++idx) {
-				if (checkBoxCode[idx].checked == true) {
+			for (var idx = 0; idx < checkBoxCode.length; ++idx)
+			{
+				if (checkBoxCode[idx].checked == true)
+				{
 					itemCodes.push(checkBoxCode[idx].value);
 					categoryCodes.push(checkBoxCcode[idx].value);
 					dataToBeSended += 'itemCodes='
@@ -209,52 +212,65 @@
 			xhttp.send(dataToBeSended);
 		}
 
-		function getIndexes() {
+		function getIndexes()
+		{
 			var checkBox = document.getElementsByName('checkBoxCode');
 			var indexes = new Array();
 
-			for (var index = checkBox.length - 1; index >= 0; --index) {
-				if (checkBox[index].checked == true) {
+			for (var index = checkBox.length - 1; index >= 0; --index)
+			{
+				if (checkBox[index].checked == true)
+				{
 					indexes.push(index);
 				}
 			}
 			return indexes;
 		}
 
-		function checkAllCheckBox() {
+		function checkAllCheckBox()
+		{
 			var checkBox = document.getElementsByName('checkBoxCode');
 
-			for (var index = 0; index < checkBox.length; ++index) {
+			for (var index = 0; index < checkBox.length; ++index)
+			{
 				checkBox[index].checked = true;
 			}
 			var btn = document.getElementById('btnCheck');
 			btn.setAttribute('onclick', 'javascript:unCheckAllCheckBox()');
 		}
 
-		function unCheckAllCheckBox() {
+		function unCheckAllCheckBox()
+		{
 			var checkBox = document.getElementsByName('checkBoxCode');
 
-			for (var index = 0; index < checkBox.length; ++index) {
+			for (var index = 0; index < checkBox.length; ++index)
+			{
 				checkBox[index].checked = false;
 			}
 			var btn = document.getElementById('btnCheck');
 			btn.setAttribute('onclick', 'javascript:checkAllCheckBox()');
 		}
 
-		function orderBooks() {
+		function orderBooks()
+		{
 			var form = document.getElementById('formBasket');
 
 			var checkBoxCode = document.getElementsByName('checkBoxCode');
 			var checkBoxCcode = document.getElementsByName('checkBoxCcode[]');
 
-			if (checkBoxCode.length == 1) {
-				if (checkBoxCode[0].checked == false) {
+			if (checkBoxCode.length == 1)
+			{
+				if (checkBoxCode[0].checked == false)
+				{
 					form.elements['bookCodes[]'][0].disabled = true;
 					form.elements['bookCategoryCodes[]'][0].disabled = true;
 				}
-			} else {
-				for (var idx = 0; idx < checkBoxCode.length; ++idx) {
-					if (checkBoxCode[idx].checked == false) {
+			} else
+			{
+				for (var idx = 0; idx < checkBoxCode.length; ++idx)
+				{
+					if (checkBoxCode[idx].checked == false)
+					{
 						form.elements['bookCodes[]'][idx].disabled = true;
 						form.elements['bookCategoryCodes[]'][idx].disabled = true;
 					}
@@ -263,20 +279,26 @@
 			form.submit();
 		}
 
-		function orderBook(bookCode, categoryCode) {
+		function orderBook(bookCode, categoryCode)
+		{
 			var form = document.getElementById('formBasket');
 
 			var checkBoxCode = document.getElementsByName('checkBoxCode');
 			var checkBoxCcode = document.getElementsByName('checkBoxCcode[]');
 
-			if (checkBoxCode.length == 1) {
+			if (checkBoxCode.length == 1)
+			{
 				checkBoxCode[0].checked = true;
-			} else {
-				for (var idx = 0; idx < checkBoxCode.length; ++idx) {
+			} else
+			{
+				for (var idx = 0; idx < checkBoxCode.length; ++idx)
+				{
 					if ((form.elements['bookCodes[]'][idx].value == bookCode)
-							&& (form.elements['bookCategoryCodes[]'][idx].value == categoryCode)) {
+							&& (form.elements['bookCategoryCodes[]'][idx].value == categoryCode))
+					{
 						checkBoxCode[idx].checked = true;
-					} else {
+					} else
+					{
 						form.elements['bookCodes[]'][idx].disabled = true;
 						form.elements['bookCategoryCodes[]'][idx].disabled = true;
 						checkBoxCode[idx].checked = false;
@@ -286,12 +308,15 @@
 			form.submit();
 		}
 
-		function removeBook(bookCode, categoryCode, index) {
+		function removeBook(bookCode, categoryCode, index)
+		{
 			var xhttp = new XMLHttpRequest();
 
-			xhttp.onreadystatechange = function() {
+			xhttp.onreadystatechange = function()
+			{
 				if (xhttp.readyState == XMLHttpRequest.DONE
-						&& xhttp.status == 200) {
+						&& xhttp.status == 200)
+				{
 					var data = document.getElementById('bookDataTBody');
 					data.deleteRow(index);
 				}
@@ -304,8 +329,10 @@
 			var dataToBeSended = 'itemCodes=' + bookCode + '&categoryCodes='
 					+ categoryCode;
 
-			for (var idx = 0; idx < checkBoxCode.length; ++idx) {
-				if (checkBoxCode[idx].checked == true) {
+			for (var idx = 0; idx < checkBoxCode.length; ++idx)
+			{
+				if (checkBoxCode[idx].checked == true)
+				{
 					checkBoxCode[idx].checked = false;
 				}
 			}

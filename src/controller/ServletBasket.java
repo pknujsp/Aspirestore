@@ -62,10 +62,9 @@ public class ServletBasket extends HttpServlet
 			JSONArray jsonArr = new JSONArray();
 			JSONObject result = new JSONObject();
 
-			if (!basketDAO.checkDuplication(userId, book.getItem_code())) // 중복X
+			if (basketDAO.addBookToTheBasket(book, userId, currentTime)) // 중복X
 			{
-				basketDAO.addBookToTheBasket(book, userId, currentTime);
-				result.put("MESSAGE", "장바구니에 추가되었습니다.");
+				result.put("MESSAGE", "장바구니에 추가되었습니다.\n장바구니로 이동하시겠습니까?");
 				result.put("RESULT", "true");
 			} else
 			{
@@ -91,10 +90,18 @@ public class ServletBasket extends HttpServlet
 			ServletContext sc = this.getServletContext();
 
 			BasketDAO basketDAO = (BasketDAO) sc.getAttribute("BASKET_DAO");
+			String[] icodes = (String[]) request.getAttribute("ICODES");
+			String[] ccodes = (String[]) request.getAttribute("CCODES");
+			String userId = request.getSession().getAttribute("SESSIONKEY").toString();
 
-			@SuppressWarnings("unchecked")
-			BasketDTO basket = (BasketDTO) request.getAttribute("BOOKS_TO_BE_DELETED");
-			basketDAO.deleteBooksFromBasket(basket);
+			ArrayList<ItemsDTO> books = new ArrayList<ItemsDTO>();
+
+			for (int i = 0; i < icodes.length; ++i)
+			{
+				books.add(new ItemsDTO().setItem_code(Integer.valueOf(icodes[i])).setItem_category_code(ccodes[i]));
+			}
+
+			basketDAO.deleteBooksFromBasket(books, userId);
 
 			request.setAttribute("VIEWURL", "ajax:/");
 		} catch (Exception e)
@@ -111,12 +118,10 @@ public class ServletBasket extends HttpServlet
 			ServletContext sc = this.getServletContext();
 
 			BasketDAO basketDAO = (BasketDAO) sc.getAttribute("BASKET_DAO");
-			ItemsDAO itemsDAO = (ItemsDAO) sc.getAttribute("itemsDAO");
 			final String userId = request.getSession().getAttribute("SESSIONKEY").toString();
 
 			BasketDTO basket = basketDAO.getBasket(userId); // 장바구니
 
-			request.setAttribute("ITEMS", items);
 			request.setAttribute("BASKET", basket);
 			request.setAttribute("VIEWURL", "forward:/basket.jsp");
 		} catch (Exception e)
