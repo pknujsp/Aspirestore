@@ -33,6 +33,7 @@ public class ServletOrderPayment extends HttpServlet
 		{
 			ServletContext servletContext = this.getServletContext();
 			final String userId = request.getSession().getAttribute("SESSIONKEY").toString();
+
 			// orderform페이지에서 전달받은 주문자 정보 데이터
 			UserDTO requestUserData = (UserDTO) request.getAttribute("USER_INFO_REQUEST");
 
@@ -45,6 +46,7 @@ public class ServletOrderPayment extends HttpServlet
 			UserDAO userDao = (UserDAO) servletContext.getAttribute("USER_DAO");
 			AddressDAO addressDAO = (AddressDAO) servletContext.getAttribute("ADDRESS_DAO");
 			OrderPaymentDAO orderPaymentDAO = (OrderPaymentDAO) servletContext.getAttribute("ORDER_PAYMENT_DAO");
+			ItemsDAO itemsDAO = (ItemsDAO) servletContext.getAttribute("itemsDAO");
 
 			if (sessionUserData != null)
 			{
@@ -83,16 +85,23 @@ public class ServletOrderPayment extends HttpServlet
 
 			// 수령자 정보, 배송지 정보, 주문자 정보, 배송 수단, 결제 수단 데이터
 			OrderhistoryDTO orderFormData = (OrderhistoryDTO) request.getAttribute("ORDER_FORM_DATA");
+			OrderhistoryDTO orderHistory = null;
+			ArrayList<SalehistoryDTO> saleHistory = null;
 
-			if (checkTotalPrice(orderFormData, books))
+			int totalPriceDB = itemsDAO.calculateTotalPrice(books);
+
+			if (totalPriceDB == orderFormData.getTotal_price())
 			{
 				// orderhistory, salehistory 테이블에 주문 정보 저장
 				orderPaymentDAO.requestOrderProcessing(orderFormData, books);
+			} else
+			{
+				// ERROR
 			}
 
 			// 주문 정보, 도서 정보 세션 저장소에 저장
-			OrderhistoryDTO orderHistory = orderPaymentDAO.getLatestOrderInfo(userId);
-			ArrayList<SalehistoryDTO> saleHistory = orderPaymentDAO.getSaleHistory(orderHistory.getOrder_code(), userId);
+			orderHistory = orderPaymentDAO.getLatestOrderInfo(userId);
+			saleHistory = orderPaymentDAO.getSaleHistory(orderHistory.getOrder_code(), userId);
 
 			HttpSession session = request.getSession();
 
@@ -105,22 +114,4 @@ public class ServletOrderPayment extends HttpServlet
 		}
 	}
 
-
-
-	private boolean checkTotalPrice(OrderhistoryDTO orderhistoryDTO, ArrayList<ItemsDTO> books)
-	{
-		int totalPrice = 0;
-		for (int i = 0; i < books.size(); ++i)
-		{
-			totalPrice += (books.get(i).getItem_selling_price() * books.get(i).getOrder_quantity());
-		}
-
-		if (totalPrice == orderhistoryDTO.getTotal_price())
-		{
-			return true;
-		} else
-		{
-			return false;
-		}
-	}
 }

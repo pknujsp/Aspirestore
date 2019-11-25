@@ -109,14 +109,11 @@ public class BasketDAO
 				if (index == 0)
 				{
 					basket.setUser_id(userId);
-				} else
-				{
-
-					basket.setBooks(new ItemsDTO().setItem_code(set.getInt(1)).setItem_name(set.getString(2))
-							.setItem_category_code(set.getString(3)).setItem_category_desc(set.getString(4))
-							.setItem_publisher_code(set.getInt(5)).setItem_publisher_name(set.getString(6))
-							.setOrder_quantity(set.getInt(7)).setItem_selling_price(set.getInt(8)));
 				}
+				basket.setBooks(new ItemsDTO().setItem_code(set.getInt(1)).setItem_name(set.getString(2))
+						.setItem_category_code(set.getString(3)).setItem_category_desc(set.getString(4))
+						.setItem_publisher_code(set.getInt(5)).setItem_publisher_name(set.getString(6))
+						.setOrder_quantity(set.getInt(7)).setItem_selling_price(set.getInt(8)).setTotal_price());
 			}
 			basket.setTotal_price().setTotal_quantity();
 		} catch (Exception e)

@@ -188,9 +188,8 @@ public class ItemsDAO
 
 	public ArrayList<ItemsDTO> getItemList(String ccode, String sortType, int startIdx, int endIdx)
 	{
-
 		ResultSet set = null;
-		ArrayList<ItemsDTO> bookList = new ArrayList<ItemsDTO>();
+		ArrayList<ItemsDTO> bookList = null;
 
 		String query = "SELECT i.item_code, i.item_name, i.item_publisher_code, i.item_publication_date, i.item_selling_price"
 				+ ", i.item_book_introduction, i.item_category_code, p.publisher_name, r.rinfo_sreview_num, r.rinfo_dreview_num, r.rinfo_total_rating "
@@ -217,6 +216,8 @@ public class ItemsDAO
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
 		{
+			bookList = new ArrayList<ItemsDTO>();
+
 			prstmt.setString(1, ccode);
 			prstmt.setInt(2, startIdx);
 			prstmt.setInt(3, endIdx);
@@ -778,6 +779,46 @@ public class ItemsDAO
 				}
 		}
 		return flag;
+	}
+
+	public int calculateTotalPrice(ArrayList<ItemsDTO> books)
+	{
+		String query = "SELECT item_selling_price FROM items WHERE item_code = ? AND item_category_code = ?";
+		ResultSet set = null;
+
+		int totalPriceDB = 0;
+
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			for (int index = 0; index < books.size(); ++index)
+			{
+				set = null;
+				prstmt.setInt(1, books.get(index).getItem_code());
+				prstmt.setString(2, books.get(index).getItem_category_code());
+
+				set = prstmt.executeQuery();
+				if (set.next())
+				{
+					totalPriceDB += set.getInt(1) * books.get(index).getOrder_quantity();
+				}
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (set != null)
+			{
+				try
+				{
+					set.close();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return totalPriceDB;
 	}
 
 	private String cutString(String str)

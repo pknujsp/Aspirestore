@@ -32,7 +32,6 @@
 <link href="/AspireStore/css/shop-homepage.css" rel="stylesheet">
 </head>
 <body>
-
 	<jsp:include page="/navbar.jsp"></jsp:include>
 	<form method="post" id="orderForm" name="orderForm" action="/AspireStore/orderpayment.aspire" onsubmit="return payment()">
 		<div>
@@ -54,7 +53,7 @@
 								<td>
 									<b><a href="/AspireStore/items/item.aspire?ccode=${book.item_category_code }&icode=${book.item_code }" id="itemName">
 											<c:out value="${ book.item_name}" />
-										</a></b>&nbsp; &nbsp;
+										</a></b>&nbsp;
 									<c:out value="${ book.item_publisher_name}" />
 								</td>
 								<td>
@@ -64,6 +63,7 @@
 									<label><c:out value="${ book.order_quantity}" /></label>
 								</td>
 								<td>
+									<c:out value="${book.total_price }" />
 									<input type="hidden" id="itemCode[]" name="itemCode[]" value="${book.item_code }">
 									<input type="hidden" id="categoryCode[]" name="categoryCode[]" value="${book.item_category_code }">
 									<input type="hidden" id="quantity[]" name="quantity[]" value="${book.order_quantity }">
@@ -339,11 +339,11 @@
 				<h5>최종 결제 금액</h5>
 				<div>
 					<span>
-						<strong>TEST 원</strong>
+						<strong>${pageScope.BOOKS.total_price }</strong>&nbsp;<strong>원</strong>
 					</span>
-					<input type="hidden" id="total_price" name="total_price" value="">
+					<input type="hidden" id="total_price" name="total_price" value="${pageScope.BOOKS.total_price }">
 					<span>
-						<input type="submit" id="payment_button" name="payment_button" value="결제하기" />
+						<input type="submit" class="btn btn-primary" id="payment_button" name="payment_button" value="결제하기">
 					</span>
 				</div>
 			</div>

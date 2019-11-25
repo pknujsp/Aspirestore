@@ -18,7 +18,7 @@
 					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 도서 관리 </a>
 
 					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item" href="#">도서 관리</a>
+						<a class="dropdown-item" href="/AspireStore/management/bookmanagement/bookList.jsp">도서 관리</a>
 						<a class="dropdown-item" href="#">도서 재고</a>
 						<div class="dropdown-divider"></div>
 					</div>
