@@ -50,17 +50,17 @@
 						<tr>
 							<td>
 								<span>
-									<b><a href="/AspireStore/items/item.aspire?ccode=${data.item_category_code}&icode=${data.item_code}">
-											<c:out value="${ data.item_name }" />
+									<b><a href="/AspireStore/items/item.aspire?ccode=${data.book.item_category_code}&icode=${data.book.item_code}">
+											<c:out value="${ data.book.item_name }" />
 										</a> </b>
 								</span>
 								&nbsp; &nbsp;
 								<span>
-									<i><c:out value="${data.publisher_name }" /></i>
+									<i><c:out value="${data.book.item_publisher_name }" /></i>
 								</span>
 							</td>
 							<td>
-								<c:out value="${ data.item_price }" />
+								<c:out value="${ data.book.item_selling_price }" />
 							</td>
 							<td>
 								<c:out value="${ data.sale_quantity }" />

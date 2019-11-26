@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.net.HttpRetryException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,6 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import model.OrdersManagementDAO;
+import model.ItemsDTO;
 import model.OrderhistoryDTO;
 
 public class ServletOrdersManagement extends HttpServlet
@@ -54,7 +56,7 @@ public class ServletOrdersManagement extends HttpServlet
 					Integer.parseInt(request.getAttribute("END_INDEX").toString()));
 
 			// 주문 코드에 따른 주문한 도서 목록을 가져온다. (도서 명, 저자 , 출판사, 주문 수량, 판매가, 총 금액, 결제 수단, 배송 수단)
-			ArrayList<ArrayList<Map<String, String>>> bookList = ordersManagementDAO.getBookList(orderDataList);
+			HashMap<String, ArrayList<ItemsDTO>> bookList = ordersManagementDAO.getBookList(orderDataList);
 
 			JSONObject orderData = new JSONObject();
 			JSONArray rootArr = new JSONArray();
@@ -85,19 +87,21 @@ public class ServletOrdersManagement extends HttpServlet
 				recepientData.put("RECEPIENT_GENERAL2", orderDataList.get(index).getRecepient_general2());
 				recepientData.put("RECEPIENT_GENERAL3", orderDataList.get(index).getRecepient_general3());
 
+				String userId = orderDataList.get(index).getUser_id();
+
 				// Map에서 데이터 가져온다.
-				for (int j = 0; j < bookList.get(index).size(); ++j)
+				for (int j = 0; j < bookList.get(userId).size(); ++j)
 				{
-					String bookName = bookList.get(index).get(j).get("book_name");
-					String authorName = bookList.get(index).get(j).get("author_name");
-					String publisherName = bookList.get(index).get(j).get("publisher_name");
-					String saleQuantity = bookList.get(index).get(j).get("sale_quantity");
-					String sellingPrice = bookList.get(index).get(j).get("selling_price");
-					String totalPrice = bookList.get(index).get(j).get("total_price");
+					String bookName = bookList.get(userId).get(j).getItem_name();
+
+					String publisherName = bookList.get(userId).get(j).getItem_publisher_name();
+					String saleQuantity = String.valueOf(bookList.get(userId).get(j).getOrder_quantity());
+					String sellingPrice = String.valueOf(bookList.get(userId).get(j).getItem_selling_price());
+					String totalPrice = String.valueOf(bookList.get(userId).get(j).getTotal_price());
 
 					JSONObject bookData = new JSONObject();
 					bookData.put("BOOK_NAME", bookName);
-					bookData.put("AUTHOR_NAME", authorName);
+
 					bookData.put("PUBLISHER_NAME", publisherName);
 					bookData.put("QUANTITY", saleQuantity);
 					bookData.put("SELLING_PRICE", sellingPrice);

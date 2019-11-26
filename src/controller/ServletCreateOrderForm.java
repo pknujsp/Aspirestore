@@ -35,7 +35,6 @@ public class ServletCreateOrderForm extends HttpServlet
 		case "BASKET_ORDER":
 			basketOrder(request, response);
 			break;
-
 		case "ONE_ORDER":
 			oneOrder(request, response);
 			break;

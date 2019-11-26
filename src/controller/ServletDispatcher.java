@@ -601,6 +601,12 @@ public class ServletDispatcher extends HttpServlet
 				request.setAttribute("BOOK_REQUEST", bookRequest);
 
 				break;
+				
+			case "/author/authorInfo.aspire":
+				pageControllerPath = "/author/authorInfo";
+				
+				request.setAttribute("ACODE", request.getParameter("acode"));
+				break;
 			}
 
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher(pageControllerPath);

@@ -94,7 +94,7 @@
 								<br>
 								<span style="font: bold; font-family: Arial; font-weight: 400; font-size: small; color: gray;">
 									<c:forEach var="author" items="${book.authors}" varStatus="status">
-											${author.author_name }&nbsp;
+											<a href="/AspireStore/author/authorInfo.aspire?acode=${author.author_code }">${author.author_name }</a>&nbsp;
 									</c:forEach>
 									|&nbsp;${book.item_publisher_name }&nbsp;|&nbsp;${book.item_publication_date }
 								</span>

@@ -19,69 +19,64 @@
 
 </head>
 <body>
-	<div class="d-flex" id="wrapper">
-		<div class="bg-light border-right" id="sidebar-wrapper">
-			<!-- <div class="sidebar-heading">Start Bootstrap</div> -->
-			<div class="list-group list-group-flush">
-				<a href="#" class="list-group-item list-group-item-action bg-light">미 처리된 주문</a>
-				<a href="#" class="list-group-item list-group-item-action bg-light">처리된 주문</a>
-				<a href="#" class="list-group-item list-group-item-action bg-light">주문 취소</a>
-				<a href="#" class="list-group-item list-group-item-action bg-light">배송</a>
-			</div>
-		</div>
 
-		<div id="page-content-wrapper">
-			<jsp:include page="../management_navbar.jsp"></jsp:include>
 
-			<div class="container-fluid">
-				<table class="table table-sm table-hover">
-					<thead class="thead-light">
-						<tr>
-							<th colspan="5">
-								<h5>
-									미 처리 주문 목록&nbsp; <input type="button" id="viewButton" onclick="setDataTable()" value="새로고침">
-								</h5>
-							</th>
-							<th colspan="8">
-								표시할 데이터 개수 : <select class="custom-select custom-select-sm w-25" id="select_menu">
-									<option value="2">2</option>
-									<option value="5" selected>5</option>
-									<option value="10">10</option>
-									<option value="20">20</option>
-									<option value="50">50</option>
-								</select> &nbsp; <input type="button" id="viewButton" onclick="setDataTable()" value="데이터 조회"> &nbsp; <input type="button" id="processingButton" onclick="preProcessCheckedOrderShipment()" data-toggle="modal" data-target="#modal" value="처리">
-							</th>
-						</tr>
-						<tr>
-							<th scope="col">
-								<input type="checkbox" id="checkBoxButton" onclick="selectAllCheckBox()">
-							</th>
-							<th scope="col">주문코드</th>
-							<th scope="col">주문자 ID</th>
-							<th scope="col">주문 도서</th>
-							<th scope="col">주문자 정보</th>
-							<th scope="col">수령자 정보</th>
-							<th scope="col">배송지 정보</th>
-							<th scope="col">요청 사항</th>
-							<th scope="col">최종 결제 금액</th>
-							<th scope="col">결제 수단</th>
-							<th scope="col">배송 방법</th>
-							<th scope="col">주문 날짜</th>
-							<th scope="col">처리</th>
-						</tr>
-					</thead>
-					<tbody id="tableBody">
 
-					</tbody>
-				</table>
+	<div id="page-content-wrapper">
+		<jsp:include page="../management_navbar.jsp"></jsp:include>
 
-				<nav aria-label="PaginationBar">
-					<ul class="pagination justify-content-center" id="pagination_ul">
+		<div class="container-fluid">
+			<table class="table table-sm table-hover">
+				<thead class="thead-light">
+					<tr>
+						<th colspan="5">
+							<h5>
+								미 처리 주문 목록&nbsp;
+								<input type="button" id="viewButton" onclick="setDataTable()" value="새로고침">
+							</h5>
+						</th>
+						<th colspan="8">
+							표시할 데이터 개수 : <select class="custom-select custom-select-sm w-25" id="select_menu">
+								<option value="2">2</option>
+								<option value="5" selected>5</option>
+								<option value="10">10</option>
+								<option value="20">20</option>
+								<option value="50">50</option>
+							</select> &nbsp;
+							<input type="button" id="viewButton" onclick="setDataTable()" value="데이터 조회">
+							&nbsp;
+							<input type="button" id="processingButton" onclick="preProcessCheckedOrderShipment()" data-toggle="modal" data-target="#modal" value="처리">
+						</th>
+					</tr>
+					<tr>
+						<th scope="col">
+							<input type="checkbox" id="checkBoxButton" onclick="selectAllCheckBox()">
+						</th>
+						<th scope="col">주문코드</th>
+						<th scope="col">주문자 ID</th>
+						<th scope="col">주문 도서</th>
+						<th scope="col">주문자 정보</th>
+						<th scope="col">수령자 정보</th>
+						<th scope="col">배송지 정보</th>
+						<th scope="col">요청 사항</th>
+						<th scope="col">최종 결제 금액</th>
+						<th scope="col">결제 수단</th>
+						<th scope="col">배송 방법</th>
+						<th scope="col">주문 날짜</th>
+						<th scope="col">처리</th>
+					</tr>
+				</thead>
+				<tbody id="tableBody">
 
-					</ul>
-				</nav>
+				</tbody>
+			</table>
 
-			</div>
+			<nav aria-label="PaginationBar">
+				<ul class="pagination justify-content-center" id="pagination_ul">
+
+				</ul>
+			</nav>
+
 		</div>
 	</div>
 

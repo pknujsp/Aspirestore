@@ -20,7 +20,7 @@ public class AuthorDAO
 
 	public AuthorDTO getAuthorInformation(int acode)
 	{
-		String query = "SELECT * FROM authors WHERE author_code=?";
+		String query = "SELECT * FROM authors WHERE author_code = ?";
 		ResultSet set = null;
 		AuthorDTO authorData = null;
 
@@ -29,12 +29,11 @@ public class AuthorDAO
 			prstmt.setInt(1, acode);
 			set = prstmt.executeQuery();
 
-			while (set.next())
+			if (set.next())
 			{
-				authorData = new AuthorDTO().setAuthor_code(acode).setAuthor_name(set.getString(2))
+				authorData = new AuthorDTO().setAuthor_code(set.getInt(1)).setAuthor_name(set.getString(2))
 						.setAuthor_region(convertRegion(set.getString(3))).setAuthor_information(set.getString(4));
 			}
-
 		} catch (Exception e)
 		{
 			e.printStackTrace();

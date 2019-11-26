@@ -200,11 +200,11 @@ public class OrderPaymentDAO
 			while (set.next())
 			{
 				list.add(new SalehistoryDTO().setSale_code(set.getInt(1)).setOrder_code(set.getInt(2))
-						.setUser_id(set.getString(3)).setItem_code(set.getInt(4))
-						.setItem_category_code(set.getString(5)).setSale_date(set.getString(6))
-						.setSale_quantity(set.getInt(7)).setTotal_price(set.getInt(8)).setStatus(set.getString(9))
-						.setItem_name(set.getString(11)).setItem_category_desc(set.getString(27))
-						.setPublisher_code(set.getInt(30)).setPublisher_name(set.getString(31)));
+						.setUser_id(set.getString(3)).setStatus(set.getString(9)).setSale_date(set.getString(6))
+						.setSale_quantity(set.getInt(7)).setTotal_price(set.getInt(8))
+						.setBook(new ItemsDTO().setItem_code(set.getInt(4)).setItem_category_code(set.getString(5))
+								.setItem_name(set.getString(11)).setItem_category_desc(set.getString(27))
+								.setItem_publisher_code(set.getInt(30)).setItem_publisher_name(set.getString(31))));
 			}
 		} catch (Exception e)
 		{

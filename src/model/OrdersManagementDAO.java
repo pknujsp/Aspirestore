@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import javax.security.sasl.SaslException;
@@ -22,7 +23,7 @@ public class OrdersManagementDAO
 
 	public ArrayList<OrderhistoryDTO> getUnprocessedOrderList(int startIndex, int endIndex)
 	{
-		String query = "SELECT * " + "FROM orderhistory AS o "
+		String query = "SELECT * FROM orderhistory AS o "
 				+ "INNER JOIN paymentmethod AS p ON p.paymentmethod_code = o.orderhistory_payment_method "
 				+ "INNER JOIN deliverymethod AS d ON d.deliverymethod_code = o.orderhistory_delivery_method "
 				+ "WHERE o.orderhistory_status = ? ORDER BY o.orderhistory_order_date ASC LIMIT ?, ?";
@@ -74,25 +75,30 @@ public class OrdersManagementDAO
 		return list;
 	}
 
-	public ArrayList<ArrayList<Map<String, String>>> getBookList(ArrayList<OrderhistoryDTO> orderList)
+	public HashMap<String, ArrayList<ItemsDTO>> getBookList(ArrayList<OrderhistoryDTO> orderList)
 	{
 		// 도서 명, 저자 , 출판사, 주문 수량, 판매가, 총 금액, 결제 수단, 배송 수단 데이터 저장
-		ArrayList<ArrayList<Map<String, String>>> list = null;
+		HashMap<String, ArrayList<ItemsDTO>> list = null;
 
-		String query = "SELECT item.item_name, publisher.publisher_name, sale.salehistory_sale_quantity, item.item_selling_price, sale.salehistory_total_price "
+		String query = "SELECT orders.orderhistory_user_id, item.item_name, publisher.publisher_name"
+				+ ", sale.salehistory_sale_quantity, item.item_selling_price, sale.salehistory_total_price, au.author_code, au.author_name "
 				+ "FROM salehistory as sale "
 				+ "INNER JOIN items item ON item.item_code = sale.salehistory_item_code AND item.item_category_code = sale.salehistory_item_category "
 				+ "INNER JOIN orderhistory orders ON orders.orderhistory_order_code = sale.salehistory_order_code "
 				+ "INNER JOIN publishers publisher ON publisher.publisher_code = item.item_publisher_code "
 				+ "INNER JOIN paymentmethod payment ON payment.paymentmethod_code = orders.orderhistory_payment_method "
 				+ "INNER JOIN deliverymethod delivery ON delivery.deliverymethod_code = orders.orderhistory_delivery_method "
-				+ "WHERE orders.orderhistory_user_id = ? AND orders.orderhistory_order_code = ? AND payment.paymentmethod_code = orders.orderhistory_payment_method AND orders.orderhistory_delivery_method =  delivery.deliverymethod_code";
+				+ "INNER JOIN bookauthors_table AS aulist ON aulist.bookAuthors_item_code = item.item_code AND aulist.bookAuthors_item_category_code = item.item_category_code "
+				+ "INNER JOIN authors AS au ON aulist.bookAuthors_author_code = au.author_code "
+				+ "WHERE orders.orderhistory_user_id = ? AND orders.orderhistory_order_code = ? AND payment.paymentmethod_code = orders.orderhistory_payment_method AND orders.orderhistory_delivery_method =  delivery.deliverymethod_code "
+				+ "ORDER BY sale.salehistory_item_code ASC";
 
 		ResultSet set = null;
+		HashSet<String> nameSet = new HashSet<String>();
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
 		{
-			list = new ArrayList<ArrayList<Map<String, String>>>(orderList.size());
+			list = new HashMap<String, ArrayList<ItemsDTO>>();
 
 			for (int i = 0; i < orderList.size(); ++i)
 			{
@@ -101,21 +107,33 @@ public class OrdersManagementDAO
 				prstmt.setInt(2, orderList.get(i).getOrder_code());
 				set = prstmt.executeQuery();
 
-				ArrayList<Map<String, String>> node = new ArrayList<Map<String, String>>();
+				String userId = null;
+				int index = 0;
+
 				while (set.next())
 				{
-					Map<String, String> map = new HashMap<String, String>();
-
-					// map에 데이터 삽입 필요
-					map.put("book_name", set.getString(1));
-					map.put("publisher_name", set.getString(2));
-					map.put("sale_quantity", String.valueOf(set.getInt(3)));
-					map.put("selling_price", String.valueOf(set.getInt(4)));
-					map.put("total_price", String.valueOf(set.getInt(5)));
-
-					node.add(map);
+					if (userId == null)
+					{
+						userId = set.getString(1);
+						list.put(userId, new ArrayList<ItemsDTO>());
+					}
+					if (!nameSet.contains(set.getString(2)))
+					{
+						list.get(userId)
+								.add(new ItemsDTO().setItem_name(set.getString(2))
+										.setItem_publisher_name(set.getString(3)).setOrder_quantity(set.getInt(4))
+										.setItem_selling_price(set.getInt(5)).setTotal_price(set.getInt(6))
+										.setAuthors(new AuthorDTO().setAuthor_code(set.getInt("author_code"))
+												.setAuthor_name(set.getString("author_name"))));
+						nameSet.add(set.getString(2));
+						++index;
+					} else
+					{
+						list.get(userId).get(index - 1)
+								.setAuthors(new AuthorDTO().setAuthor_code(set.getInt("author_code"))
+										.setAuthor_name(set.getString("author_name")));
+					}
 				}
-				list.add(node);
 			}
 		} catch (Exception e)
 		{

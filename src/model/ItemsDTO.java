@@ -278,6 +278,13 @@ public class ItemsDTO
 		this.total_price = this.item_selling_price * this.order_quantity;
 		return this;
 	}
+	
+	public ItemsDTO setTotal_price(int totalPrice)
+	{
+		this.total_price = totalPrice;
+		return this;
+	}
+
 
 	public int getTotal_price()
 	{

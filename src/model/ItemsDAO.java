@@ -65,7 +65,9 @@ public class ItemsDAO
 							.setItem_publisher_name(set.getString("publisher_name"));
 				}
 				item.setAuthors(new AuthorDTO().setAuthor_code(set.getInt("author_code"))
-						.setAuthor_name(set.getString("author_name")));
+						.setAuthor_name(set.getString("author_name"))
+						.setAuthor_information(set.getString("author_information"))
+						.setAuthor_region(set.getString("author_region")));
 			}
 		} catch (Exception e)
 		{
@@ -142,55 +144,6 @@ public class ItemsDAO
 		bookData.put("BOOK", book);
 		bookData.put("PUBLISHER", publisher);
 		return bookData;
-	}
-
-	public ArrayList<ItemsDTO> getItemAuthorPublisher(ArrayList<SalehistoryDTO> saleHistory)
-	{
-		ArrayList<ItemsDTO> list = null;
-		ResultSet set = null;
-		String query = "SELECT p.publisher_name, i.item_name, i.item_code, i.item_category_code, "
-				+ "i.item_selling_price " + "FROM items AS i "
-				+ "INNER JOIN publishers AS p ON i.item_publisher_code = p.publisher_code "
-				+ "WHERE i.item_code = ? AND i.item_category_code = ? ORDER BY i.item_code ASC";
-
-		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
-		{
-			list = new ArrayList<ItemsDTO>(saleHistory.size());
-
-			for (int i = 0; i < saleHistory.size(); ++i)
-			{
-				set = null;
-				int itemCode = saleHistory.get(i).getItem_code();
-				String categoryCode = saleHistory.get(i).getItem_category_code();
-
-				prstmt.setInt(1, itemCode);
-				prstmt.setString(2, categoryCode);
-				set = prstmt.executeQuery();
-
-				if (set.next())
-				{
-					list.add(new ItemsDTO().setItem_publisher_name(set.getString(1)).setItem_name(set.getString(2))
-							.setItem_code(set.getInt(3)).setItem_category_code(set.getString(4))
-							.setItem_selling_price(set.getInt(5)));
-				}
-			}
-		} catch (Exception e)
-		{
-			e.printStackTrace();
-		} finally
-		{
-			if (set != null)
-			{
-				try
-				{
-					set.close();
-				} catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-			}
-		}
-		return list;
 	}
 
 	public ArrayList<ItemsDTO> getItemList(String ccode, String sortType, int startIdx, int endIdx)

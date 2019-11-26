@@ -48,9 +48,10 @@
 		<hr />
 		<span>
 			<c:forEach var="author" items="${pageScope.ITEM.authors}" varStatus="status">
-											${author.author_name }&nbsp;
+				<a href="/AspireStore/author/authorInfo.aspire?acode=${author.author_code }">${author.author_name }</a>&nbsp;
 									</c:forEach>
-			|&nbsp;<a href="#" target="_blank">${pageScope.ITEM.item_publisher_name}</a>
+			|&nbsp;
+			<a href="#" target="_blank">${pageScope.ITEM.item_publisher_name}</a>
 			&nbsp;|&nbsp;${pageScope.ITEM.item_publication_date}
 		</span>
 
@@ -158,8 +159,7 @@
 			</div>
 			<div>
 				<div>
-					<pre style="white-space: pre-wrap;">
-				${pageScope.ITEM.item_contents_table}
+					<pre style="white-space: pre-wrap;">${pageScope.ITEM.item_contents_table}
 					</pre>
 				</div>
 			</div>
@@ -180,7 +180,14 @@
 			<h5>저자 정보</h5>
 			<ul style="list-style: none;">
 				<c:forEach var="author" items="${pageScope.ITEM.authors}" varStatus="status">
-					<li>${author.author_name }</li>
+					<li>
+						<div>
+							<a href="/AspireStore/author/authorInfo.aspire?acode=${author.author_code }">${author.author_name}</a>
+						</div>
+						<div>
+							<pre style="white-space: pre-wrap;">${author.author_information }</pre>
+						</div>
+					</li>
 				</c:forEach>
 			</ul>
 		</div>

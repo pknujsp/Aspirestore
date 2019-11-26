@@ -226,6 +226,18 @@
 		<url-pattern>/management/bookRegistration</url-pattern>
 	</servlet-mapping>
 
+
+	<servlet>
+		<servlet-name>authorInfoservlet</servlet-name>
+		<servlet-class>controller.ServletAuthor</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>authorInfoservlet</servlet-name>
+		<url-pattern>/author/authorInfo</url-pattern>
+	</servlet-mapping>
+
+
 	<servlet>
 		<servlet-name>frontcontroller</servlet-name>
 		<servlet-class>controller.ServletDispatcher</servlet-class>

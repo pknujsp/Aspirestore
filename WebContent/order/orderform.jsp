@@ -51,10 +51,13 @@
 						<c:forEach var="book" items="${pageScope.BOOKS.books }" varStatus="status">
 							<tr>
 								<td>
-									<b><a href="/AspireStore/items/item.aspire?ccode=${book.item_category_code }&icode=${book.item_code }" id="itemName">
+									<span><b><a href="/AspireStore/items/item.aspire?ccode=${book.item_category_code }&icode=${book.item_code }" id="itemName">
 											<c:out value="${ book.item_name}" />
 										</a></b>&nbsp;
-									<c:out value="${ book.item_publisher_name}" />
+										<c:forEach var="author" items="${book.authors }">
+											${author.author_name }&nbsp;
+										</c:forEach>
+									|&nbsp;<c:out value="${ book.item_publisher_name}" /></span>
 								</td>
 								<td>
 									<label><c:out value="${ book.item_selling_price}" /></label>

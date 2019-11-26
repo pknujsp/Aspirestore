@@ -63,8 +63,9 @@ public class BasketDAO
 							.setItem_category_code(set.getString(3)).setItem_category_desc(set.getString(4))
 							.setItem_publisher_code(set.getInt(5)).setItem_publisher_name(set.getString(6))
 							.setOrder_quantity(set.getInt(7)).setBasket_added_datetime(set.getString(8))
-							.setItem_selling_price(set.getInt(9)).setAuthors(new AuthorDTO()
-									.setAuthor_code(set.getInt("author_code")).setAuthor_name(set.getString("author_name"))));
+							.setItem_selling_price(set.getInt(9))
+							.setAuthors(new AuthorDTO().setAuthor_code(set.getInt("author_code"))
+									.setAuthor_name(set.getString("author_name"))));
 
 					codeSet.add(code);
 					++index;
@@ -93,44 +94,65 @@ public class BasketDAO
 	public BasketDTO getBasket(String userId, HashMap<Integer, String> bookCodeMap)
 	{
 		String selectQuery = "SELECT b.basket_item_code, i.item_name, b.basket_item_category, c.category_name"
-				+ ", p.publisher_code, p.publisher_name, b.basket_quantity, i.item_selling_price " + "FROM basket AS b "
+				+ ", p.publisher_code, p.publisher_name, b.basket_quantity, i.item_selling_price, au.author_code, au.author_name "
+				+ "FROM basket AS b "
 				+ "INNER JOIN items AS i ON i.item_category_code = b.basket_item_category AND i.item_code = b.basket_item_code "
 				+ "INNER JOIN itemcategory AS c ON b.basket_item_category = c.category_code "
 				+ "INNER JOIN publishers AS p ON i.item_publisher_code = p.publisher_code "
+				+ "INNER JOIN bookauthors_table AS aulist ON aulist.bookAuthors_item_code = b.basket_item_code AND aulist.bookAuthors_item_category_code = b.basket_item_category "
+				+ "INNER JOIN authors AS au ON aulist.bookAuthors_author_code = au.author_code "
 				+ "WHERE b.basket_user_id = ? AND b.basket_item_code = ? AND b.basket_item_category = ? ORDER BY b.basket_item_code ASC";
 
 		ResultSet set = null;
 		BasketDTO basket = null;
+		HashSet<String> codeSet = new HashSet<String>();
 
 		try (Connection connection = ds.getConnection();
 				PreparedStatement prstmt = connection.prepareStatement(selectQuery);)
 		{
 			Iterator<Integer> iterator = bookCodeMap.keySet().iterator();
+			basket = new BasketDTO();
 
 			while (iterator.hasNext())
 			{
+				set = null;
 				int icode = iterator.next().intValue();
 				String ccode = bookCodeMap.get(Integer.valueOf(icode));
 
 				prstmt.setString(1, userId);
 				prstmt.setInt(2, icode);
 				prstmt.setString(3, ccode);
-			}
 
-			set = prstmt.executeQuery();
+				set = prstmt.executeQuery();
 
-			basket = new BasketDTO();
-
-			for (int index = 0; set.next(); ++index)
-			{
-				if (index == 0)
+				int index = 0;
+				while (set.next())
 				{
-					basket.setUser_id(userId);
+					if (index == 0)
+					{
+						basket.setUser_id(userId);
+					}
+
+					String code = String.valueOf(set.getInt(1)) + set.getString(3);
+
+					if (checkExtraAuthor(codeSet, code))
+					{
+						basket.getBooks().get(index - 1)
+								.setAuthors(new AuthorDTO().setAuthor_code(set.getInt("author_code"))
+										.setAuthor_name(set.getString("author_name")));
+					} else
+					{
+						basket.setBooks(new ItemsDTO().setItem_code(set.getInt(1)).setItem_name(set.getString(2))
+								.setItem_category_code(set.getString(3)).setItem_category_desc(set.getString(4))
+								.setItem_publisher_code(set.getInt(5)).setItem_publisher_name(set.getString(6))
+								.setOrder_quantity(set.getInt(7)).setItem_selling_price(set.getInt(8)).setTotal_price()
+								.setAuthors(new AuthorDTO().setAuthor_code(set.getInt("author_code"))
+										.setAuthor_name(set.getString("author_name"))));
+
+						codeSet.add(code);
+						++index;
+					}
 				}
-				basket.setBooks(new ItemsDTO().setItem_code(set.getInt(1)).setItem_name(set.getString(2))
-						.setItem_category_code(set.getString(3)).setItem_category_desc(set.getString(4))
-						.setItem_publisher_code(set.getInt(5)).setItem_publisher_name(set.getString(6))
-						.setOrder_quantity(set.getInt(7)).setItem_selling_price(set.getInt(8)).setTotal_price());
 			}
 			basket.setTotal_price().setTotal_quantity();
 		} catch (Exception e)
