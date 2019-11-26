@@ -9,6 +9,7 @@ import java.sql.Types;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -28,6 +29,8 @@ public class ItemsDAO
 		String query = "SELECT * FROM items AS i "
 				+ "INNER JOIN itemcategory AS c ON i.item_category_code = c.category_code "
 				+ "INNER JOIN publishers AS p ON i.item_publisher_code = p.publisher_code "
+				+ "INNER JOIN bookauthors_table AS aulist ON aulist.bookAuthors_item_code = i.item_code AND aulist.bookAuthors_item_category_code = i.item_category_code "
+				+ "INNER JOIN authors AS au ON aulist.bookAuthors_author_code = au.author_code "
 				+ "WHERE item_code= ? AND item_category_code= ?";
 		ResultSet set = null;
 		ItemsDTO item = null;
@@ -40,24 +43,29 @@ public class ItemsDAO
 			prstmt.setString(2, ccode);
 			set = prstmt.executeQuery();
 
-			if (set.next())
+			for (int index = 0; set.next(); ++index)
 			{
-				item = new ItemsDTO().setItem_code(set.getInt("item_code")).setItem_name(set.getString("item_name"))
-						.setItem_publisher_code(set.getInt("item_publisher_code"))
-						.setItem_publication_date(set.getString("item_publication_date"))
-						.setItem_fixed_price(set.getInt("item_fixed_price"))
-						.setItem_selling_price(set.getInt("item_selling_price"))
-						.setItem_remaining_quantity(set.getInt("item_remaining_quantity"))
-						.setItem_category_code(set.getString("item_category_code"))
-						.setItem_page_number(set.getString("item_the_page_number"))
-						.setItem_weight(set.getString("item_weight")).setItem_size(set.getString("item_size"))
-						.setItem_isbn13(set.getString("item_isbn13")).setItem_isbn10(set.getString("item_isbn10"))
-						.setItem_book_introduction(set.getString("item_book_introduction"))
-						.setItem_contents_table(set.getString("item_contents_table"))
-						.setItem_publisher_review(set.getString("item_publisher_review"))
-						.setItem_registration_datetime(set.getString("item_registration_datetime"))
-						.setItem_category_desc(set.getString("category_name"))
-						.setItem_publisher_name(set.getString("publisher_name"));
+				if (index == 0)
+				{
+					item = new ItemsDTO().setItem_code(set.getInt("item_code")).setItem_name(set.getString("item_name"))
+							.setItem_publisher_code(set.getInt("item_publisher_code"))
+							.setItem_publication_date(set.getString("item_publication_date"))
+							.setItem_fixed_price(set.getInt("item_fixed_price"))
+							.setItem_selling_price(set.getInt("item_selling_price"))
+							.setItem_remaining_quantity(set.getInt("item_remaining_quantity"))
+							.setItem_category_code(set.getString("item_category_code"))
+							.setItem_page_number(set.getString("item_the_page_number"))
+							.setItem_weight(set.getString("item_weight")).setItem_size(set.getString("item_size"))
+							.setItem_isbn13(set.getString("item_isbn13")).setItem_isbn10(set.getString("item_isbn10"))
+							.setItem_book_introduction(set.getString("item_book_introduction"))
+							.setItem_contents_table(set.getString("item_contents_table"))
+							.setItem_publisher_review(set.getString("item_publisher_review"))
+							.setItem_registration_datetime(set.getString("item_registration_datetime"))
+							.setItem_category_desc(set.getString("category_name"))
+							.setItem_publisher_name(set.getString("publisher_name"));
+				}
+				item.setAuthors(new AuthorDTO().setAuthor_code(set.getInt("author_code"))
+						.setAuthor_name(set.getString("author_name")));
 			}
 		} catch (Exception e)
 		{
@@ -86,8 +94,8 @@ public class ItemsDAO
 				+ "WHERE i.item_code = ? AND i.item_category_code = ?";
 
 		ItemsDTO book = null;
-		AuthorDTO author = null;
 		PublisherDTO publisher = null;
+		ArrayList<AuthorDTO> authors = null;
 		ResultSet set = null;
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
@@ -132,7 +140,6 @@ public class ItemsDAO
 		Map<String, Object> bookData = new HashMap<String, Object>();
 
 		bookData.put("BOOK", book);
-		bookData.put("AUTHOR", author);
 		bookData.put("PUBLISHER", publisher);
 		return bookData;
 	}
@@ -190,11 +197,15 @@ public class ItemsDAO
 	{
 		ResultSet set = null;
 		ArrayList<ItemsDTO> bookList = null;
+		HashSet<String> codeSet = new HashSet<String>();
 
 		String query = "SELECT i.item_code, i.item_name, i.item_publisher_code, i.item_publication_date, i.item_selling_price"
 				+ ", i.item_book_introduction, i.item_category_code, p.publisher_name, r.rinfo_sreview_num, r.rinfo_dreview_num, r.rinfo_total_rating "
-				+ "FROM items AS i " + "INNER JOIN publishers AS p ON p.publisher_code = i.item_publisher_code "
+				+ ", au.author_code, au.author_name " + "FROM items AS i "
+				+ "INNER JOIN publishers AS p ON p.publisher_code = i.item_publisher_code "
 				+ "INNER JOIN itemreviewinfo_table AS r ON r.rinfo_item_code = i.item_code AND r.rinfo_item_category_code = i.item_category_code "
+				+ "INNER JOIN bookauthors_table AS aulist ON aulist.bookAuthors_item_code = i.item_code AND aulist.bookAuthors_item_category_code = i.item_category_code "
+				+ "INNER JOIN authors AS au ON aulist.bookAuthors_author_code = au.author_code "
 				+ "WHERE i.item_category_code = ? ";
 
 		switch (sortType)
@@ -224,10 +235,12 @@ public class ItemsDAO
 
 			set = prstmt.executeQuery();
 
+			int index = 0;
 			while (set.next())
 			{
 				double rating = 0.0;
 				String ratingStr = null;
+				String code = String.valueOf(set.getInt(1)) + set.getString(7);
 
 				if (set.getInt(11) != 0)
 				{
@@ -238,11 +251,22 @@ public class ItemsDAO
 					ratingStr = "리뷰 없음";
 				}
 
-				bookList.add(new ItemsDTO().setItem_code(set.getInt(1)).setItem_name(set.getString(2))
-						.setItem_publisher_code(set.getInt(3)).setItem_publication_date(set.getString(4))
-						.setItem_selling_price(set.getInt(5)).setItem_book_introduction(cutString(set.getString(6)))
-						.setItem_category_code(set.getString(7)).setItem_publisher_name(set.getString(8))
-						.setItem_rating(ratingStr));
+				if (checkExtraAuthor(codeSet, code))
+				{
+					bookList.get(index - 1).setAuthors(
+							new AuthorDTO().setAuthor_code(set.getInt(12)).setAuthor_name(set.getString(13)));
+				} else
+				{
+					bookList.add(new ItemsDTO().setItem_code(set.getInt(1)).setItem_name(set.getString(2))
+							.setItem_publisher_code(set.getInt(3)).setItem_publication_date(set.getString(4))
+							.setItem_selling_price(set.getInt(5)).setItem_book_introduction(cutString(set.getString(6)))
+							.setItem_category_code(set.getString(7)).setItem_publisher_name(set.getString(8))
+							.setItem_rating(ratingStr).setAuthors(
+									new AuthorDTO().setAuthor_code(set.getInt(12)).setAuthor_name(set.getString(13))));
+
+					codeSet.add(code);
+					++index;
+				}
 			}
 		} catch (Exception e)
 		{
@@ -841,5 +865,10 @@ public class ItemsDAO
 		{
 			return "해외";
 		}
+	}
+
+	private boolean checkExtraAuthor(HashSet<String> codeSet, String code)
+	{
+		return codeSet.contains(code) ? true : false;
 	}
 }

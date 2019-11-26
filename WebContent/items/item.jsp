@@ -43,23 +43,18 @@
 
 		</div>
 		<div>
-			<h4>${pageScope.ITEM.item_name}</h4>
+			<h5>${pageScope.ITEM.item_name}</h5>
 		</div>
 		<hr />
 		<span>
-			<span>
-				<a href="#" target="_blank">${pageScope.ITEM.item_name}</a>
-			</span>
-			<em>|</em>
-			<span>
-				<a href="#" target="_blank">${pageScope.ITEM.item_publisher_name}</a>
-			</span>
-			<em>|</em>
-			<span>${pageScope.ITEM.item_publication_date}</span>
+			<c:forEach var="author" items="${pageScope.ITEM.authors}" varStatus="status">
+											${author.author_name }&nbsp;
+									</c:forEach>
+			|&nbsp;<a href="#" target="_blank">${pageScope.ITEM.item_publisher_name}</a>
+			&nbsp;|&nbsp;${pageScope.ITEM.item_publication_date}
 		</span>
 
-
-		<hr />
+		<hr>
 		<div>
 			<table>
 				<colgroup>
@@ -182,26 +177,18 @@
 		</div>
 		<hr />
 		<div>
-			<div>
-				<h4>저자 소개</h4>
-			</div>
-			<div>
-				<div>
-					<div>저자 명 : ${pageScope.ITEM.item_isbn13}</div>
-					<div>
-						저자 소개 :
-						<pre style="white-space: pre-wrap;">
-				${pageScope.ITEM.item_isbn13}
-						</pre>
-					</div>
-				</div>
-			</div>
+			<h5>저자 정보</h5>
+			<ul style="list-style: none;">
+				<c:forEach var="author" items="${pageScope.ITEM.authors}" varStatus="status">
+					<li>${author.author_name }</li>
+				</c:forEach>
+			</ul>
 		</div>
 		<hr />
 		<div>
 			<div>
 				<div>
-					<h4>출판사 리뷰</h4>
+					<h5>출판사 리뷰</h5>
 				</div>
 				<div>
 					<pre style="white-space: pre-wrap;">

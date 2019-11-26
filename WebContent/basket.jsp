@@ -60,9 +60,13 @@
 												<c:out value="${book.item_name}" />
 											</a>
 											&nbsp;
-											<c:out value="${book.item_category_desc }"/>
-											&nbsp;
-											<c:out value="[${book.item_publisher_name}]" />
+											<c:out value="${book.item_category_desc }" />
+											&nbsp;|&nbsp;
+											<c:forEach var="author" items="${book.authors}" varStatus="status">
+											${author.author_name }&nbsp;
+									</c:forEach>
+											|&nbsp;
+											<c:out value="${book.item_publisher_name}" />
 										</span>
 										<input type="hidden" id="bookCategoryCodes[]" name="bookCategoryCodes[]" value="${book.item_category_code}">
 										<input type="hidden" id="bookCodes[]" name="bookCodes[]" value="${book.item_code}">

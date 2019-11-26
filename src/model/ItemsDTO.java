@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -7,7 +8,7 @@ public class ItemsDTO
 {
 	private int item_code;
 	private String item_name;
-	private HashMap<Integer, String> authors;
+	private ArrayList<AuthorDTO> authors = new ArrayList<AuthorDTO>();
 	private int item_publisher_code;
 	private String item_publisher_name;
 	private String item_publication_date;
@@ -255,20 +256,15 @@ public class ItemsDTO
 		return this;
 	}
 
-	public ItemsDTO setAuthors(int aCode, String aName)
+	public ItemsDTO setAuthors(AuthorDTO author)
 	{
-		this.authors.put(aCode, aName);
+		this.authors.add(author);
 		return this;
 	}
 
-	public HashMap<Integer, String> getAuthors()
+	public ArrayList<AuthorDTO> getAuthors()
 	{
 		return authors;
-	}
-
-	public String getAuthorName(int aCode)
-	{
-		return this.authors.get(Integer.valueOf(aCode));
 	}
 
 	public ItemsDTO setOrder_quantity(int order_quantity)
@@ -286,11 +282,6 @@ public class ItemsDTO
 	public int getTotal_price()
 	{
 		return total_price;
-	}
-
-	public ItemsDTO()
-	{
-		this.authors = new HashMap<Integer, String>();
 	}
 
 	public ItemsDTO setBasket_added_datetime(String basket_added_datetime)

@@ -622,8 +622,7 @@
 			bookCategoryCol.innerText = bookObj['book_category_desc'] + '('
 					+ bookObj['book_category_code'] + ')';
 			bookNameCol.innerText = bookObj['book_name'];
-			authorCol.innerText = bookObj['author_name'] + '('
-					+ bookObj['author_code'] + ')';
+			authorCol.innerText = 'EMPTY';
 			publisherCol.innerText = bookObj['publisher_name'] + '('
 					+ bookObj['publisher_code'] + ')';
 			priceCol.innerText = bookObj['selling_price'];

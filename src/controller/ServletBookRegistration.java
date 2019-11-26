@@ -23,6 +23,7 @@ import model.ItemsDAO;
 import model.ItemsDTO;
 import model.PublisherDAO;
 import model.PublisherDTO;
+import model.ReviewDAO;
 
 public class ServletBookRegistration extends HttpServlet
 {
@@ -37,6 +38,7 @@ public class ServletBookRegistration extends HttpServlet
 			ItemsDAO itemsDAO = (ItemsDAO) sc.getAttribute("itemsDAO");
 			AuthorDAO authorDAO = (AuthorDAO) sc.getAttribute("authorDAO");
 			PublisherDAO publisherDAO = (PublisherDAO) sc.getAttribute("PUBLISHER_DAO");
+			ReviewDAO reviewDAO = (ReviewDAO) sc.getAttribute("REVIEW_DAO");
 
 			ItemsDTO bookData = new ItemsDTO();
 			ArrayList<AuthorDTO> authorList = new ArrayList<AuthorDTO>();
@@ -98,6 +100,9 @@ public class ServletBookRegistration extends HttpServlet
 			// book DB에 삽입
 			int icode = itemsDAO.insertNewBook(bookData, currentTime);
 			String ccode = bookRequest.getParameter("it_item_category_code");
+
+			// 리뷰 정보테이블 초기화
+			boolean reviewInfoResult = reviewDAO.initializeBookReviewInfo(icode, ccode);
 
 			// authorList DB에 삽입 itemcode, categorycode 필요/ 새 저자, 기존 저자 구분 필요
 			boolean authorResult = authorDAO.insertAuthors(authorList, icode, ccode);

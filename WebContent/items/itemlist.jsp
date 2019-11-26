@@ -8,7 +8,7 @@
 	request.setCharacterEncoding("UTF-8");
 
 	@SuppressWarnings("unchecked")
-	ArrayList<ItemsDTO> itemList = (ArrayList<ItemsDTO>) request.getAttribute("BOOKLIST");
+	ArrayList<ItemsDTO> bookList = (ArrayList<ItemsDTO>) request.getAttribute("BOOKLIST");
 	@SuppressWarnings("unchecked")
 	ArrayList<FileDTO> thumbnails = (ArrayList<FileDTO>) request.getAttribute("THUMBNAILS");
 	@SuppressWarnings("unchecked")
@@ -19,7 +19,7 @@
 	String sortType = request.getAttribute("SORT_TYPE").toString();
 
 	pageContext.setAttribute("THUMBNAILS", thumbnails);
-	pageContext.setAttribute("BOOKLIST", itemList);
+	pageContext.setAttribute("BOOKLIST", bookList);
 	pageContext.setAttribute("PAGE_DATA", pageData);
 	pageContext.setAttribute("CCODE", ccode);
 	pageContext.setAttribute("CPCODE", cpcode);
@@ -75,7 +75,7 @@
 
 			<c:forEach var="book" items="${pageScope.BOOKLIST}" varStatus="status">
 				<li>
-					<table class="table table-bordered">
+					<table class="table">
 						<tr>
 							<td style="width: 20%; text-align: center;">
 								<c:if test="${pageScope.THUMBNAILS[status.index] != null }">
@@ -85,17 +85,19 @@
 									<img class="img-fluid" height="100px" src="" class="card-img" alt="이미지 없음">
 								</c:if>
 							</td>
-							<td style="width: 60%; padding: 10px; text-align: left;">
+							<td style="width: 60%; padding: 5px; text-align: left;">
 
 								<a href="/AspireStore/items/item.aspire?ccode=${book.item_category_code }&icode=${book.item_code }" id="book_name">
 									<span style="font: bold; font-family: Arial; font-weight: 800; font-size: large">${book.item_name }</span>
 								</a>
 
 								<br>
-
-								<span style="font: bold; font-family: Arial; font-weight: 400; font-size: small; color: gray;"> ${book.item_publisher_name } | ${book.item_publication_date } </span>
-
-								<hr>
+								<span style="font: bold; font-family: Arial; font-weight: 400; font-size: small; color: gray;">
+									<c:forEach var="author" items="${book.authors}" varStatus="status">
+											${author.author_name }&nbsp;
+									</c:forEach>
+									|&nbsp;${book.item_publisher_name }&nbsp;|&nbsp;${book.item_publication_date }
+								</span>
 
 								<table>
 									<tr>
@@ -107,7 +109,7 @@
 									</tr>
 								</table>
 							</td>
-							<td style="width: 20%; padding: 10px; text-align: center;">
+							<td style="width: 20%; padding: 5px; text-align: center;">
 								<label for="quantity">수량</label>
 								<input type="number" name="quantity${status.index }" id="quantity${status.index }" value="1" min="1">
 								<br>

@@ -188,20 +188,29 @@ public class ReviewDAO
 	{
 		String query = "INSERT INTO simplereview_table " + "SELECT null, ?, ?, ?, ?, ?, ? FROM DUAL WHERE NOT EXISTS "
 				+ "(SELECT * FROM simplereview_table WHERE simpleReview_item_code = ? AND simpleReview_item_category_code = ? AND simpleReview_user_id = ?)";
+		String updateReviewCountQuery = "UPDATE itemreviewinfo_table SET rinfo_sreview_num = rinfo_sreview_num + 1, rinfo_total_rating = rinfo_total_rating + ? "
+				+ "WHERE rinfo_item_code = ? AND rinfo_item_category_code = ?";
+
 		boolean flag = false;
 
-		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		try (Connection connection = ds.getConnection();
+				PreparedStatement prstmt = connection.prepareStatement(query);
+				PreparedStatement prstmt2 = connection.prepareStatement(updateReviewCountQuery);)
 		{
 			prstmt.setInt(1, Integer.parseInt(reviewData.get("ICODE")));
 			prstmt.setString(2, reviewData.get("CCODE"));
 			prstmt.setString(3, reviewData.get("WRITER_ID"));
 			prstmt.setString(4, reviewData.get("CONTENT"));
-			prstmt.setString(5, reviewData.get("RATING"));
+			prstmt.setInt(5, Integer.parseInt(reviewData.get("RATING")));
 			prstmt.setString(6, reviewData.get("POST_DATE"));
 
 			prstmt.setInt(7, Integer.parseInt(reviewData.get("ICODE")));
 			prstmt.setString(8, reviewData.get("CCODE"));
 			prstmt.setString(9, reviewData.get("WRITER_ID"));
+
+			prstmt2.setInt(1, Integer.parseInt(reviewData.get("RATING")));
+			prstmt2.setInt(2, Integer.parseInt(reviewData.get("ICODE")));
+			prstmt2.setString(3, reviewData.get("CCODE"));
 
 			if (prstmt.executeUpdate() == 1)
 			{
@@ -219,20 +228,23 @@ public class ReviewDAO
 		String query = "INSERT INTO detailreview_table "
 				+ "SELECT null, ?, ?, ?, ?, ?, ?, ?, ? FROM DUAL WHERE NOT EXISTS "
 				+ "(SELECT * FROM detailreview_table WHERE detailReview_item_code = ? AND detailReview_item_category_code = ? AND detailReview_user_id = ?)";
+		String updateReviewCountQuery = "UPDATE itemreviewinfo_table SET rinfo_dreview_num = rinfo_dreview_num + 1, rinfo_total_rating = rinfo_total_rating + ? "
+				+ "WHERE rinfo_item_code = ? AND rinfo_item_category_code = ?";
 		String selectQuery = "SELECT detailReview_code FROM detailreview_table WHERE detailReview_item_code = ? AND detailReview_item_category_code = ? AND detailReview_user_id = ?";
 		ResultSet set = null;
 		int reviewCode = -1;
 
 		try (Connection connection = ds.getConnection();
 				PreparedStatement prstmt = connection.prepareStatement(query);
-				PreparedStatement prstmt2 = connection.prepareStatement(selectQuery);)
+				PreparedStatement prstmt2 = connection.prepareStatement(selectQuery);
+				PreparedStatement prstmt3 = connection.prepareStatement(updateReviewCountQuery);)
 		{
 			prstmt.setInt(1, Integer.parseInt(reviewData.get("ICODE")));
 			prstmt.setString(2, reviewData.get("CCODE"));
 			prstmt.setString(3, reviewData.get("WRITER_ID"));
 			prstmt.setString(4, reviewData.get("SUBJECT"));
 			prstmt.setString(5, reviewData.get("CONTENT"));
-			prstmt.setString(6, reviewData.get("RATING"));
+			prstmt.setInt(6, Integer.parseInt(reviewData.get("RATING")));
 			prstmt.setInt(7, Integer.parseInt(reviewData.get("NUM_FILES")));
 			prstmt.setString(8, reviewData.get("POST_DATE"));
 
@@ -240,7 +252,11 @@ public class ReviewDAO
 			prstmt.setString(10, reviewData.get("CCODE"));
 			prstmt.setString(11, reviewData.get("WRITER_ID"));
 
-			if (prstmt.executeUpdate() == 1)
+			prstmt3.setInt(1, Integer.parseInt(reviewData.get("RATING")));
+			prstmt3.setInt(2, Integer.parseInt(reviewData.get("ICODE")));
+			prstmt3.setString(3, reviewData.get("CCODE"));
+
+			if (prstmt.executeUpdate() == 1 && prstmt3.executeUpdate() == 1)
 			{
 				prstmt2.setInt(1, Integer.parseInt(reviewData.get("ICODE")));
 				prstmt2.setString(2, reviewData.get("CCODE"));
@@ -302,10 +318,32 @@ public class ReviewDAO
 		return flag;
 	}
 
+	public boolean initializeBookReviewInfo(int icode, String ccode)
+	{
+		String query = "INSERT INTO itemreviewinfo_table VALUES (null, ?, ?, ?, ?, ?)";
+
+		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
+		{
+			prstmt.setInt(1, icode);
+			prstmt.setString(2, ccode);
+			prstmt.setInt(3, 0);
+			prstmt.setInt(4, 0);
+			prstmt.setInt(5, 0);
+
+			if (prstmt.executeUpdate() == 1)
+			{
+				return true;
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 	public boolean modifyMyReview(int icode, String ccode, String writerId, ReviewDTO modifiedReview, String tableType)
 	{
 		return false;
 	}
-	
-	
+
 }

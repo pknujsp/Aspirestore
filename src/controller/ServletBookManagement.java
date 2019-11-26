@@ -195,7 +195,6 @@ public class ServletBookManagement extends HttpServlet
 			request.setAttribute("INFO_IMAGE", bookData.get("INFO_IMAGE"));
 
 			request.setAttribute("BOOK", bookData.get("BOOK"));
-			request.setAttribute("AUTHOR", bookData.get("AUTHOR"));
 			request.setAttribute("PUBLISHER", bookData.get("PUBLISHER"));
 			request.setAttribute("VIEWURL", "forward:/management/bookmanagement/bookInfo.jsp");
 		} catch (Exception e)
@@ -231,7 +230,6 @@ public class ServletBookManagement extends HttpServlet
 			}
 
 			request.setAttribute("BOOK", bookData.get("BOOK"));
-			request.setAttribute("AUTHOR", bookData.get("AUTHOR"));
 			request.setAttribute("PUBLISHER", bookData.get("PUBLISHER"));
 			request.setAttribute("MAIN_IMAGE", bookData.get("MAIN_IMAGE"));
 			request.setAttribute("INFO_IMAGE", bookData.get("INFO_IMAGE"));
