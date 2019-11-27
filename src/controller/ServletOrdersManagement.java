@@ -101,11 +101,19 @@ public class ServletOrdersManagement extends HttpServlet
 
 					JSONObject bookData = new JSONObject();
 					bookData.put("BOOK_NAME", bookName);
-
 					bookData.put("PUBLISHER_NAME", publisherName);
 					bookData.put("QUANTITY", saleQuantity);
 					bookData.put("SELLING_PRICE", sellingPrice);
 					bookData.put("TOTAL_PRICE", totalPrice);
+
+					JSONArray authors = new JSONArray();
+					for (int k = 0; k < bookList.get(userId).get(j).getAuthors().size(); ++k)
+					{
+						JSONObject authorData = new JSONObject();
+						authorData.put("AUTHOR_NAME", bookList.get(userId).get(j).getAuthors().get(k).getAuthor_name());
+						authors.put(authorData);
+					}
+					bookData.put("AUTHORS", authors);
 
 					bookArr.put(bookData);
 				}

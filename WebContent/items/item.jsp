@@ -58,29 +58,19 @@
 		<hr>
 		<div>
 			<table>
-				<colgroup>
-					<col width="110" />
-					<col width="*" />
-				</colgroup>
-				<tbody>
-					<tr>
-						<th scope="row">정가</th>
-						<td>
-							<span>
-								<em>${pageScope.ITEM.item_fixed_price} 원</em>
-							</span>
-						</td>
-					</tr>
+				<tr>
+					<th scope="row">정가</th>
+					<td>
+						&nbsp;<em>${pageScope.ITEM.item_fixed_price}</em>&nbsp;원
+					</td>
+				</tr>
 
-					<tr>
-						<th scope="row">판매가</th>
-						<td>
-							<span>
-								<em>${pageScope.ITEM.item_selling_price} 원</em>
-							</span>
-						</td>
-					</tr>
-				</tbody>
+				<tr>
+					<th scope="row">판매가</th>
+					<td>
+						&nbsp;<em>${pageScope.ITEM.item_selling_price}</em>&nbsp;원
+					</td>
+				</tr>
 			</table>
 
 		</div>
@@ -145,7 +135,7 @@
 			</div>
 			<div>
 				<div>
-					<pre style="white-space: pre-wrap;">
+					<pre style="white-space: pre-line;">
 					${pageScope.ITEM.item_book_introduction}
 					</pre>
 				</div>
@@ -159,7 +149,7 @@
 			</div>
 			<div>
 				<div>
-					<pre style="white-space: pre-wrap;">${pageScope.ITEM.item_contents_table}
+					<pre style="white-space: pre-line;">${pageScope.ITEM.item_contents_table}
 					</pre>
 				</div>
 			</div>
@@ -185,7 +175,7 @@
 							<a href="/AspireStore/author/authorInfo.aspire?acode=${author.author_code }">${author.author_name}</a>
 						</div>
 						<div>
-							<pre style="white-space: pre-wrap;">${author.author_information }</pre>
+							<pre style="white-space: pre-line;">${author.author_information }</pre>
 						</div>
 					</li>
 				</c:forEach>
@@ -198,7 +188,7 @@
 					<h5>출판사 리뷰</h5>
 				</div>
 				<div>
-					<pre style="white-space: pre-wrap;">
+					<pre style="white-space: pre-line;">
 				${pageScope.ITEM.item_publisher_review}
 					</pre>
 				</div>

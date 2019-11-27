@@ -7,17 +7,13 @@
 
 <%
 	ItemsDTO book = (ItemsDTO) request.getAttribute("BOOK");
-	AuthorDTO author = (AuthorDTO) request.getAttribute("AUTHOR");
-	PublisherDTO publisher = (PublisherDTO) request.getAttribute("PUBLISHER");
 	FileDTO mainImg = (FileDTO) request.getAttribute("MAIN_IMAGE");
 	FileDTO infoImg = (FileDTO) request.getAttribute("INFO_IMAGE");
 
 	pageContext.setAttribute("MAIN_IMAGE", mainImg);
 	pageContext.setAttribute("INFO_IMAGE", infoImg);
 
-	pageContext.setAttribute("BOOK", book);
-	pageContext.setAttribute("AUTHOR", author);
-	pageContext.setAttribute("PUBLISHER", publisher);
+	pageContext.setAttribute("ITEM", book);
 %>
 <!DOCTYPE html>
 <html>
@@ -33,186 +29,181 @@
 <link href="/AspireStore/css/bootstrap.css" rel="stylesheet">
 <link href="/AspireStore/css/shop-homepage.css" rel="stylesheet">
 <link href="/AspireStore/css/sidebar.css" rel="stylesheet">
+<link href="/AspireStore/css/pageSetting.css" rel="stylesheet">
 
 </head>
 <body>
-	<div class="d-flex" id="wrapper">
-		<div class="bg-light border-right" id="sidebar-wrapper">
-			<div class="list-group list-group-flush">
-				<a href="#" class="list-group-item list-group-item-action bg-light">도서 관리</a>
-				<a href="#" class="list-group-item list-group-item-action bg-light">도서 재고</a>
+	<jsp:include page="../management_navbar.jsp"></jsp:include>
+
+	<div class="container border border-info">
+		<div>
+			<span>
+				<img src="/imgfolder/itemImages/${pageScope.MAIN_IMAGE.file_name }" alt="No Image" width="400px" />
+			</span>
+
+		</div>
+		<div>
+			<h5>${pageScope.ITEM.item_name}</h5>
+		</div>
+		<hr />
+		<span>
+			<c:forEach var="author" items="${pageScope.ITEM.authors}" varStatus="status">
+				<a href="/AspireStore/author/authorInfo.aspire?acode=${author.author_code }">${author.author_name }</a>&nbsp;
+									</c:forEach>
+			|&nbsp;
+			<a href="#" target="_blank">${pageScope.ITEM.item_publisher_name}</a>
+			&nbsp;|&nbsp;${pageScope.ITEM.item_publication_date}
+		</span>
+
+		<hr>
+		<div>
+			<table>
+				<tbody>
+					<tr>
+						<th scope="row">정가</th>
+						<td>
+							<span>
+								<em>${pageScope.ITEM.item_fixed_price} 원</em>
+							</span>
+						</td>
+					</tr>
+
+					<tr>
+						<th scope="row">판매가</th>
+						<td>
+							<span>
+								<em>${pageScope.ITEM.item_selling_price} 원</em>
+							</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+		</div>
+		<hr />
+		<div>
+			<form method="post" id="itemInfoForm" name="itemInfoForm">
+				<span>
+					수량
+					<input type="number" name="quantity" id="quantity" value="1" min="1" />
+					<input type="hidden" name="itemPrice" id="itemPrice" value="${pageScope.ITEM.item_selling_price}" />
+					<input type="hidden" name="itemCategory" id="itemCategory" value="${pageScope.ITEM.item_category_code}" />
+					<input type="hidden" name="itemCode" id="itemCode" value="${pageScope.ITEM.item_code}" />
+				</span>
+				<span>
+					<button class="btn btn-primary" type="button" onclick="javascript:addBookToTheBasket('/AspireStore/basket.aspire')">장바구니에 추가</button>
+				</span>
+				<span>
+					<input type="submit" class="btn btn-primary" onclick="javascript:clickButton('/AspireStore/orderform.aspire')" value="바로 구매" />
+				</span>
+				<input type="hidden" id="type" name="type" value="ONE_ORDER">
+			</form>
+		</div>
+		<hr>
+		<div>
+			<div>
+				<h5>도서 기본 정보</h5>
+			</div>
+			<div>
+				<div>
+					<table class="table sfont">
+						<tbody class="b_size">
+							<tr>
+								<th scope="row">출간일</th>
+								<td>${pageScope.ITEM.item_publication_date}</td>
+							</tr>
+							<tr>
+								<th scope="row">쪽수, 무게, 크기</th>
+								<td>${pageScope.ITEM.item_page_number}&nbsp;|&nbsp;${pageScope.ITEM.item_weight}&nbsp;|&nbsp;${pageScope.ITEM.item_size}</td>
+							</tr>
+							<tr>
+								<th scope="row">ISBN13</th>
+								<td>${pageScope.ITEM.item_isbn13}</td>
+							</tr>
+							<tr>
+								<th scope="row">ISBN10</th>
+								<td>${pageScope.ITEM.item_isbn10}</td>
+							</tr>
+					</table>
+				</div>
+			</div>
+
+		</div>
+		<hr />
+		<div>
+			<div>
+				<h5>도서 소개</h5>
+			</div>
+			<div>
+				<div>
+					<pre style="white-space: pre-line; text-align: left;">
+					${pageScope.ITEM.item_book_introduction}
+					</pre>
+				</div>
+			</div>
+
+		</div>
+		<hr />
+		<div>
+			<div>
+				<h5>목차</h5>
+			</div>
+			<div>
+				<div>
+					<pre style="white-space: pre-line; text-align: left;">${pageScope.ITEM.item_contents_table}
+					</pre>
+				</div>
 			</div>
 		</div>
-
-		<div id="page-content-wrapper">
-			<jsp:include page="../management_navbar.jsp"></jsp:include>
-
-
-			<div class="container border border-info">
+		<hr />
+		<div>
+			<div>
+				<h5>상세 정보(이미지)</h5>
+			</div>
+			<div>
 				<div>
-					<span>
-						<img src="/imgfolder/itemImages/${pageScope.MAIN_IMAGE.file_name }" alt="No Image" width="400px" />
-					</span>
-
+					<img src="/imgfolder/itemImages/${pageScope.INFO_IMAGE.file_name }" alt="No Image" width="100%" />
 				</div>
-				<div>
-					<h4><%=book.getItem_name()%></h4>
-				</div>
-				<hr />
-				<span>
-					<span>
-						<a href="#" target="_blank"><%=author.getAuthor_name()%></a>
-					</span>
-					<em>|</em>
-					<span>
-						<a href="#" target="_blank"><%=publisher.getPublisher_name()%></a>
-					</span>
-					<em>|</em>
-					<span><%=book.getItem_publication_date()%></span>
-				</span>
+			</div>
+		</div>
+		<hr />
+		<div>
+			<h5>저자 정보</h5>
+			<ul style="list-style: none;">
+				<c:forEach var="author" items="${pageScope.ITEM.authors}" varStatus="status">
+					<li>
+						<div>
+							<a href="/AspireStore/author/authorInfo.aspire?acode=${author.author_code }">${author.author_name}</a>
+						</div>
+						<div>
+							<pre style="white-space: normal; text-align: left;">${author.author_information }</pre>
+						</div>
+					</li>
+				</c:forEach>
+			</ul>
+		</div>
+		<hr />
+		<div>
+			<div>
 
-
-				<hr />
-				<div>
-					<table>
-						<colgroup>
-							<col width="110" />
-							<col width="*" />
-						</colgroup>
-						<tbody>
-							<tr>
-								<th scope="row">정가</th>
-								<td>
-									<span>
-										<em><%=book.getItem_fixed_price()%> 원</em>
-									</span>
-								</td>
-							</tr>
-
-							<tr>
-								<th scope="row">판매가</th>
-								<td>
-									<span>
-										<em><%=book.getItem_selling_price()%> 원</em>
-									</span>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-
-					<hr>
-					<div>
-						<div>
-							<h4>도서 기본 정보</h4>
-						</div>
-						<div>
-							<div>
-								<table class="table">
-
-									<colgroup>
-										<col width="170">
-										<col width="*">
-									</colgroup>
-									<tbody class="b_size">
-										<tr>
-											<th scope="row">출간일</th>
-											<td><%=book.getItem_publication_date()%></td>
-										</tr>
-										<tr>
-											<th scope="row">쪽수, 무게, 크기</th>
-											<td><%=book.getItem_page_number()%>
-												,
-												<%=book.getItem_weight()%>
-												,
-												<%=book.getItem_size()%></td>
-										</tr>
-										<tr>
-											<th scope="row">ISBN13</th>
-											<td><%=book.getItem_isbn13()%></td>
-										</tr>
-										<tr>
-											<th scope="row">ISBN10</th>
-											<td><%=book.getItem_isbn10()%></td>
-										</tr>
-								</table>
-							</div>
-						</div>
-
-					</div>
-					<hr />
-					<div>
-						<div>
-							<h4>도서 소개</h4>
-						</div>
-						<div>
-							<div>
-								<pre style="white-space: pre-wrap;">
-					<%=book.getItem_book_introduction()%>
-					</pre>
-							</div>
-						</div>
-
-					</div>
-					<hr />
-					<div>
-						<div>
-							<h4>목차</h4>
-						</div>
-						<div>
-							<div>
-								<pre style="white-space: pre-wrap;">
-					<%=book.getItem_contents_table()%>
-					</pre>
-							</div>
-						</div>
-					</div>
-					<hr />
-					<div>
-						<div>
-							<h4>상세 정보(이미지)</h4>
-						</div>
-						<div>
-							<div>
-								<img src="/imgfolder/itemImages/${pageScope.INFO_IMAGE.file_name }" alt="No Image" width="100%" />
-							</div>
-						</div>
-					</div>
-					<hr />
-					<div>
-						<div>
-							<h4>저자 소개</h4>
-						</div>
-						<div>
-							<div>
-								<div>
-									저자 명 :
-									<%=author.getAuthor_name()%>
-								</div>
-								<div>
-									저자 소개 :
-									<pre style="white-space: pre-wrap;">
-						<%=author.getAuthor_information()%>
+				<table>
+					<tr>
+						<td>
+							<h5>출판사 리뷰</h5>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<pre style="white-space: pre-line; text-align: left;">
+								<c:out value="${pageScope.ITEM.item_publisher_review}" />
+					
 						</pre>
-								</div>
-							</div>
-						</div>
-					</div>
-					<hr />
-					<div>
-						<div>
-							<div>
-								<h4>출판사 리뷰</h4>
-							</div>
-							<div>
-								<pre style="white-space: pre-wrap;">
-					<%=book.getItem_publisher_review()%>
-					</pre>
-							</div>
-						</div>
-					</div>
+						</td>
+					</tr>
+				</table>
 
-					<hr>
-				</div>
+
+
 			</div>
 		</div>
 	</div>

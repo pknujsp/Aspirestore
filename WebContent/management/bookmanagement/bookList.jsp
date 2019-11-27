@@ -15,73 +15,73 @@
 <link href="/AspireStore/css/bootstrap.css" rel="stylesheet">
 <link href="/AspireStore/css/shop-homepage.css" rel="stylesheet">
 <link href="/AspireStore/css/sidebar.css" rel="stylesheet">
+<link href="/AspireStore/css/pageSetting.css" rel="stylesheet">
 
 </head>
 <body>
-	<div class="d-flex" id="wrapper">
-		<div class="bg-light border-right" id="sidebar-wrapper">
-			<!-- <div class="sidebar-heading">Start Bootstrap</div> -->
-			<div class="list-group list-group-flush">
-				<a href="#" class="list-group-item list-group-item-action bg-light">도서 관리</a>
-				<a href="#" class="list-group-item list-group-item-action bg-light">도서 재고</a>
-			</div>
-		</div>
 
-		<div id="page-content-wrapper">
-			<jsp:include page="../management_navbar.jsp"></jsp:include>
 
-			<div class="container-fluid">
-				<table class="table table-sm table-hover">
-					<thead class="thead-light">
-						<tr>
-							<th colspan="10">
-								<strong>도서 목록</strong>&ensp; 표시할 데이터 개수 : <select class="custom-select custom-select-sm w-25" id="select_menu">
-									<option value="5" selected>5</option>
-									<option value="10">10</option>
-									<option value="20">20</option>
-									<option value="50">50</option>
-								</select>
-								<input type="button" data-target="#modal" data-toggle="modal" value="카테고리 선택">
-								&nbsp;
-								<input type="button" id="viewButton" onclick="processPage()" value="도서 조회">
-								&nbsp;
-								<input type="button" id="refreshButton" onclick="processPage()" value="새로고침">
-							</th>
-						</tr>
-						<tr>
-							<th scope="col">코드</th>
-							<th scope="col">카테고리</th>
-							<th scope="col">도서 명</th>
-							<th scope="col">저자</th>
-							<th scope="col">출판사</th>
-							<th scope="col">판매가</th>
-							<th scope="col">재고</th>
-							<th scope="col">출간 날짜</th>
-							<th scope="col">자세히</th>
-							<th scope="col">처리</th>
-						</tr>
-					</thead>
-					<tbody id="tableBody">
+	<div id="page-content-wrapper">
+		<jsp:include page="../management_navbar.jsp"></jsp:include>
 
-					</tbody>
-				</table>
+		<div class="container-fluid sfont">
+			<table class="table table-sm table-hover">
+				<thead class="thead-light">
+					<tr>
+						<th colspan="10">
+							<strong>도서 목록</strong>&ensp; 표시할 데이터 개수 : <select class="custom-select custom-select-sm w-25" id="select_menu">
+								<option value="5" selected>5</option>
+								<option value="10">10</option>
+								<option value="20">20</option>
+								<option value="50">50</option>
+							</select>
+							<input type="button" data-target="#modal" data-toggle="modal" value="카테고리 선택">
+							&nbsp;
+							<input type="button" id="viewButton" onclick="processPage()" value="도서 조회">
+							&nbsp;
+							<input type="button" id="refreshButton" onclick="processPage()" value="새로고침">
+							&nbsp;
+							<input type="button" id="addBookButton" onclick="addBook()" value="도서 등록">
+						</th>
+					</tr>
+					<tr>
+						<th scope="col">코드</th>
+						<th scope="col">카테고리</th>
+						<th scope="col">도서 명</th>
+						<th scope="col">저자</th>
+						<th scope="col">출판사</th>
+						<th scope="col">판매가</th>
+						<th scope="col">재고</th>
+						<th scope="col">출간 날짜</th>
+						<th scope="col">자세히</th>
+						<th scope="col">처리</th>
+					</tr>
+				</thead>
+				<tbody id="tableBody">
 
-				<nav aria-label="PaginationBar">
-					<ul class="pagination justify-content-center" id="pagination_ul">
+				</tbody>
+			</table>
 
-					</ul>
-				</nav>
+			<nav aria-label="PaginationBar">
+				<ul class="pagination justify-content-center" id="pagination_ul">
 
-			</div>
+				</ul>
+			</nav>
+
 		</div>
 	</div>
 
+
 	<!--  Modal  -->
-	<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal_label" aria-hidden="true">
+	<div class="modal fade sfont" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal_label" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="modal_title">카테고리 선택</h5>
+					<h6 class="modal-title" id="modal_title">카테고리 선택</h6>
+					&nbsp;
+					<button type="button" class="btn btn-primary" onclick="makeJSONForCategory()" data-dismiss="modal">확인</button>
+					&nbsp;
+					<button type="button" class="btn btn-primary" id="checkAllBtn" onclick="checkAllBox(true)">모두 선택</button>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
@@ -506,11 +506,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="modal-footer" id="modal_footer">
-						<button type="button" class="btn btn-primary" onclick="makeJSONForCategory()" data-dismiss="modal">확인</button>
-						&nbsp;
-						<button type="button" class="btn btn-primary" id="checkAllBtn" onclick="checkAllBox(true)">모두 선택</button>
-					</div>
+
 				</div>
 			</div>
 		</div>
@@ -931,6 +927,11 @@
 				}
 			}
 			return false;
+		}
+
+		function addBook()
+		{
+			location.href = "/AspireStore/management/bookmanagement/addNewBook.jsp";
 		}
 	</script>
 </body>

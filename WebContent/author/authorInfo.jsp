@@ -33,7 +33,7 @@
 							</tr>
 							<tr>
 								<td>
-									<pre style="white-space: pre-wrap;">${pageScope.AUTHOR.author_information }</pre>
+									<pre style="white-space: pre-line;">${pageScope.AUTHOR.author_information }</pre>
 								</td>
 							</tr>
 						</table>

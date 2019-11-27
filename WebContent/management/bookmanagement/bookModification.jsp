@@ -7,14 +7,10 @@
 
 <%
 	ItemsDTO book = (ItemsDTO) request.getAttribute("BOOK");
-	AuthorDTO author = (AuthorDTO) request.getAttribute("AUTHOR");
-	PublisherDTO publisher = (PublisherDTO) request.getAttribute("PUBLISHER");
 	FileDTO mainImg = (FileDTO) request.getAttribute("MAIN_IMAGE");
 	FileDTO infoImg = (FileDTO) request.getAttribute("INFO_IMAGE");
 
 	pageContext.setAttribute("BOOK", book);
-	pageContext.setAttribute("AUTHOR", author);
-	pageContext.setAttribute("PUBLISHER", publisher);
 	pageContext.setAttribute("MAIN_IMAGE", mainImg);
 	pageContext.setAttribute("INFO_IMAGE", infoImg);
 %>
@@ -32,223 +28,211 @@
 <link href="/AspireStore/css/bootstrap.css" rel="stylesheet">
 <link href="/AspireStore/css/shop-homepage.css" rel="stylesheet">
 <link href="/AspireStore/css/sidebar.css" rel="stylesheet">
+<link href="/AspireStore/css/pageSetting.css" rel="stylesheet">
 
 </head>
 <body>
 	<form id="modification_form" name="modification_form" action="/AspireStore/management/bookManagement.aspire" method="POST">
 		<input type="hidden" id="input_item_category_code" name="input_item_category_code" value="${pageScope.BOOK.item_category_code}">
 		<input type="hidden" id="input_item_code" name="input_item_code" value="${pageScope.BOOK.item_code}">
-		<div class="d-flex" id="wrapper">
-			<div class="bg-light border-right" id="sidebar-wrapper">
-				<!-- <div class="sidebar-heading">Start Bootstrap</div> -->
-				<div class="list-group list-group-flush">
-					<a href="#" class="list-group-item list-group-item-action bg-light">도서 관리</a>
-					<a href="#" class="list-group-item list-group-item-action bg-light">도서 재고</a>
-				</div>
+
+		<jsp:include page="../management_navbar.jsp"></jsp:include>
+
+
+		<div class="container border">
+			<div>
+				<h5>사진 변경</h5>
+				<table class="table mfont">
+					<thead>
+						<tr>
+							<th>대표 사진</th>
+							<th>썸네일</th>
+							<th>처리</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<c:if test="${pageScope.MAIN_IMAGE != null }">
+								<td>
+									<img src="/imgfolder/itemImages/${pageScope.MAIN_IMAGE.file_name }" id="main_img" alt="No Image" width="400px" />
+								</td>
+								<td>
+									<img src="/imgfolder/itemImages/${pageScope.MAIN_IMAGE.file_name }" id="thumbnail_img" alt="No Image" width="100px" />
+								</td>
+							</c:if>
+							<c:if test="${pageScope.MAIN_IMAGE == null }">
+								<td>
+									<img src="" id="main_img" alt="No Image" width="400px" />
+								</td>
+								<td>
+									<img src="" id="thumbnail_img" alt="No Image" width="100px" />
+								</td>
+							</c:if>
+							<td>
+								<input type="button" class="btn btn-primary" id="main_img_btn" name="main_img_btn" data-toggle="modal" data-target="#image_modal" onclick="changeImgModal('MAIN')" value="사진 변경">
+							</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
+			<div>
+				<div class="form-group">
+					<label for="it_item_name">도서 명</label>
+					<input type="text" class="form-control" id="it_item_name" name="it_item_name" value="${pageScope.BOOK.item_name}" readonly="readonly">
+					<input type="button" id="item_name_btn" onclick="unlockElement('it_item_name',this)" value="잠금 해제">
+				</div>
 
-			<div id="page-content-wrapper">
-				<jsp:include page="../management_navbar.jsp"></jsp:include>
+				<hr>
 
-
-				<div class="container border border-info">
+				<div class="form-group">
+					<label for="it_fixed_price">정가</label>
+					<input type="text" class="form-control" id="it_fixed_price" name="it_fixed_price" value="${pageScope.BOOK.item_fixed_price}" readonly="readonly">
+					원
+					<input type="button" id="fixed_price_btn" onclick="unlockElement('it_fixed_price',this)" value="잠금 해제">
+				</div>
+				<div class="form-group">
+					<label for="it_selling_price">판매가</label>
+					<input type="text" class="form-control" id="it_selling_price" name="it_selling_price" value="${pageScope.BOOK.item_selling_price}" readonly="readonly">
+					원
+					<input type="button" id="selling_price_btn" onclick="unlockElement('it_selling_price',this)" value="잠금 해제">
+				</div>
+				<hr>
+				<div>
 					<div>
-						<h6>사진 변경</h6>
-						<table class="table">
-							<thead>
+						<h4>도서 기본 정보</h4>
+					</div>
+					<div>
+						<div>
+							<table class="table">
 								<tr>
-									<th>대표 사진</th>
-									<th>썸네일</th>
-									<th>처리</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<c:if test="${pageScope.MAIN_IMAGE != null }">
-										<td>
-											<img src="/imgfolder/itemImages/${pageScope.MAIN_IMAGE.file_name }" id="main_img" alt="No Image" width="400px" />
-										</td>
-										<td>
-											<img src="/imgfolder/itemImages/${pageScope.MAIN_IMAGE.file_name }" id="thumbnail_img" alt="No Image" width="100px" />
-										</td>
-									</c:if>
-									<c:if test="${pageScope.MAIN_IMAGE == null }">
-										<td>
-											<img src="" id="main_img" alt="No Image" width="400px" />
-										</td>
-										<td>
-											<img src="" id="thumbnail_img" alt="No Image" width="100px" />
-										</td>
-									</c:if>
 									<td>
-										<input type="button" class="btn btn-primary" id="main_img_btn" name="main_img_btn" data-toggle="modal" data-target="#image_modal" onclick="changeImgModal('MAIN')" value="사진 변경">
+										<div class="form-group">
+											<label for="it_pub_date">출간 날짜</label>
+											<input type="text" class="form-control" id="it_pub_date" name="it_pub_date" value="${pageScope.BOOK.item_publication_date}" readonly="readonly">
+											<input type="button" id="pub_date_btn" onclick="unlockElement('it_pub_date',this)" value="잠금 해제">
+										</div>
 									</td>
 								</tr>
-							</tbody>
-						</table>
-					</div>
-					<div>
-						<div class="form-group">
-							<label for="it_item_name">도서 명</label>
-							<input type="text" class="form-control" id="it_item_name" name="it_item_name" value="${pageScope.BOOK.item_name}" readonly="readonly">
-							<input type="button" id="item_name_btn" onclick="unlockElement('it_item_name',this)" value="잠금 해제">
-						</div>
-
-						<hr>
-
-						<div class="form-group">
-							<label for="it_fixed_price">정가</label>
-							<input type="text" class="form-control" id="it_fixed_price" name="it_fixed_price" value="${pageScope.BOOK.item_fixed_price}" readonly="readonly">
-							원
-							<input type="button" id="fixed_price_btn" onclick="unlockElement('it_fixed_price',this)" value="잠금 해제">
-						</div>
-						<div class="form-group">
-							<label for="it_selling_price">판매가</label>
-							<input type="text" class="form-control" id="it_selling_price" name="it_selling_price" value="${pageScope.BOOK.item_selling_price}" readonly="readonly">
-							원
-							<input type="button" id="selling_price_btn" onclick="unlockElement('it_selling_price',this)" value="잠금 해제">
-						</div>
-						<hr>
-						<div>
-							<div>
-								<h4>도서 기본 정보</h4>
-							</div>
-							<div>
-								<div>
-									<table class="table">
-										<tr>
-											<td>
-												<div class="form-group">
-													<label for="it_pub_date">출간 날짜</label>
-													<input type="text" class="form-control" id="it_pub_date" name="it_pub_date" value="${pageScope.BOOK.item_publication_date}" readonly="readonly">
-													<input type="button" id="pub_date_btn" onclick="unlockElement('it_pub_date',this)" value="잠금 해제">
-												</div>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<div class="form-group">
-													<label for="page_number">쪽수</label>
-													<input type="text" class="form-control" id="it_page_number" name="it_page_number" value="${pageScope.BOOK.item_page_number}" readonly="readonly">
-													<input type="button" id="page_number_btn" onclick="unlockElement('it_page_number',this)" value="잠금 해제">
-												</div>
-											</td>
-											<td>
-												<div class="form-group">
-													<label for="weight">무게</label>
-													<input type="text" class="form-control" id="it_weight" name="it_weight" value="${pageScope.BOOK.item_weight}" readonly="readonly">
-													<input type="button" id="weight_btn" onclick="unlockElement('it_weight',this)" value="잠금 해제">
-												</div>
-											</td>
-											<td>
-												<div class="form-group">
-													<label for="size">크기</label>
-													<input type="text" class="form-control" id="it_size" name="it_size" value="${pageScope.BOOK.item_size}" readonly="readonly">
-													<input type="button" id="size_btn" onclick="unlockElement('it_size',this)" value="잠금 해제">
-												</div>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<div class="form-group">
-													<label for="isbn13">ISBN13</label>
-													<input type="text" class="form-control" id="it_isbn13" name="it_isbn13" value="${pageScope.BOOK.item_isbn13}" readonly="readonly">
-													<input type="button" id="isbn13_btn" onclick="unlockElement('it_isbn13',this)" value="잠금 해제">
-												</div>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<div class="form-group">
-													<label for="isbn10">ISBN10</label>
-													<input type="text" class="form-control" id="it_isbn10" name="it_isbn10" value="${pageScope.BOOK.item_isbn10}" readonly="readonly">
-													<input type="button" id="isbn10_btn" onclick="unlockElement('it_isbn10',this)" value="잠금 해제">
-												</div>
-											</td>
-										</tr>
-									</table>
-								</div>
-							</div>
-
-						</div>
-						<hr>
-						<div>
-							<div class="form-group">
-								<label for="it_book_introduction">도서 소개</label>
-								<textarea style="resize: none; word-break: break-all;" class="form-control" name="it_book_introduction" id="it_book_introduction" rows="12" readonly="readonly">${pageScope.BOOK.item_book_introduction}</textarea>
-								<input type="button" id="book_introduction_btn" onclick="unlockElement('it_book_introduction',this)" value="잠금 해제">
-							</div>
-						</div>
-						<hr />
-						<div>
-							<div class="form-group">
-								<label for="it_item_contents_table">목차</label>
-								<textarea style="resize: none; word-break: break-all;" class="form-control" name="it_item_contents_table" id="it_item_contents_table" rows="12" readonly="readonly">${pageScope.BOOK.item_contents_table}</textarea>
-								<input type="button" id="item_contents_table_btn" onclick="unlockElement('it_item_contents_table',this)" value="잠금 해제">
-							</div>
-						</div>
-						<hr />
-						<div>
-							<h6>상세 정보 사진 변경</h6>
-							<table class="table">
-								<thead>
-									<tr>
-										<th>사진</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<c:if test="${pageScope.INFO_IMAGE != null }">
-											<td>
-												<img src="/imgfolder/itemImages/${pageScope.INFO_IMAGE.file_name }" id="info_img" alt="No Image" width="100%" />
-											</td>
-										</c:if>
-										<c:if test="${pageScope.INFO_IMAGE == null }">
-											<td>
-												<img src="" id="info_img" alt="No Image" width="100%" />
-											</td>
-										</c:if>
-									</tr>
-								</tbody>
+								<tr>
+									<td>
+										<div class="form-group">
+											<label for="page_number">쪽수</label>
+											<input type="text" class="form-control" id="it_page_number" name="it_page_number" value="${pageScope.BOOK.item_page_number}" readonly="readonly">
+											<input type="button" id="page_number_btn" onclick="unlockElement('it_page_number',this)" value="잠금 해제">
+										</div>
+									</td>
+									<td>
+										<div class="form-group">
+											<label for="weight">무게</label>
+											<input type="text" class="form-control" id="it_weight" name="it_weight" value="${pageScope.BOOK.item_weight}" readonly="readonly">
+											<input type="button" id="weight_btn" onclick="unlockElement('it_weight',this)" value="잠금 해제">
+										</div>
+									</td>
+									<td>
+										<div class="form-group">
+											<label for="size">크기</label>
+											<input type="text" class="form-control" id="it_size" name="it_size" value="${pageScope.BOOK.item_size}" readonly="readonly">
+											<input type="button" id="size_btn" onclick="unlockElement('it_size',this)" value="잠금 해제">
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<div class="form-group">
+											<label for="isbn13">ISBN13</label>
+											<input type="text" class="form-control" id="it_isbn13" name="it_isbn13" value="${pageScope.BOOK.item_isbn13}" readonly="readonly">
+											<input type="button" id="isbn13_btn" onclick="unlockElement('it_isbn13',this)" value="잠금 해제">
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<div class="form-group">
+											<label for="isbn10">ISBN10</label>
+											<input type="text" class="form-control" id="it_isbn10" name="it_isbn10" value="${pageScope.BOOK.item_isbn10}" readonly="readonly">
+											<input type="button" id="isbn10_btn" onclick="unlockElement('it_isbn10',this)" value="잠금 해제">
+										</div>
+									</td>
+								</tr>
 							</table>
-							<input type="button" class="btn btn-primary" id="info_img_btn" name="info_img_btn" data-toggle="modal" data-target="#image_modal" onclick="changeImgModal('INFO')" value="사진 변경">
 						</div>
-						<hr>
-						<div>
-							<div class="form-group">
-								<label for="btn_author">저자 정보</label>
-								<input type="button" id="btn_author" class="btn btn-primary" data-target="#author_modal" data-toggle="modal" value="저자 정보 수정">
-							</div>
-						</div>
-						<hr>
-						<div>
-							<div class="form-group">
-								<label for="btn_publisher">출판사 정보</label>
-								<input type="button" id="btn_publisher" class="btn btn-primary" data-target="#publisher_modal" data-toggle="modal" value="출판사 정보 수정">
-							</div>
-						</div>
-						<hr>
-						<div>
-							<div class="form-group">
-								<label for="it_item_publisher_review">출판사 리뷰</label>
-								<textarea style="resize: none; word-break: break-all;" class="form-control" name="it_item_publisher_review" id="it_item_publisher_review" rows="12" readonly="readonly">${pageScope.BOOK.item_publisher_review}</textarea>
-								<input type="button" id="item_publisher_review_btn" onclick="unlockElement('it_item_publisher_review',this)" value="잠금 해제">
-							</div>
-						</div>
-
-						<hr>
-
 					</div>
-					<input type="button" class="btn btn-primary" onclick="confirmModification()" id="complete_modification_btn" name="complete_modification_btn" value="수정 완료">
-					&nbsp;
-					<input type="button" class="btn btn-secondary" id="cancel_modification_btn" name="cancel_modification_btn" value="수정 취소">
 
 				</div>
-				<footer>
-					<%@ include file="/footer.html"%>
-				</footer>
+				<hr>
+				<div>
+					<div class="form-group">
+						<label for="it_book_introduction">도서 소개</label>
+						<textarea style="resize: none; word-break: break-all;" class="form-control" name="it_book_introduction" id="it_book_introduction" rows="12" readonly="readonly">${pageScope.BOOK.item_book_introduction}</textarea>
+						<input type="button" id="book_introduction_btn" onclick="unlockElement('it_book_introduction',this)" value="잠금 해제">
+					</div>
+				</div>
+				<hr />
+				<div>
+					<div class="form-group">
+						<label for="it_item_contents_table">목차</label>
+						<textarea style="resize: none; word-break: break-all;" class="form-control" name="it_item_contents_table" id="it_item_contents_table" rows="12" readonly="readonly">${pageScope.BOOK.item_contents_table}</textarea>
+						<input type="button" id="item_contents_table_btn" onclick="unlockElement('it_item_contents_table',this)" value="잠금 해제">
+					</div>
+				</div>
+				<hr />
+				<div>
+					<h6>상세 정보 사진 변경</h6>
+					<table class="table">
+						<thead>
+							<tr>
+								<th>사진</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<c:if test="${pageScope.INFO_IMAGE != null }">
+									<td>
+										<img src="/imgfolder/itemImages/${pageScope.INFO_IMAGE.file_name }" id="info_img" alt="No Image" width="100%" />
+									</td>
+								</c:if>
+								<c:if test="${pageScope.INFO_IMAGE == null }">
+									<td>
+										<img src="" id="info_img" alt="No Image" width="100%" />
+									</td>
+								</c:if>
+							</tr>
+						</tbody>
+					</table>
+					<input type="button" class="btn btn-primary" id="info_img_btn" name="info_img_btn" data-toggle="modal" data-target="#image_modal" onclick="changeImgModal('INFO')" value="사진 변경">
+				</div>
+				<hr>
+				<div>
+					<div class="form-group">
+						<label for="btn_author">저자 정보</label>
+						<input type="button" id="btn_author" class="btn btn-primary" data-target="#author_modal" data-toggle="modal" value="저자 정보 수정">
+					</div>
+				</div>
+				<hr>
+				<div>
+					<div class="form-group">
+						<label for="btn_publisher">출판사 정보</label>
+						<input type="button" id="btn_publisher" class="btn btn-primary" data-target="#publisher_modal" data-toggle="modal" value="출판사 정보 수정">
+					</div>
+				</div>
+				<hr>
+				<div>
+					<div class="form-group">
+						<label for="it_item_publisher_review">출판사 리뷰</label>
+						<textarea style="resize: none; word-break: break-all;" class="form-control" name="it_item_publisher_review" id="it_item_publisher_review" rows="12" readonly="readonly">${pageScope.BOOK.item_publisher_review}</textarea>
+						<input type="button" id="item_publisher_review_btn" onclick="unlockElement('it_item_publisher_review',this)" value="잠금 해제">
+					</div>
+				</div>
+
+				<hr>
+
 			</div>
+			<input type="button" class="btn btn-primary" onclick="confirmModification()" id="complete_modification_btn" name="complete_modification_btn" value="수정 완료">
+
 		</div>
+		<footer>
+			<%@ include file="/footer.html"%>
+		</footer>
 
 		<!-- 저자 정보 수정 MODAL -->
 		<div class="modal fade" id="author_modal" tabindex="-1" role="dialog" aria-labelledby="modal_label" aria-hidden="true">
@@ -262,36 +246,42 @@
 						</button>
 					</div>
 					<div class="modal-body">
-						<div>
-							<div class="form-row">
-								<div class="form-group col-sm-6">
-									<label for="au_author_code">저자 코드</label>
-									<input type="text" class="form-control form-control-sm" id="au_author_code" name="au_author_code" value="${pageScope.AUTHOR.author_code }" readonly="readonly">
-								</div>
-								<div class="form-group col-sm-6">
-									<label for="au_author_name">저자 명</label>
-									<input type="button" id="author_name_btn" class="btn btn-info" onclick="unlockElement('au_author_name',this)" value="잠금 해제">
-									<input type="text" class="form-control form-control-sm" id="au_author_name" name="au_author_name" value="${pageScope.AUTHOR.author_name }" readonly="readonly">
-								</div>
-								<div class="form-group col-sm-6">
-									<label for="au_author_region">지역</label> <select id="au_author_region" name="au_author_region" class="form-control">
-										<c:if test="${pageScope.AUTHOR.author_region == 'd' }">
-											<option value="d" selected="selected">국내</option>
-											<option value="a">국외</option>
-										</c:if>
-										<c:if test="${pageScope.AUTHOR.author_region == 'a' }">
-											<option value="d">국내</option>
-											<option value="a" selected="selected">국외</option>
-										</c:if>
-									</select>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="au_author_desc">저자 소개</label>
-								<input type="button" id="author_desc_btn" class="btn btn-info" onclick="unlockElement('au_author_desc',this)" value="잠금 해제">
-								<textarea style="resize: none; word-break: break-all;" class="form-control form-control-sm" id="au_author_desc" name="au_author_desc" rows="3" readonly="readonly">${pageScope.AUTHOR.author_information }</textarea>
-							</div>
-						</div>
+
+						<ul id="author_list" style="list-style: none; padding: 2px; margin: 2px;" class="list-group">
+							<c:forEach var="author" items="${pageScope.BOOK.authors }" varStatus="status">
+								<li id="author[]" class="list-group-item">
+									<div class="form-row">
+										<div class="form-group col-sm-6">
+											<label for="au_author_code">저자 코드</label>
+											<input type="text" class="form-control form-control-sm" id="au_author_code[]" name="au_author_code[]" readonly="readonly" value="${author.author_code }">
+										</div>
+										<div class="form-group col-sm-6">
+											<label for="au_author_name">저자 명</label>
+											<input type="text" class="form-control form-control-sm" id="au_author_name[]" name="au_author_name[]" value="${author.author_name }" readonly="readonly">
+										</div>
+										<div class="form-group col-sm-6">
+											<label for="au_author_region">지역</label> <select id="au_author_region[]" name="au_author_region[]" class="form-control" onfocus="this.initialSelect = this.selectedIndex;" onchange="this.selectedIndex=this.initialSelect;">
+												<c:if test="${author.author_region == 'd' }">
+													<option value="d" selected="selected">국내</option>
+													<option value="a">국외</option>
+												</c:if>
+												<c:if test="${author.author_region == 'a' }">
+													<option value="d">국내</option>
+													<option value="a" selected="selected">국외</option>
+												</c:if>
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="au_author_desc">저자 소개</label>
+										<textarea style="resize: none; word-break: break-all;" class="form-control form-control-sm" id="au_author_desc[]" name="au_author_desc[]" rows="3" readonly="readonly">${author.author_information }</textarea>
+									</div>
+									<input type="button" value="삭제" class="btn btn-secondary" onclick="javascript:this.parentNode.remove();">
+								</li>
+							</c:forEach>
+						</ul>
+						<br>
+						<input type="button" class="btn btn-info btn-sm btn-block" onclick="addAuthor()" value="저자 추가">
 						<div>
 							<table class="table" id="author_modal_table">
 								<thead id="author_modal_thead">
@@ -312,7 +302,7 @@
 					<div class="modal-footer" id="author_modal_footer">
 						<div class="form-row align-items-right">
 							<div class="col-auto">
-								<input type="text" class="form-control form-control-sm" id="input_find_author_name" value="${pageScope.AUTHOR.author_name }">
+								<input type="text" class="form-control form-control-sm" id="input_find_author_name">
 							</div>
 							<div class="col-auto">
 								<button type="button" class="btn btn-primary" onclick="getAuthors()">저자 조회</button>
@@ -338,30 +328,28 @@
 						</button>
 					</div>
 					<div class="modal-body">
-						<div>
-							<div class="form-row">
-								<div class="form-group col-sm-6">
-									<label for="pu_publisher_code">출판사 코드</label>
-									<input type="text" class="form-control form-control-sm" id="pu_publisher_code" name="pu_publisher_code" value="${pageScope.PUBLISHER.publisher_code }" readonly="readonly">
-								</div>
-								<div class="form-group col-sm-6">
-									<label for="pu_publisher_name">출판사 명</label>
-									<input type="button" id="publisher_name_btn" class="btn btn-info" onclick="unlockElement('pu_publisher_name',this)" value="잠금 해제">
-									<input type="text" class="form-control form-control-sm" id="pu_publisher_name" name="pu_publisher_name" value="${pageScope.PUBLISHER.publisher_name }" readonly="readonly">
-								</div>
-								<div class="form-group col-sm-6">
-									<label for="pu_publisher_region">지역</label> <select id="pu_publisher_region" name="pu_publisher_region" class="form-control">
-										<c:if test="${pageScope.PUBLISHER.publisher_region == 'd' }">
-											<option value="d" selected="selected">국내</option>
-											<option value="a">국외</option>
-										</c:if>
-										<c:if test="${pageScope.PUBLISHER.publisher_region == 'a' }">
-											<option value="d">국내</option>
-											<option value="a" selected="selected">국외</option>
-										</c:if>
-									</select>
-								</div>
+						<div class="form-row">
+							<div class="form-group col-sm-6">
+								<label for="pu_publisher_code">출판사 코드</label>
+								<input type="text" class="form-control form-control-sm" id="pu_publisher_code" name="pu_publisher_code" value="${pageScope.BOOK.publisher.publisher_code }" readonly="readonly">
 							</div>
+							<div class="form-group col-sm-6">
+								<label for="pu_publisher_name">출판사 명</label>
+								<input type="text" class="form-control form-control-sm" id="pu_publisher_name" name="pu_publisher_name" value="${pageScope.BOOK.publisher.publisher_name }" readonly="readonly">
+							</div>
+							<div class="form-group col-sm-6">
+								<label for="pu_publisher_region">지역</label> <select id="pu_publisher_region" name="pu_publisher_region" class="form-control" onfocus="this.initialSelect = this.selectedIndex;" onchange="this.selectedIndex=this.initialSelect;">
+									<c:if test="${pageScope.BOOK.publisher.publisher_region == 'd' }">
+										<option value="d" selected="selected">국내</option>
+										<option value="a">국외</option>
+									</c:if>
+									<c:if test="${pageScope.BOOK.publisher.publisher_region == 'a' }">
+										<option value="d">국내</option>
+										<option value="a" selected="selected">국외</option>
+									</c:if>
+								</select>
+							</div>
+
 						</div>
 						<div>
 							<table class="table" id="publisher_modal_table">
@@ -382,7 +370,7 @@
 					<div class="modal-footer" id="publisher_modal_footer">
 						<div class="form-row align-items-right">
 							<div class="col-auto">
-								<input type="text" class="form-control form-control-sm" id="input_find_publisher_name" value="${pageScope.PUBLISHER.publisher_name }">
+								<input type="text" class="form-control form-control-sm" id="input_find_publisher_name">
 							</div>
 							<div class="col-auto">
 								<button type="button" class="btn btn-primary" onclick="getPublishers()">출판사 조회</button>
@@ -396,9 +384,7 @@
 			</div>
 		</div>
 
-
-
-		<div id="original_datalist">
+		<div id="original_value">
 			<input type="hidden" id="original_item_name" name="original_item_name" value="${pageScope.BOOK.item_name}">
 			<input type="hidden" id="original_item_publication_date" name="original_item_publication_date" value="${pageScope.BOOK.item_publication_date}">
 			<input type="hidden" id="original_item_fixed_price" name="original_item_fixed_price" value="${pageScope.BOOK.item_fixed_price}">
@@ -411,15 +397,21 @@
 			<input type="hidden" id="original_item_book_introduction" name="original_item_book_introduction" value="${pageScope.BOOK.item_book_introduction}">
 			<input type="hidden" id="original_item_contents_table" name="original_item_contents_table" value="${pageScope.BOOK.item_contents_table}">
 			<input type="hidden" id="original_item_publisher_review" name="original_item_publisher_review" value="${pageScope.BOOK.item_publisher_review}">
+		</div>
 
-			<input type="hidden" id="original_author_code" name="original_author_code" value="${pageScope.AUTHOR.author_code}">
-			<input type="hidden" id="original_author_name" name="original_author_name" value="${pageScope.AUTHOR.author_name}">
-			<input type="hidden" id="original_author_region" name="original_author_region" value="${pageScope.AUTHOR.author_region}">
-			<input type="hidden" id="original_author_information" name="original_author_information" value="${pageScope.AUTHOR.author_information}">
+		<div id="original_authors">
+			<c:forEach var="author" items="${pageScope.BOOK.authors }" varStatus="status">
+				<input type="hidden" id="original_author_code[]" name="original_author_code[]" value="${author.author_code }">
+				<input type="hidden" id="original_author_name[]" name="original_author_name[]" value="${author.author_name }">
+				<input type="hidden" id="original_author_region[]" name="original_author_region[]" value="${author.author_region }">
+				<input type="hidden" id="original_author_desc[]" name="original_author_desc[]" value="${author.author_information }">
+			</c:forEach>
+		</div>
 
-			<input type="hidden" id="original_publisher_code" name="original_publisher_code" value="${pageScope.PUBLISHER.publisher_code}">
-			<input type="hidden" id="original_publisher_name" name="original_publisher_name" value="${pageScope.PUBLISHER.publisher_name}">
-			<input type="hidden" id="original_publisher_region" name="original_publisher_region" value="${pageScope.PUBLISHER.publisher_region}">
+		<div id="original_publisher">
+			<input type="hidden" id="original_publisher_code" name="original_publisher_code" value="${pageScope.BOOK.publisher.publisher_code}">
+			<input type="hidden" id="original_publisher_name" name="original_publisher_name" value="${pageScope.BOOK.publisher.publisher_name}">
+			<input type="hidden" id="original_publisher_region" name="original_publisher_region" value="${pageScope.BOOK.publisher.publisher_region}">
 		</div>
 	</form>
 
@@ -465,10 +457,9 @@
 		var selectedPublisherIndex = 0;
 		var itemCode = '${pageScope.BOOK.item_code}';
 		var itemCategoryCode = '${pageScope.BOOK.item_category_code}';
-		var authorCode = '${pageScope.AUTHOR.author_code}';
-		var publisherCode = '${pageScope.PUBLISHER.publisher_code}';
+		var authorFormList = document.getElementById('author_list');
 
-		const originalData =
+		var originalData =
 		{
 			it_item_name : '',
 			it_pub_date : '',
@@ -481,11 +472,13 @@
 			it_isbn10 : '',
 			it_book_introduction : '',
 			it_item_contents_table : '',
-			it_item_publisher_review : '',
-			au_author_code : '',
-			au_author_name : '',
-			au_author_region : '',
-			au_author_desc : '',
+			it_item_publisher_review : ''
+		};
+
+		var originalAuthors = null;
+
+		var originalPublisher =
+		{
 			pu_publisher_code : '',
 			pu_publisher_name : '',
 			pu_publisher_region : ''
@@ -493,23 +486,84 @@
 
 		(function preProcessing()
 		{
-			let dataList = document.getElementById('original_datalist');
+			saveOriginalData('original_value', 'originalData');
+			saveOriginalData('original_authors', 'originalAuthors');
+			saveOriginalData('original_publisher', 'originalPublisher');
+			checkImgNull();
+		})();
+
+		function saveOriginalData(divId, objName)
+		{
+			let dataList = document.getElementById(divId);
 			let inputTags = dataList.getElementsByTagName('input');
 			let sequence = 0;
-			let keys = Object.keys(originalData);
+			let keys = null;
+
+			if (objName == 'originalData')
+			{
+				keys = Object.keys(originalData);
+			} else if (objName == 'originalAuthors')
+			{
+				let authorNum = inputTags.length / 4;
+				originalAuthors = new Array();
+				keys = Object.keys(originalAuthors);
+
+				for (let index = 0; index < authorNum; ++index)
+				{
+					let author =
+					{
+						au_author_code : '',
+						au_author_name : '',
+						au_author_region : '',
+						au_author_desc : ''
+					};
+					originalAuthors.push(author);
+				}
+			} else if (objName == 'originalPublisher')
+			{
+				keys = Object.keys(originalPublisher);
+			}
 
 			for (let index = 0; index < inputTags.length; ++index)
 			{
-				originalData[keys[index]] = inputTags[index].value.toString();
+				// 객체에 원본 데이터 저장
+
+				if (objName == 'originalData')
+				{
+					originalData[keys[index]] = inputTags[index].value
+							.toString();
+				} else if (objName == 'originalAuthors')
+				{
+					if (inputTags[index].name == 'original_author_code[]')
+					{
+						originalAuthors[parseInt(index / 4)]['au_author_code'] = inputTags[index].value
+								.toString();
+					} else if (inputTags[index].name == 'original_author_name[]')
+					{
+						originalAuthors[parseInt(index / 4)]['au_author_name'] = inputTags[index].value
+								.toString();
+					} else if (inputTags[index].name == 'original_author_region[]')
+					{
+						originalAuthors[parseInt(index / 4)]['au_author_region'] = inputTags[index].value
+								.toString();
+					} else if (inputTags[index].name == 'original_author_desc[]')
+					{
+						originalAuthors[parseInt(index / 4)]['au_author_desc'] = inputTags[index].value
+								.toString();
+					}
+				} else if (objName == 'originalPublisher')
+				{
+					originalPublisher[keys[index]] = inputTags[index].value
+							.toString();
+				}
 			}
 
 			while (dataList.firstChild)
 			{
-				// 원본 데이터를 가지고 있는 input tag를 제거
+				// 원본 도서 데이터를 가지고 있는 input tag를 제거
 				dataList.removeChild(dataList.childNodes[0]);
 			}
-			checkImgNull();
-		})()
+		}
 
 		$("#menu-toggle").click(function(e)
 		{
@@ -520,6 +574,7 @@
 		function unlockElement(elementID, btnObj)
 		{
 			let element = document.getElementById(elementID);
+
 			// tag의 readonly를 해제
 			element.readOnly = false;
 
@@ -532,6 +587,7 @@
 		function lockElement(elementID, btnObj)
 		{
 			let element = document.getElementById(elementID);
+
 			// tag의 readonly를 해제
 			element.readOnly = true;
 
@@ -622,11 +678,20 @@
 		function setAuthorForm(index)
 		{
 			selectedAuthorIndex = index;
-			document.getElementById('au_author_name').value = authorList[index]['author_name'];
+			let listLength = authorFormList.getElementsByTagName('li').length;
 
-			let selectElement = document.getElementById('au_author_region');
+			let authorNameElements = document
+					.getElementsByName('au_author_name[]');
+			let authorRegionElements = document
+					.getElementsByName('au_author_region[]');
+			let authorDescElements = document
+					.getElementsByName('au_author_desc[]');
+			let authorCodeElements = document
+					.getElementsByName('au_author_code[]');
 
-			if (selectElement[0].value == authorList[index]['author_region'])
+			let selectElement = authorRegionElements[listLength - 1];
+
+			if ('d' == authorList[index]['author_region'])
 			{
 				// 국내
 				selectElement[0].selected = true;
@@ -638,8 +703,9 @@
 				selectElement[1].selected = true;
 			}
 
-			document.getElementById('au_author_desc').value = authorList[index]['author_desc'];
-			document.getElementById('au_author_code').value = authorList[index]['author_code'];
+			authorDescElements[listLength - 1].value = authorList[index]['author_desc'];
+			authorNameElements[listLength - 1].value = authorList[index]['author_name'];
+			authorCodeElements[listLength - 1].value = authorList[index]['author_code'];
 		}
 
 		function convertRegionToChar(region)
@@ -657,7 +723,7 @@
 		{
 			let region = document.getElementById(id).value;
 
-			if (region != '국내' && region != '해외')
+			if (region != 'd' && region != 'a')
 			{
 				alert('지역은 국내 또는 해외로 입력해주세요!');
 			}
@@ -774,15 +840,16 @@
 			{
 				type : 'UPDATE_DATA',
 				item_code : itemCode.toString(),
-				item_category_code : itemCategoryCode.toString(),
+				item_category_code : itemCategoryCode.toString()
 			};
+
+			// 처리 관련 데이터 삽입
 			modifiedValueList.push(processingData);
 
-			if ((document.getElementById('au_author_code').value == originalData['au_author_code'])
-					&& (document.getElementById('au_author_name').value == originalData['au_author_name'])
-					&& (document.getElementById('au_author_region').value == originalData['au_author_region'])
-					&& (document.getElementById('au_author_desc').value == originalData['au_author_desc']))
+			// 저자 정보 변경 여부 확인
+			if (true)
 			{
+				// 저자 정보 변경X
 			} else if (document.getElementById('au_author_code').value == authorCode)
 			{
 				let count = 0;
@@ -837,6 +904,7 @@
 					&& (document.getElementById('pu_publisher_name').value == originalData['pu_publisher_name'])
 					&& (document.getElementById('pu_publisher_region').value == originalData['pu_publisher_region']))
 			{
+				// 저자 정보 변경X
 			} else if (document.getElementById('pu_publisher_code').value == publisherCode)
 			{
 				let count = 0;
@@ -911,6 +979,27 @@
 				}
 			}
 			return modifiedValueList;
+		}
+
+		function checkAuthorChange()
+		{
+			let authorCodeElements = document
+					.getElementsByName('au_author_code[]');
+			const authorNum = originalAuthors.length;
+			let result = false;
+
+			for (let i = 0; i < authorNum; ++i)
+			{
+				for (let j = 0; j < authorNum; ++j)
+				{
+					if (originalAuthors[i]['author_code'] == authorCodeElements[j])
+						{
+						
+						}
+				}
+			}
+
+			return result;
 		}
 
 		function confirmModification()
@@ -1012,23 +1101,57 @@
 
 		function checkImgNull()
 		{
+			// 사진 존재 여부 검사
 			let mainImg = document.getElementById('main_img');
 			let infoImg = document.getElementById('info_img');
 			document.getElementById('image_modal_title').innerText = '사진 추가';
-			
+
 			if (mainImg.currentSrc == '')
 			{
 				let btn = document.getElementById('main_img_btn');
-				btn.setAttribute('onclick','addImgModal(\'MAIN\')');
+				btn.setAttribute('onclick', 'addImgModal(\'MAIN\')');
 				btn.value = '사진 추가';
 			}
 
 			if (infoImg.currentSrc == '')
 			{
 				let btn = document.getElementById('info_img_btn');
-				btn.setAttribute('onclick','addImgModal(\'INFO\')');
+				btn.setAttribute('onclick', 'addImgModal(\'INFO\')');
 				btn.value = '사진 추가';
 			}
+		}
+
+		function addAuthor()
+		{
+			const index = authorFormList.getElementsByTagName('li').length;
+
+			const htmlElement = '<div class=\"form-row\">'
+					+ '<div class=\"form-group col-sm-6\">'
+					+ '<label for=\"au_author_code\">저자 코드</label>'
+					+ '<input type=\"text\" class=\"form-control form-control-sm\" id=\"au_author_code[]\" name=\"au_author_code[]\" readonly=\"readonly\">'
+					+ '</div>'
+					+ '<div class=\"form-group col-sm-6\">'
+					+ '<label for=\"au_author_name\">저자 명</label>'
+					+ '<input type=\"text\" class=\"form-control form-control-sm\" id=\"au_author_name[]\" name=\"au_author_name[]\" readonly=\"readonly\">'
+					+ '</div>'
+					+ '<div class=\"form-group col-sm-6\">'
+					+ '<label for=\"au_author_region\">지역</label> <select id=\"au_author_region[]\" name=\"au_author_region[]\" class=\"form-control\" onfocus=\"this.initialSelect = this.selectedIndex;\" onchange=\"this.selectedIndex=this.initialSelect;\">'
+					+ '<option value=\"d\" selected=\"selected\">국내</option>'
+					+ '<option value=\"a\">국외</option>'
+					+ '</select>'
+					+ '</div>'
+					+ '</div>'
+					+ '<div class=\"form-group\">'
+					+ '<label for=\"au_author_desc\">저자 소개</label>'
+					+ '<textarea style=\"resize: none; word-break: break-all;\" class=\"form-control form-control-sm\" id=\"au_author_desc[]\" name=\"au_author_desc[]\" rows=\"3\" readonly=\"readonly\"></textarea>'
+					+ '</div>'
+					+ '<input type=\"button\" value=\"삭제\" class=\"btn btn-secondary\" onclick=\"javascript:this.parentNode.remove();\">';
+
+			const newElement = document.createElement('li');
+			newElement.setAttribute('class', 'list-group-item');
+			newElement.setAttribute('id', 'author[]');
+			newElement.innerHTML = htmlElement;
+			authorFormList.appendChild(newElement);
 		}
 	</script>
 </body>

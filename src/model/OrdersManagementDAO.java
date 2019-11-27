@@ -81,7 +81,7 @@ public class OrdersManagementDAO
 		HashMap<String, ArrayList<ItemsDTO>> list = null;
 
 		String query = "SELECT orders.orderhistory_user_id, item.item_name, publisher.publisher_name"
-				+ ", sale.salehistory_sale_quantity, item.item_selling_price, sale.salehistory_total_price, au.author_code, au.author_name "
+				+ ", sale.salehistory_sale_quantity, item.item_selling_price, sale.salehistory_total_price, au.author_name "
 				+ "FROM salehistory as sale "
 				+ "INNER JOIN items item ON item.item_code = sale.salehistory_item_code AND item.item_category_code = sale.salehistory_item_category "
 				+ "INNER JOIN orderhistory orders ON orders.orderhistory_order_code = sale.salehistory_order_code "
@@ -94,7 +94,6 @@ public class OrdersManagementDAO
 				+ "ORDER BY sale.salehistory_item_code ASC";
 
 		ResultSet set = null;
-		HashSet<String> nameSet = new HashSet<String>();
 
 		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
 		{
@@ -103,12 +102,14 @@ public class OrdersManagementDAO
 			for (int i = 0; i < orderList.size(); ++i)
 			{
 				set = null;
+
 				prstmt.setString(1, orderList.get(i).getUser_id());
 				prstmt.setInt(2, orderList.get(i).getOrder_code());
 				set = prstmt.executeQuery();
 
 				String userId = null;
 				int index = 0;
+				HashSet<String> nameSet = new HashSet<String>();
 
 				while (set.next())
 				{
@@ -123,15 +124,13 @@ public class OrdersManagementDAO
 								.add(new ItemsDTO().setItem_name(set.getString(2))
 										.setItem_publisher_name(set.getString(3)).setOrder_quantity(set.getInt(4))
 										.setItem_selling_price(set.getInt(5)).setTotal_price(set.getInt(6))
-										.setAuthors(new AuthorDTO().setAuthor_code(set.getInt("author_code"))
-												.setAuthor_name(set.getString("author_name"))));
+										.setAuthors(new AuthorDTO().setAuthor_name(set.getString("author_name"))));
 						nameSet.add(set.getString(2));
 						++index;
 					} else
 					{
 						list.get(userId).get(index - 1)
-								.setAuthors(new AuthorDTO().setAuthor_code(set.getInt("author_code"))
-										.setAuthor_name(set.getString("author_name")));
+								.setAuthors(new AuthorDTO().setAuthor_name(set.getString("author_name")));
 					}
 				}
 			}

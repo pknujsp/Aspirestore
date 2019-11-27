@@ -174,28 +174,30 @@ public class ServletBookManagement extends HttpServlet
 			ServletContext sc = this.getServletContext();
 			ItemsDAO itemsDAO = (ItemsDAO) sc.getAttribute("itemsDAO");
 			FileDAO fileDAO = (FileDAO) sc.getAttribute("FILE_DAO");
-			
+
 			int icode = Integer.parseInt(request.getAttribute("ICODE").toString());
 			String ccode = request.getAttribute("CCODE").toString();
-			Map<String, Object> bookData = itemsDAO.getBookData(icode, ccode);
+			ItemsDTO book = itemsDAO.getItem(ccode, icode);
 			ArrayList<FileDTO> images = fileDAO.getItemImages(icode, ccode);
+
+			FileDTO mainImg = null;
+			FileDTO infoImg = null;
 
 			for (int index = 0; index < images.size(); ++index)
 			{
 				if (images.get(index).getImage_position().equals("MAIN"))
 				{
-					bookData.put("MAIN_IMAGE", images.get(index));
+					mainImg = images.get(index);
 				} else if (images.get(index).getImage_position().equals("INFO"))
 				{
-					bookData.put("INFO_IMAGE", images.get(index));
+					infoImg = images.get(index);
 				}
 			}
 
-			request.setAttribute("MAIN_IMAGE", bookData.get("MAIN_IMAGE"));
-			request.setAttribute("INFO_IMAGE", bookData.get("INFO_IMAGE"));
+			request.setAttribute("MAIN_IMAGE", mainImg);
+			request.setAttribute("INFO_IMAGE", infoImg);
 
-			request.setAttribute("BOOK", bookData.get("BOOK"));
-			request.setAttribute("PUBLISHER", bookData.get("PUBLISHER"));
+			request.setAttribute("BOOK", book);
 			request.setAttribute("VIEWURL", "forward:/management/bookmanagement/bookInfo.jsp");
 		} catch (Exception e)
 		{
@@ -215,24 +217,26 @@ public class ServletBookManagement extends HttpServlet
 			int icode = Integer.parseInt(request.getAttribute("ICODE").toString());
 			String ccode = request.getAttribute("CCODE").toString();
 
-			Map<String, Object> bookData = itemsDAO.getBookData(icode, ccode);
+			ItemsDTO book = itemsDAO.getItem(ccode, icode);
 			ArrayList<FileDTO> images = fileDAO.getItemImages(icode, ccode);
+
+			FileDTO mainImg = null;
+			FileDTO infoImg = null;
 
 			for (int index = 0; index < images.size(); ++index)
 			{
 				if (images.get(index).getImage_position().equals("MAIN"))
 				{
-					bookData.put("MAIN_IMAGE", images.get(index));
+					mainImg = images.get(index);
 				} else if (images.get(index).getImage_position().equals("INFO"))
 				{
-					bookData.put("INFO_IMAGE", images.get(index));
+					infoImg = images.get(index);
 				}
 			}
 
-			request.setAttribute("BOOK", bookData.get("BOOK"));
-			request.setAttribute("PUBLISHER", bookData.get("PUBLISHER"));
-			request.setAttribute("MAIN_IMAGE", bookData.get("MAIN_IMAGE"));
-			request.setAttribute("INFO_IMAGE", bookData.get("INFO_IMAGE"));
+			request.setAttribute("BOOK", book);
+			request.setAttribute("MAIN_IMAGE", mainImg);
+			request.setAttribute("INFO_IMAGE", infoImg);
 
 			request.setAttribute("VIEWURL", "forward:/management/bookmanagement/bookModification.jsp");
 		} catch (Exception e)

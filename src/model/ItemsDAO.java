@@ -63,6 +63,10 @@ public class ItemsDAO
 							.setItem_registration_datetime(set.getString("item_registration_datetime"))
 							.setItem_category_desc(set.getString("category_name"))
 							.setItem_publisher_name(set.getString("publisher_name"));
+
+					item.setPublisher(new PublisherDTO().setPublisher_code(set.getInt("publisher_code"))
+							.setPublisher_name(set.getString("publisher_name"))
+							.setPublisher_region(set.getString("publisher_region")));
 				}
 				item.setAuthors(new AuthorDTO().setAuthor_code(set.getInt("author_code"))
 						.setAuthor_name(set.getString("author_name"))
@@ -86,64 +90,6 @@ public class ItemsDAO
 			}
 		}
 		return item;
-	}
-
-	public Map<String, Object> getBookData(int icode, String ccode)
-	{
-		String query = "SELECT * FROM items as i "
-				+ "INNER JOIN publishers p ON i.item_publisher_code = p.publisher_code "
-				+ "INNER JOIN itemcategory AS c ON i.item_category_code = c.category_code "
-				+ "WHERE i.item_code = ? AND i.item_category_code = ?";
-
-		ItemsDTO book = null;
-		PublisherDTO publisher = null;
-		ArrayList<AuthorDTO> authors = null;
-		ResultSet set = null;
-
-		try (Connection connection = ds.getConnection(); PreparedStatement prstmt = connection.prepareStatement(query);)
-		{
-			prstmt.setInt(1, icode);
-			prstmt.setString(2, ccode);
-			set = prstmt.executeQuery();
-
-			if (set.next())
-			{
-				book = new ItemsDTO().setItem_code(set.getInt(1)).setItem_name(set.getString(2))
-						.setItem_publisher_code(set.getInt(3)).setItem_publication_date(set.getString(4))
-						.setItem_fixed_price(set.getInt(5)).setItem_selling_price(set.getInt(6))
-						.setItem_remaining_quantity(set.getInt(7)).setItem_category_code(set.getString(8))
-						.setItem_page_number(set.getString(9)).setItem_weight(set.getString(10))
-						.setItem_size(set.getString(11)).setItem_isbn13(set.getString(12))
-						.setItem_isbn10(set.getString(13)).setItem_book_introduction(set.getString(14))
-						.setItem_contents_table(set.getString(15)).setItem_publisher_review(set.getString(16))
-						.setItem_registration_datetime(set.getString(17)).setItem_category_desc(set.getString(21));
-
-				publisher = new PublisherDTO().setPublisher_code(set.getInt(18)).setPublisher_name(set.getString(19))
-						.setPublisher_region(set.getString(20));
-
-			}
-			// 저자 정보를 가져오는 코드 작성 필요
-		} catch (Exception e)
-		{
-			e.printStackTrace();
-		} finally
-		{
-			if (set != null)
-			{
-				try
-				{
-					set.close();
-				} catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-			}
-		}
-		Map<String, Object> bookData = new HashMap<String, Object>();
-
-		bookData.put("BOOK", book);
-		bookData.put("PUBLISHER", publisher);
-		return bookData;
 	}
 
 	public ArrayList<ItemsDTO> getItemList(String ccode, String sortType, int startIdx, int endIdx)

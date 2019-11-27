@@ -9,6 +9,7 @@ public class ItemsDTO
 	private int item_code;
 	private String item_name;
 	private ArrayList<AuthorDTO> authors = new ArrayList<AuthorDTO>();
+	private PublisherDTO publisher = new PublisherDTO();
 	private int item_publisher_code;
 	private String item_publisher_name;
 	private String item_publication_date;
@@ -278,13 +279,12 @@ public class ItemsDTO
 		this.total_price = this.item_selling_price * this.order_quantity;
 		return this;
 	}
-	
+
 	public ItemsDTO setTotal_price(int totalPrice)
 	{
 		this.total_price = totalPrice;
 		return this;
 	}
-
 
 	public int getTotal_price()
 	{
@@ -300,5 +300,16 @@ public class ItemsDTO
 	public String getBasket_added_datetime()
 	{
 		return basket_added_datetime;
+	}
+
+	public ItemsDTO setPublisher(PublisherDTO publisher)
+	{
+		this.publisher = publisher;
+		return this;
+	}
+
+	public PublisherDTO getPublisher()
+	{
+		return publisher;
 	}
 }

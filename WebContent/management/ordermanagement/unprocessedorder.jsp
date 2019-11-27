@@ -16,6 +16,7 @@
 <link href="/AspireStore/css/bootstrap.css" rel="stylesheet">
 <link href="/AspireStore/css/shop-homepage.css" rel="stylesheet">
 <link href="/AspireStore/css/sidebar.css" rel="stylesheet">
+<link href="/AspireStore/css/pageSetting.css" rel="stylesheet">
 
 </head>
 <body>
@@ -25,15 +26,15 @@
 	<div id="page-content-wrapper">
 		<jsp:include page="../management_navbar.jsp"></jsp:include>
 
-		<div class="container-fluid">
-			<table class="table table-sm table-hover">
+		<div class="container-fluid sfont">
+			<table class="table table-hover">
 				<thead class="thead-light">
 					<tr>
 						<th colspan="5">
-							<h5>
+							<h6>
 								미 처리 주문 목록&nbsp;
 								<input type="button" id="viewButton" onclick="setDataTable()" value="새로고침">
-							</h5>
+							</h6>
 						</th>
 						<th colspan="8">
 							표시할 데이터 개수 : <select class="custom-select custom-select-sm w-25" id="select_menu">
@@ -81,7 +82,7 @@
 	</div>
 
 	<!-- Modal -->
-	<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal_label" aria-hidden="true">
+	<div class="modal fade sfont" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal_label" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -271,9 +272,15 @@
 					'total_price' : list.KEY_DATA[j].TOTAL_PRICE,
 					'book_name' : list.KEY_DATA[j].BOOK_NAME,
 					'selling_price' : list.KEY_DATA[j].SELLING_PRICE,
-					'author_name' : list.KEY_DATA[j].AUTHOR_NAME,
-					'publisher_name' : list.KEY_DATA[j].PUBLISHER_NAME
+					'publisher_name' : list.KEY_DATA[j].PUBLISHER_NAME,
+					'authors' : new Array()
 				};
+
+				for (let k = 0; k < list.KEY_DATA[j].AUTHORS.length; ++k)
+				{
+					keyData['authors']
+							.push(list.KEY_DATA[j].AUTHORS[k].AUTHOR_NAME);
+				}
 				keyDataList.push(keyData);
 			}
 			orderData['key_data'] = keyDataList;
@@ -350,7 +357,15 @@
 
 				newTbody.insertCell(0).innerHTML = tableDataList[idx].key_data[j]['book_name'];
 				newTbody.insertCell(1).innerHTML = tableDataList[idx].key_data[j]['quantity'];
-				newTbody.insertCell(2).innerHTML = tableDataList[idx].key_data[j]['author_name'];
+
+				let author = '';
+				for (let k = 0; k < tableDataList[idx].key_data[j]['authors'].length; ++k)
+				{
+					author += tableDataList[idx].key_data[j]['authors'][k]
+							+ ' ';
+				}
+				newTbody.insertCell(2).innerText = author;
+
 				newTbody.insertCell(3).innerHTML = tableDataList[idx].key_data[j]['publisher_name'];
 				newTbody.insertCell(4).innerHTML = tableDataList[idx].key_data[j]['selling_price'];
 				newTbody.insertCell(5).innerHTML = Number(tableDataList[idx].key_data[j]['selling_price'])
